@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 1 — 나의 에이전트, 그리고 마음가짐</title>
+<meta name="description" content="AI사업2팀 에이스 역량 강화 5차수 · Session 1 · 양준모">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbfbfd;
+    --bg-dark: #000;
+    --bg-soft: #f5f5f7;
+    --text: #1d1d1f;
+    --text-muted: #6e6e73;
+    --text-soft: #86868b;
+    --text-on-dark: #f5f5f7;
+    --text-on-dark-muted: #a1a1a6;
+    --accent: #0071e3;
+    --accent-soft: #e8f1fb;
+    --border: #d2d2d7;
+    --grad-blue: linear-gradient(180deg, #0a84ff 0%, #5e9bff 100%);
+    --grad-warm: linear-gradient(180deg, #ff8a3d 0%, #ffb86b 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+  ::selection { background: var(--accent); color: white; }
+
+  /* ===== Nav ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(251, 251, 253, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 22px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  nav .brand { font-weight: 600; letter-spacing: -0.02em; }
+  nav .progress { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+  /* ===== Slide ===== */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 96px 24px 64px;
+    position: relative;
+    text-align: center;
+  }
+  .slide.dark { background: var(--bg-dark); color: var(--text-on-dark); }
+  .slide.dark .muted { color: var(--text-on-dark-muted); }
+  .slide.soft { background: var(--bg-soft); }
+  .slide-inner { width: 100%; max-width: 1080px; margin: 0 auto; }
+
+  /* Section divider (sticky-like header) */
+  .section-divider {
+    min-height: 60vh;
+    background: var(--bg-dark);
+    color: var(--text-on-dark);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 96px 24px;
+  }
+  .section-divider .label {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-on-dark-muted);
+    letter-spacing: 2.5px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .section-divider h2 {
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  /* Typography */
+  .eyebrow {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .slide.dark .eyebrow { color: #5e9bff; }
+  h1.title {
+    font-size: clamp(48px, 7.5vw, 104px);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+  }
+  h2.headline {
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    margin-bottom: 24px;
+  }
+  h3.subhead {
+    font-size: clamp(22px, 2.4vw, 32px);
+    font-weight: 500;
+    color: var(--text-muted);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+  .slide.dark h3.subhead { color: var(--text-on-dark-muted); }
+  .body-text {
+    font-size: clamp(17px, 1.4vw, 21px);
+    color: var(--text-muted);
+    line-height: 1.65;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .slide.dark .body-text { color: var(--text-on-dark-muted); }
+
+  .hero-quote {
+    font-size: clamp(36px, 5.2vw, 72px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  .hero-quote em {
+    font-style: normal;
+    background: var(--grad-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .footer-text {
+    font-size: 13px; color: var(--text-soft);
+    margin-top: 48px; letter-spacing: 0.4px;
+  }
+  .slide.dark .footer-text { color: var(--text-on-dark-muted); }
+
+  /* Tags */
+  .tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 24px 0; }
+  .tag {
+    display: inline-block;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .slide.dark .tag { background: rgba(255,255,255,0.1); color: var(--text-on-dark); }
+
+  /* Flow steps */
+  .flow {
+    display: flex; flex-direction: column; gap: 12px;
+    max-width: 720px; margin: 40px auto 0;
+  }
+  .flow-step {
+    display: flex; align-items: center; gap: 20px;
+    padding: 20px 28px;
+    background: white;
+    border-radius: 18px;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .slide.dark .flow-step { background: #1d1d1f; }
+  .flow-step:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.06), 0 12px 24px rgba(0,0,0,0.06); }
+  .flow-step.current {
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .flow-num {
+    font-size: 14px; font-weight: 700;
+    color: var(--accent);
+    width: 28px; flex-shrink: 0;
+  }
+  .flow-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .flow-sub { font-size: 14px; color: var(--text-muted); }
+  .slide.dark .flow-sub { color: var(--text-on-dark-muted); }
+
+  /* Category Grid */
+  .cat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    max-width: 760px; margin: 48px auto 0;
+  }
+  .cat-card {
+    padding: 40px 32px;
+    background: white;
+    border-radius: 24px;
+    text-align: left;
+    border: 1px solid var(--border);
+    transition: transform 0.3s ease;
+  }
+  .cat-card:hover { transform: translateY(-4px); }
+  .cat-icon { font-size: 40px; margin-bottom: 16px; }
+  .cat-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .cat-sub { font-size: 15px; color: var(--text-muted); }
+
+  /* Timeline */
+  .timeline {
+    max-width: 640px; margin: 48px auto 0;
+    text-align: left;
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 14px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--border);
+  }
+  .tl-item { display: flex; gap: 24px; padding: 16px 0; position: relative; }
+  .tl-dot {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--text);
+    flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .tl-item.now .tl-dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft); }
+  .tl-content { padding-top: 2px; }
+  .tl-when { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.4px; margin-bottom: 4px; }
+  .tl-what { font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.45; }
+
+  /* Agent card */
+  .agent-card {
+    max-width: 760px;
+    margin: 48px auto 0;
+    padding: 48px 56px;
+    background: white;
+    border-radius: 28px;
+    text-align: left;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  }
+  .agent-row { display: flex; gap: 16px; padding: 12px 0; align-items: baseline; border-bottom: 1px solid var(--border); }
+  .agent-row:last-child { border-bottom: none; }
+  .agent-label {
+    flex-shrink: 0; width: 90px;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-soft);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding-top: 4px;
+  }
+  .agent-value { font-size: 18px; color: var(--text); line-height: 1.55; font-weight: 500; }
+  .agent-value b { font-weight: 700; color: var(--accent); }
+
+  /* Meeting note flow (horizontal blocks) */
+  .mflow {
+    display: grid; gap: 16px;
+    max-width: 880px;
+    margin: 48px auto 0;
+    grid-template-columns: 1fr;
+  }
+  .mflow-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .mflow-box {
+    padding: 22px 20px;
+    background: white;
+    border-radius: 16px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .mflow-box .mb-num { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 1.5px; margin-bottom: 8px; }
+  .mflow-box .mb-text { font-size: 15px; font-weight: 500; line-height: 1.45; }
+  .mflow-arrow { text-align: center; font-size: 20px; color: var(--text-soft); }
+
+  /* Triple cards */
+  .triples {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    max-width: 980px; margin: 48px auto 0;
+  }
+  .triple {
+    padding: 32px 24px;
+    background: white;
+    border-radius: 22px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .triple-emoji { font-size: 32px; margin-bottom: 16px; }
+  .triple-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .triple-body { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+  /* Big number (Attitude) */
+  .big-num {
+    font-size: clamp(140px, 22vw, 280px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    background: var(--grad-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 32px;
+    opacity: 0.95;
+  }
+  .att-headline {
+    font-size: clamp(40px, 5.5vw, 76px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    max-width: 900px;
+    margin: 0 auto 28px;
+  }
+  .att-body {
+    font-size: clamp(18px, 1.6vw, 24px);
+    color: var(--text-muted);
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .att-highlight {
+    margin-top: 32px;
+    display: inline-block;
+    padding: 14px 24px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  /* Principles */
+  .principles {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    max-width: 980px; margin: 48px auto 0;
+  }
+  .principle {
+    padding: 40px 28px;
+    background: white;
+    border-radius: 24px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .pr-num { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-bottom: 16px; }
+  .pr-title { font-size: 22px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; line-height: 1.25; }
+  .pr-body { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
+
+  /* Closing */
+  .next-list { max-width: 600px; margin: 48px auto 0; text-align: left; }
+  .next-item {
+    padding: 24px 28px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 18px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 12px;
+  }
+  .next-tag { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: #5e9bff; margin-bottom: 4px; }
+  .next-title { font-size: 19px; font-weight: 500; color: var(--text-on-dark); }
+
+  /* Scroll cue */
+  .scroll-cue {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; font-weight: 500; color: var(--text-soft);
+    letter-spacing: 1.5px;
+    animation: bounce 2s infinite;
+  }
+  .slide.dark .scroll-cue { color: var(--text-on-dark-muted); }
+  @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+
+  /* Reveal on scroll */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .cat-grid { grid-template-columns: 1fr; }
+    .triples { grid-template-columns: 1fr; }
+    .principles { grid-template-columns: 1fr; }
+    .mflow-row { grid-template-columns: 1fr; }
+    .mflow-arrow { transform: rotate(90deg); }
+    .agent-card { padding: 32px 24px; }
+    .agent-row { flex-direction: column; gap: 4px; }
+    .agent-label { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">Session 1 · 나의 에이전트, 그리고 마음가짐</span>
+  <span class="progress" id="progress">01 / 28</span>
+</nav>
+
+<!-- ===== Section 0: Open ===== -->
+
+<section class="slide" id="s01">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Session 1 of 3 · AI사업2팀 에이스 역량 강화 5차수</div>
+    <h1 class="title">나의 에이전트,<br>그리고 마음가짐.</h1>
+    <h3 class="subhead">Agentic AI 실습의 첫걸음</h3>
+    <p class="footer-text">2026 · 양준모</p>
+  </div>
+  <div class="scroll-cue">SCROLL</div>
+</section>
+
+<section class="slide soft" id="s02">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Today</div>
+    <h2 class="headline">오늘 하루,<br>이렇게 흘러갑니다.</h2>
+    <div class="flow">
+      <div class="flow-step current">
+        <span class="flow-num">01</span>
+        <div>
+          <div class="flow-title">Session 1 — 나의 에이전트 + 마음가짐</div>
+          <div class="flow-sub">지금 이 시간</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-num">02</span>
+        <div>
+          <div class="flow-title">환경 설정 (≈ 3h)</div>
+          <div class="flow-sub">Antigravity · Claude Code 익스텐션</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-num">03</span>
+        <div>
+          <div class="flow-title">Session 2 — 첫 번째 에이전트 만들기</div>
+          <div class="flow-sub">간단한 자동화 한 개</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-num">04</span>
+        <div>
+          <div class="flow-title">Session 3 — 두 번째 에이전트 + 응용</div>
+          <div class="flow-sub">본인 페인 포인트 매핑</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s03">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Why Session 1</div>
+    <h2 class="headline">실습 전,<br>두 가지를 드립니다.</h2>
+    <div class="cat-grid" style="grid-template-columns: 1fr 1fr; max-width: 720px;">
+      <div class="cat-card">
+        <div class="cat-icon">📦</div>
+        <div class="cat-title">사례</div>
+        <div class="cat-sub">제가 만든 에이전트</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">🧭</div>
+        <div class="cat-title">마음가짐</div>
+        <div class="cat-sub">진입 전 정렬</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 1: About Me ===== -->
+
+<section class="section-divider">
+  <div>
+    <div class="label">Section 01</div>
+    <h2>About Me</h2>
+  </div>
+</section>
+
+<section class="slide" id="s04">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Profile</div>
+    <h1 class="title" style="font-size: clamp(56px, 8vw, 112px);">양준모</h1>
+    <h3 class="subhead">LG U+ · AI사업2팀 팀장</h3>
+    <div class="tags">
+      <span class="tag">영업 10년</span>
+      <span class="tag">문과생</span>
+      <span class="tag">개발 경험 0</span>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="s05">
+  <div class="slide-inner reveal">
+    <p class="hero-quote">
+      저, 작년 이맘때까지<br>
+      <em>코드 한 줄도</em> 못 짰습니다.
+    </p>
+  </div>
+</section>
+
+<section class="slide soft" id="s06">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">1-Year Timeline</div>
+    <h2 class="headline">1년의 경로.</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-when">2025 초</div>
+          <div class="tl-what">BPO 사업 정체 · CFO 반대</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-when">2025 중</div>
+          <div class="tl-what">상무님 — "요즘 대학생도 LangChain으로 만든다"</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-when">2025 말</div>
+          <div class="tl-what">상담메모 분류 에이전트 — 첫 보고</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-when">2026 초</div>
+          <div class="tl-what">PQ 데이터 분석 에이전트</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-when">2026 중</div>
+          <div class="tl-what">롤플레잉 에이전트 → 부사장 보고</div>
+        </div>
+      </div>
+      <div class="tl-item now">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-when">오늘</div>
+          <div class="tl-what">약 80개 폴더, 실험 진행 중</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="s07">
+  <div class="slide-inner reveal">
+    <p class="hero-quote">
+      영업 10년, 문과생, 비개발자 —<br>
+      <em>1년이면 여기까지</em> 옵니다.
+    </p>
+    <p class="body-text" style="margin-top: 32px;">여러분이 못 할 이유는 없습니다.</p>
+  </div>
+</section>
+
+<!-- ===== Section 2: My Agents ===== -->
+
+<section class="section-divider">
+  <div>
+    <div class="label">Section 02</div>
+    <h2>My Agents</h2>
+  </div>
+</section>
+
+<section class="slide" id="s08">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Gallery</div>
+    <h2 class="headline">만들어 본 것들.</h2>
+    <div class="cat-grid">
+      <div class="cat-card"><div class="cat-icon">🎯</div><div class="cat-title">업무용</div><div class="cat-sub">AICC 도메인</div></div>
+      <div class="cat-card"><div class="cat-icon">⚡</div><div class="cat-title">생산성</div><div class="cat-sub">팀 · 개인 워크플로우</div></div>
+      <div class="cat-card"><div class="cat-icon">📥</div><div class="cat-title">개인 인풋</div><div class="cat-sub">정보 수집 · 요약</div></div>
+      <div class="cat-card"><div class="cat-icon">🧪</div><div class="cat-title">실험</div><div class="cat-sub">약 80개</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s09">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🎯 업무용 · 01</div>
+    <h2 class="headline">상담메모 분류<br>에이전트.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Status</span><span class="agent-value">2025 말 — 첫 보고</span></div>
+      <div class="agent-row"><span class="agent-label">Pain</span><span class="agent-value">AICC 전환 컨설팅 — 상담메모를 사람이 수작업 분류</span></div>
+      <div class="agent-row"><span class="agent-label">Solve</span><span class="agent-value">자동 분류 → <b>단순 반복 문의 식별</b></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🎯 업무용 · 02</div>
+    <h2 class="headline">PQ 데이터 분석<br>에이전트.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Status</span><span class="agent-value">2026 — 진행 중</span></div>
+      <div class="agent-row"><span class="agent-label">Solve</span><span class="agent-value"><b>PQ 데이터 분석</b> 자동화</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s11">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🎯 업무용 · 03 — 부사장 보고</div>
+    <h2 class="headline">롤 플레잉<br>에이전트.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Pain</span><span class="agent-value">팀 8명 중 도메인 엑스퍼트 2명 — 나머지 6명은 학습 필요</span></div>
+      <div class="agent-row"><span class="agent-label">Data</span><span class="agent-value">최근 3개월 <b>150회+ 회의 STT 전사본</b></span></div>
+      <div class="agent-row"><span class="agent-label">Solve</span><span class="agent-value">실제 고객 발화 기반 시나리오 → 롤플레잉 훈련</span></div>
+      <div class="agent-row"><span class="agent-label">Now</span><span class="agent-value">파일럿 → 팀 피드백 반영 중 (UI/UX, 질문 패턴 자연스러움)</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide dark" id="s12">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성 · 핵심</div>
+    <h2 class="headline">미팅노트 자동화.</h2>
+    <p class="body-text">모든 회의 → 노션 + 팀메일 + GitHub Pages</p>
+    <div class="mflow">
+      <div class="mflow-row">
+        <div class="mflow-box"><div class="mb-num">STEP 1</div><div class="mb-text">녹취 → STT 전사</div></div>
+        <div class="mflow-box"><div class="mb-num">STEP 2</div><div class="mb-text">디스코드 채널 업로드</div></div>
+        <div class="mflow-box"><div class="mb-num">STEP 3</div><div class="mb-text">디스코드 봇 트리거</div></div>
+      </div>
+      <div class="mflow-arrow">↓</div>
+      <div class="mflow-row">
+        <div class="mflow-box"><div class="mb-num">STEP 4</div><div class="mb-text">Claude CLI 호출 → 정제</div></div>
+        <div class="mflow-box"><div class="mb-num">OUTPUT A</div><div class="mb-text">노션 (양준모)<br>팀 공용 메일 (전체 포워딩)</div></div>
+        <div class="mflow-box"><div class="mb-num">OUTPUT B</div><div class="mb-text"><b>HTML 변환 →<br>GitHub Pages</b></div></div>
+      </div>
+    </div>
+    <p class="footer-text">요약만으론 부족 — HTML 시각화까지.</p>
+  </div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성</div>
+    <h2 class="headline">캘린더 자동 등록.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Input</span><span class="agent-value">디스코드에 카톡 · 캡처 · 문자 드롭</span></div>
+      <div class="agent-row"><span class="agent-label">Process</span><span class="agent-value">OCR · 텍스트 파싱</span></div>
+      <div class="agent-row"><span class="agent-label">Output</span><span class="agent-value">구글 캘린더 자동 등록</span></div>
+      <div class="agent-row"><span class="agent-label">Example</span><span class="agent-value">동기 식사 약속, 골프 예약</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s14">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성</div>
+    <h2 class="headline">위클리 인박스.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Source</span><span class="agent-value">노션 "Weekly Inbox" DB</span></div>
+      <div class="agent-row"><span class="agent-label">Trigger</span><span class="agent-value">월요일 — 자동 또는 <b>녹취 앱</b></span></div>
+      <div class="agent-row"><span class="agent-label">Flow</span><span class="agent-value">Not Started 수집 → 팀 공용 메일 → 컨플루언스 → ToDo</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성</div>
+    <h2 class="headline">그룹장님<br>인텔리전스 스킬.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Trigger</span><span class="agent-value">구글 캘린더에 <b>회사명_사람명_직책</b> 입력 (5분 단위 감지)</span></div>
+      <div class="agent-row"><span class="agent-label">Collect</span><span class="agent-value">회사 정보 · 인물 프로파일 · 토킹 포인트 · 이슈/뉴스</span></div>
+      <div class="agent-row"><span class="agent-label">Output</span><span class="agent-value">노션 자동 정리 → 미팅 전 확인</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s16">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">📥 개인 인풋</div>
+    <h2 class="headline">유튜브 요약<br>→ 노션.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Why</span><span class="agent-value">보고 싶은 영상 많음 / 시간 부족 (육아 · 출근 · 업무)</span></div>
+      <div class="agent-row"><span class="agent-label">Flow</span><span class="agent-value">디스코드 URL drop → Claude 분석 → 자막 → 요약 → 노션</span></div>
+      <div class="agent-row"><span class="agent-label">Use</span><span class="agent-value">틈새 시간 = 노션 요약 · 시간 될 때 = 영상 직접</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">📥 개인 인풋</div>
+    <h2 class="headline">정보 수집 채널<br>3종 세트.</h2>
+    <div class="triples">
+      <div class="triple">
+        <div class="triple-emoji">🌍</div>
+        <div class="triple-title">솔로프리너</div>
+        <div class="triple-body">1인 SaaS 외국 채널 사례 수집 — "얘네는 어떻게 돈을 벌지?"</div>
+      </div>
+      <div class="triple">
+        <div class="triple-emoji">📸</div>
+        <div class="triple-title">인스타 + 노션</div>
+        <div class="triple-body">카드뉴스 OCR + 릴스 STT → 한국어 요약 → 노션</div>
+      </div>
+      <div class="triple">
+        <div class="triple-emoji">📰</div>
+        <div class="triple-title">뉴스 · URL</div>
+        <div class="triple-body">기사 · 서비스 사이트 자동 분석 + 비판적 검토</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide soft" id="s18">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🧪 실험</div>
+    <h2 class="headline">80개의 실험.</h2>
+    <p class="body-text">이것저것 약 80개를 만들어 봤습니다.<br>살아남은 것만 운영합니다.</p>
+    <div class="triples" style="grid-template-columns: 1fr 1fr; max-width: 720px;">
+      <div class="triple">
+        <div class="triple-emoji">🏠</div>
+        <div class="triple-title">청약홈 자동 수집기</div>
+        <div class="triple-body">지역별 필터 → 노션 표출</div>
+      </div>
+      <div class="triple">
+        <div class="triple-emoji">🎮</div>
+        <div class="triple-title">테트리스 · 사다리</div>
+        <div class="triple-body">동기 모임용 (얄미운 동기 셋업 30분~1시간)</div>
+      </div>
+    </div>
+    <p class="footer-text">정답을 처음부터 만들지 않습니다.</p>
+  </div>
+</section>
+
+<section class="slide dark" id="s19">
+  <div class="slide-inner reveal">
+    <p class="hero-quote">
+      업무 · 생산성 · 개인용 —<br>
+      <em>다 연결됩니다.</em>
+    </p>
+    <p class="body-text" style="margin-top: 32px;">80개 중 살아남은 것이 핵심입니다.</p>
+  </div>
+</section>
+
+<!-- ===== Section 3: Attitude ===== -->
+
+<section class="section-divider">
+  <div>
+    <div class="label">Section 03 · 과정에 앞서</div>
+    <h2>Attitude</h2>
+  </div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">6 Mindsets</div>
+    <h2 class="headline">실습을 시작하기 전,<br>6가지 마음가짐.</h2>
+  </div>
+</section>
+
+<section class="slide soft" id="s21">
+  <div class="slide-inner reveal">
+    <div class="big-num">01</div>
+    <h2 class="att-headline">처음엔 벽이 있어요.<br>당연합니다.</h2>
+    <p class="att-body">코드베이스 · IDE · 용어 · 폴더 구조.<br>강사도 그랬습니다. 지금은 자연스럽습니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="slide-inner reveal">
+    <div class="big-num">02</div>
+    <h2 class="att-headline">반복하면<br>누구나 됩니다.</h2>
+    <p class="att-body">한 번, 두 번, 세 번, 네 번.<br>의구심은 만들수록 사라집니다.</p>
+    <div class="att-highlight">그리고 Claude에게 물어보면, 너무나 친절하게 알려줍니다.</div>
+  </div>
+</section>
+
+<section class="slide soft" id="s23">
+  <div class="slide-inner reveal">
+    <div class="big-num">03</div>
+    <h2 class="att-headline">단순한 것부터,<br>어려운 것은 나중에.</h2>
+    <p class="att-body">작은 에이전트 하나 → 동작 확인 → 또 만들기.<br>"내 업무에 적용할 게 뭔지" 자연스럽게 보입니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="slide-inner reveal">
+    <div class="big-num">04</div>
+    <h2 class="att-headline">개인적 페인 포인트가<br>가장 좋은 출발점입니다.</h2>
+    <p class="att-body">업무 외에도 페인 포인트는 분명히 있습니다.<br>호기심이 동력입니다.</p>
+  </div>
+</section>
+
+<section class="slide soft" id="s25">
+  <div class="slide-inner reveal">
+    <div class="big-num">05</div>
+    <h2 class="att-headline">많이 보고,<br>많이 만들어 보세요.</h2>
+    <p class="att-body">짤막한 워크플로우도 경험치.<br>경험이 쌓이면 에이전트들이 연결됩니다.</p>
+    <p class="footer-text" style="margin-top: 32px;">강사 80개 폴더 = 양적 축적의 산물</p>
+  </div>
+</section>
+
+<section class="slide dark" id="s26">
+  <div class="slide-inner reveal">
+    <div class="big-num">06</div>
+    <h2 class="att-headline" style="color: white;">겁먹지 말고,<br>일단 하세요.</h2>
+    <p class="att-body" style="margin-bottom: 56px;">주말 · 저녁 30분~1시간이면 충분합니다.</p>
+    <p class="hero-quote" style="margin-top: 16px;">
+      그냥 해. 그냥 하는 거야.<br>
+      <em>그냥 해. 그냥 해!</em>
+    </p>
+    <p class="footer-text" style="margin-top: 40px;">🎬 영상 재생</p>
+  </div>
+</section>
+
+<!-- ===== Section 4: How We Run ===== -->
+
+<section class="section-divider">
+  <div>
+    <div class="label">Section 04</div>
+    <h2>How We Run</h2>
+  </div>
+</section>
+
+<section class="slide soft" id="s27">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Today's Principles</div>
+    <h2 class="headline">오늘 진행 방식.</h2>
+    <div class="principles">
+      <div class="principle">
+        <div class="pr-num">01</div>
+        <div class="pr-title">일방향 강의<br>없음</div>
+        <div class="pr-body">강사진이 돌아다니며 직접 지원합니다.</div>
+      </div>
+      <div class="principle">
+        <div class="pr-num">02</div>
+        <div class="pr-title">막히면<br>손 들기</div>
+        <div class="pr-body">다 같이 해결합니다. 부끄러워하지 마세요.</div>
+      </div>
+      <div class="principle">
+        <div class="pr-num">03</div>
+        <div class="pr-title">스텝<br>바이 스텝</div>
+        <div class="pr-body">진행 페이지를 함께 따라갑니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 5: Next & Q&A ===== -->
+
+<section class="slide dark" id="s28">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Next</div>
+    <h2 class="headline">다음 시간.</h2>
+    <div class="next-list">
+      <div class="next-item">
+        <div class="next-tag">SESSION 2</div>
+        <div class="next-title">첫 에이전트 만들기</div>
+      </div>
+      <div class="next-item">
+        <div class="next-tag">SESSION 3</div>
+        <div class="next-title">두 번째 에이전트 + 본인 페인 포인트 매핑</div>
+      </div>
+    </div>
+    <p class="hero-quote" style="margin-top: 80px; font-size: clamp(40px, 6vw, 88px);">Q & A.</p>
+    <p class="body-text" style="margin-top: 24px;">무엇이든 물어보세요.</p>
+  </div>
+</section>
+
+<script>
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Slide progress
+  const slides = document.querySelectorAll('.slide');
+  const progressEl = document.getElementById('progress');
+  const total = slides.length;
+  const po = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && e.intersectionRatio > 0.5) {
+        const id = e.target.id;
+        const idx = parseInt(id.replace('s', ''), 10);
+        if (!isNaN(idx)) {
+          progressEl.textContent = String(idx).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+        }
+      }
+    });
+  }, { threshold: [0.5] });
+  slides.forEach(s => po.observe(s));
+
+  // Keyboard navigation (arrow keys)
+  document.addEventListener('keydown', (e) => {
+    const ids = Array.from(slides).map(s => s.id);
+    const scrollY = window.scrollY;
+    let currentIdx = 0;
+    slides.forEach((s, i) => { if (s.offsetTop <= scrollY + 100) currentIdx = i; });
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      if (currentIdx + 1 < slides.length) slides[currentIdx + 1].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      if (currentIdx - 1 >= 0) slides[currentIdx - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+
+</body>
+</html>
