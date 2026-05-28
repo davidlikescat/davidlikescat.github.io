@@ -71,7 +71,6 @@
   .slide.soft { background: var(--bg-soft); }
   .slide-inner { width: 100%; max-width: 1080px; margin: 0 auto; }
 
-  /* Section divider (sticky-like header) */
   .section-divider {
     min-height: 60vh;
     background: var(--bg-dark);
@@ -217,7 +216,7 @@
 
   /* Timeline */
   .timeline {
-    max-width: 640px; margin: 48px auto 0;
+    max-width: 680px; margin: 48px auto 0;
     text-align: left;
     position: relative;
   }
@@ -240,6 +239,7 @@
   .tl-content { padding-top: 2px; }
   .tl-when { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.4px; margin-bottom: 4px; }
   .tl-what { font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.45; }
+  .tl-sub { font-size: 14px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
 
   /* Agent card */
   .agent-card {
@@ -263,11 +263,28 @@
   .agent-value { font-size: 18px; color: var(--text); line-height: 1.55; font-weight: 500; }
   .agent-value b { font-weight: 700; color: var(--accent); }
 
-  /* Meeting note flow (horizontal blocks) */
+  /* Context line (top/bottom of slide) */
+  .context-line {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 720px;
+    margin: 24px auto 0;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+  .context-line.top { margin: 0 auto 0; padding-bottom: 8px; }
+  .context-line em {
+    font-style: italic;
+    color: var(--text);
+  }
+  .slide.dark .context-line { color: var(--text-on-dark-muted); }
+  .slide.dark .context-line em { color: var(--text-on-dark); }
+
+  /* Meeting note flow */
   .mflow {
     display: grid; gap: 16px;
     max-width: 880px;
-    margin: 48px auto 0;
+    margin: 32px auto 0;
     grid-template-columns: 1fr;
   }
   .mflow-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
@@ -278,6 +295,7 @@
     text-align: left;
     border: 1px solid var(--border);
   }
+  .slide.dark .mflow-box { background: #1d1d1f; border-color: rgba(255,255,255,0.1); }
   .mflow-box .mb-num { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 1.5px; margin-bottom: 8px; }
   .mflow-box .mb-text { font-size: 15px; font-weight: 500; line-height: 1.45; }
   .mflow-arrow { text-align: center; font-size: 20px; color: var(--text-soft); }
@@ -297,6 +315,91 @@
   .triple-emoji { font-size: 32px; margin-bottom: 16px; }
   .triple-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
   .triple-body { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+  .triple-source {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-soft);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* 3-step card (ChatGPT era) */
+  .steps-3 {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    max-width: 980px; margin: 48px auto 0;
+  }
+  .step-box {
+    padding: 36px 28px;
+    background: white;
+    border-radius: 22px;
+    text-align: left;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .step-num {
+    font-size: 48px; font-weight: 800;
+    letter-spacing: -0.04em;
+    background: var(--grad-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .step-title { font-size: 20px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
+
+  /* Big stats (4 numbers) */
+  .stats-4 {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    max-width: 980px; margin: 56px auto 0;
+  }
+  .stat {
+    padding: 40px 16px;
+    background: white;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-num {
+    font-size: clamp(56px, 6vw, 88px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    background: var(--grad-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 15px; color: var(--text-muted); font-weight: 500; letter-spacing: -0.005em; }
+
+  /* Quote box (real utterance) */
+  .quote-box {
+    max-width: 760px; margin: 32px auto 0;
+    padding: 32px 40px;
+    background: white;
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    text-align: left;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text);
+    font-weight: 500;
+    font-style: italic;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+  .quote-box .qb-label {
+    display: block;
+    font-style: normal;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
 
   /* Big number (Attitude) */
   .big-num {
@@ -336,6 +439,68 @@
     font-size: 16px;
     font-weight: 600;
   }
+  .att-cite {
+    margin-top: 24px;
+    font-size: 16px;
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Wall grid (2 walls) */
+  .wall-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    max-width: 880px; margin: 40px auto 0;
+  }
+  .wall-card {
+    padding: 32px 28px;
+    background: white;
+    border-radius: 22px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .wall-icon { font-size: 28px; margin-bottom: 12px; }
+  .wall-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em; }
+  .wall-body { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+
+  /* Connect diagram (mini) */
+  .connect {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    max-width: 720px; margin: 40px auto 0;
+    flex-wrap: wrap;
+  }
+  .connect-node {
+    padding: 12px 20px;
+    background: white;
+    border: 1.5px solid var(--accent);
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .connect-arrow {
+    font-size: 18px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* 5-card grid (실험) */
+  .exps-5 {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+    max-width: 1040px; margin: 48px auto 0;
+  }
+  .exp {
+    padding: 24px 18px;
+    background: white;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .exp-emoji { font-size: 28px; margin-bottom: 10px; }
+  .exp-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.005em; }
+  .exp-body { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
 
   /* Principles */
   .principles {
@@ -380,6 +545,10 @@
   .reveal.in { opacity: 1; transform: translateY(0); }
 
   /* Mobile */
+  @media (max-width: 900px) {
+    .stats-4 { grid-template-columns: repeat(2, 1fr); }
+    .exps-5 { grid-template-columns: repeat(2, 1fr); }
+  }
   @media (max-width: 768px) {
     .cat-grid { grid-template-columns: 1fr; }
     .triples { grid-template-columns: 1fr; }
@@ -389,6 +558,8 @@
     .agent-card { padding: 32px 24px; }
     .agent-row { flex-direction: column; gap: 4px; }
     .agent-label { width: auto; }
+    .steps-3 { grid-template-columns: 1fr; }
+    .wall-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -396,7 +567,7 @@
 
 <nav>
   <span class="brand">Session 1 · 나의 에이전트, 그리고 마음가짐</span>
-  <span class="progress" id="progress">01 / 28</span>
+  <span class="progress" id="progress">01 / 30</span>
 </nav>
 
 <!-- ===== Section 0: Open ===== -->
@@ -445,6 +616,7 @@
         </div>
       </div>
     </div>
+    <p class="context-line">우리 팀의 디지털 인프라 위에서 만듭니다 — <em>디스코드 · 노션 · 팀 공용 메일.</em></p>
   </div>
 </section>
 
@@ -508,6 +680,7 @@
         <div class="tl-content">
           <div class="tl-when">2025 초</div>
           <div class="tl-what">BPO 사업 정체 · CFO 반대</div>
+          <div class="tl-sub">"뭐라도 해야 했습니다."</div>
         </div>
       </div>
       <div class="tl-item">
@@ -534,7 +707,7 @@
       <div class="tl-item">
         <div class="tl-dot"></div>
         <div class="tl-content">
-          <div class="tl-when">2026 중</div>
+          <div class="tl-when">2026 초</div>
           <div class="tl-what">롤플레잉 에이전트 → 부사장 보고</div>
         </div>
       </div>
@@ -549,7 +722,55 @@
   </div>
 </section>
 
-<section class="slide dark" id="s07">
+<section class="slide" id="s07">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">처음의 출발점</div>
+    <h2 class="headline">코드 한 줄도 못 짰지만,<br>시작은 했습니다.</h2>
+    <div class="steps-3">
+      <div class="step-box">
+        <div class="step-num">01</div>
+        <div class="step-title">ChatGPT에게<br>묻고</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">02</div>
+        <div class="step-title">받은 코드를<br>그대로 붙여 실행</div>
+      </div>
+      <div class="step-box">
+        <div class="step-num">03</div>
+        <div class="step-title">안 되면<br>왜 안 되는지 디버깅</div>
+      </div>
+    </div>
+    <p class="context-line" style="margin-top: 40px;"><em>이 과정 자체가 경험이 됐습니다.</em></p>
+  </div>
+</section>
+
+<section class="slide soft" id="s08">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Where I am now</div>
+    <h2 class="headline">1년이 흐른 지금.</h2>
+    <div class="stats-4">
+      <div class="stat">
+        <div class="stat-num">80</div>
+        <div class="stat-label">폴더 실험</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">11+</div>
+        <div class="stat-label">운영 중 에이전트</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1</div>
+        <div class="stat-label">부사장 보고</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1</div>
+        <div class="stat-label">그룹장 전용 스킬</div>
+      </div>
+    </div>
+    <p class="footer-text">모두 비개발자 출신의 결과물입니다.</p>
+  </div>
+</section>
+
+<section class="slide dark" id="s09">
   <div class="slide-inner reveal">
     <p class="hero-quote">
       영업 10년, 문과생, 비개발자 —<br>
@@ -568,7 +789,7 @@
   </div>
 </section>
 
-<section class="slide" id="s08">
+<section class="slide" id="s10">
   <div class="slide-inner reveal">
     <div class="eyebrow">Gallery</div>
     <h2 class="headline">만들어 본 것들.</h2>
@@ -581,7 +802,7 @@
   </div>
 </section>
 
-<section class="slide soft" id="s09">
+<section class="slide soft" id="s11">
   <div class="slide-inner reveal">
     <div class="eyebrow">🎯 업무용 · 01</div>
     <h2 class="headline">상담메모 분류<br>에이전트.</h2>
@@ -593,7 +814,7 @@
   </div>
 </section>
 
-<section class="slide" id="s10">
+<section class="slide" id="s12">
   <div class="slide-inner reveal">
     <div class="eyebrow">🎯 업무용 · 02</div>
     <h2 class="headline">PQ 데이터 분석<br>에이전트.</h2>
@@ -604,7 +825,7 @@
   </div>
 </section>
 
-<section class="slide soft" id="s11">
+<section class="slide soft" id="s13">
   <div class="slide-inner reveal">
     <div class="eyebrow">🎯 업무용 · 03 — 부사장 보고</div>
     <h2 class="headline">롤 플레잉<br>에이전트.</h2>
@@ -617,11 +838,11 @@
   </div>
 </section>
 
-<section class="slide dark" id="s12">
+<section class="slide dark" id="s14">
   <div class="slide-inner reveal">
     <div class="eyebrow">⚡ 생산성 · 핵심</div>
     <h2 class="headline">미팅노트 자동화.</h2>
-    <p class="body-text">모든 회의 → 노션 + 팀메일 + GitHub Pages</p>
+    <p class="context-line top">팀 내 <em>모든 회의는 녹취가 정책</em>입니다.</p>
     <div class="mflow">
       <div class="mflow-row">
         <div class="mflow-box"><div class="mb-num">STEP 1</div><div class="mb-text">녹취 → STT 전사</div></div>
@@ -635,11 +856,11 @@
         <div class="mflow-box"><div class="mb-num">OUTPUT B</div><div class="mb-text"><b>HTML 변환 →<br>GitHub Pages</b></div></div>
       </div>
     </div>
-    <p class="footer-text">요약만으론 부족 — HTML 시각화까지.</p>
+    <p class="context-line" style="margin-top: 32px;"><em>"예전엔 요약만 봤는데, 잘 안 읽혀서 HTML 시각화까지 갔습니다."</em></p>
   </div>
 </section>
 
-<section class="slide" id="s13">
+<section class="slide" id="s15">
   <div class="slide-inner reveal">
     <div class="eyebrow">⚡ 생산성</div>
     <h2 class="headline">캘린더 자동 등록.</h2>
@@ -652,7 +873,7 @@
   </div>
 </section>
 
-<section class="slide soft" id="s14">
+<section class="slide soft" id="s16">
   <div class="slide-inner reveal">
     <div class="eyebrow">⚡ 생산성</div>
     <h2 class="headline">위클리 인박스.</h2>
@@ -661,10 +882,14 @@
       <div class="agent-row"><span class="agent-label">Trigger</span><span class="agent-value">월요일 — 자동 또는 <b>녹취 앱</b></span></div>
       <div class="agent-row"><span class="agent-label">Flow</span><span class="agent-value">Not Started 수집 → 팀 공용 메일 → 컨플루언스 → ToDo</span></div>
     </div>
+    <div class="quote-box">
+      <span class="qb-label">실제 발화 예시</span>
+      "최종우 님, 이번 주 타겟리스트 6월 발주 예정 사업 디테일 리뷰 예정이니 업데이트 공지해 주세요."
+    </div>
   </div>
 </section>
 
-<section class="slide" id="s15">
+<section class="slide" id="s17">
   <div class="slide-inner reveal">
     <div class="eyebrow">⚡ 생산성</div>
     <h2 class="headline">그룹장님<br>인텔리전스 스킬.</h2>
@@ -676,7 +901,7 @@
   </div>
 </section>
 
-<section class="slide soft" id="s16">
+<section class="slide soft" id="s18">
   <div class="slide-inner reveal">
     <div class="eyebrow">📥 개인 인풋</div>
     <h2 class="headline">유튜브 요약<br>→ 노션.</h2>
@@ -688,7 +913,7 @@
   </div>
 </section>
 
-<section class="slide" id="s17">
+<section class="slide" id="s19">
   <div class="slide-inner reveal">
     <div class="eyebrow">📥 개인 인풋</div>
     <h2 class="headline">정보 수집 채널<br>3종 세트.</h2>
@@ -702,6 +927,7 @@
         <div class="triple-emoji">📸</div>
         <div class="triple-title">인스타 + 노션</div>
         <div class="triple-body">카드뉴스 OCR + 릴스 STT → 한국어 요약 → 노션</div>
+        <div class="triple-source">주요 소스: Hannes Engineering · CLAUDE.md 글로벌 스킬 운영법 등</div>
       </div>
       <div class="triple">
         <div class="triple-emoji">📰</div>
@@ -712,28 +938,43 @@
   </div>
 </section>
 
-<section class="slide soft" id="s18">
+<section class="slide soft" id="s20">
   <div class="slide-inner reveal">
     <div class="eyebrow">🧪 실험</div>
     <h2 class="headline">80개의 실험.</h2>
     <p class="body-text">이것저것 약 80개를 만들어 봤습니다.<br>살아남은 것만 운영합니다.</p>
-    <div class="triples" style="grid-template-columns: 1fr 1fr; max-width: 720px;">
-      <div class="triple">
-        <div class="triple-emoji">🏠</div>
-        <div class="triple-title">청약홈 자동 수집기</div>
-        <div class="triple-body">지역별 필터 → 노션 표출</div>
+    <div class="exps-5">
+      <div class="exp">
+        <div class="exp-emoji">📕</div>
+        <div class="exp-title">e-Book 생성</div>
+        <div class="exp-body">콘텐츠 자동 빌드</div>
       </div>
-      <div class="triple">
-        <div class="triple-emoji">🎮</div>
-        <div class="triple-title">테트리스 · 사다리</div>
-        <div class="triple-body">동기 모임용 (얄미운 동기 셋업 30분~1시간)</div>
+      <div class="exp">
+        <div class="exp-emoji">📖</div>
+        <div class="exp-title">소설 만드는 AI</div>
+        <div class="exp-body">스토리 생성 실험</div>
+      </div>
+      <div class="exp">
+        <div class="exp-emoji">🏠</div>
+        <div class="exp-title">청약홈 수집기</div>
+        <div class="exp-body">지역 필터 → 노션</div>
+      </div>
+      <div class="exp">
+        <div class="exp-emoji">💸</div>
+        <div class="exp-title">이자납입 / 게임</div>
+        <div class="exp-body">테트리스 · 사다리 (얄미운 동기 셋업)</div>
+      </div>
+      <div class="exp">
+        <div class="exp-emoji">📰</div>
+        <div class="exp-title">뉴스 스크랩</div>
+        <div class="exp-body">초기 — 코드 받아 디버깅</div>
       </div>
     </div>
     <p class="footer-text">정답을 처음부터 만들지 않습니다.</p>
   </div>
 </section>
 
-<section class="slide dark" id="s19">
+<section class="slide dark" id="s21">
   <div class="slide-inner reveal">
     <p class="hero-quote">
       업무 · 생산성 · 개인용 —<br>
@@ -752,31 +993,45 @@
   </div>
 </section>
 
-<section class="slide" id="s20">
+<section class="slide" id="s22">
   <div class="slide-inner reveal">
     <div class="eyebrow">6 Mindsets</div>
     <h2 class="headline">실습을 시작하기 전,<br>6가지 마음가짐.</h2>
   </div>
 </section>
 
-<section class="slide soft" id="s21">
+<section class="slide soft" id="s23">
   <div class="slide-inner reveal">
     <div class="big-num">01</div>
     <h2 class="att-headline">처음엔 벽이 있어요.<br>당연합니다.</h2>
-    <p class="att-body">코드베이스 · IDE · 용어 · 폴더 구조.<br>강사도 그랬습니다. 지금은 자연스럽습니다.</p>
+    <p class="att-body">벽은 두 종류입니다.</p>
+    <div class="wall-grid">
+      <div class="wall-card">
+        <div class="wall-icon">🧱</div>
+        <div class="wall-title">환경의 벽</div>
+        <div class="wall-body">코드베이스 · IDE · 용어 · 폴더 구조 — 도구 자체가 처음인 낯섦.</div>
+      </div>
+      <div class="wall-card">
+        <div class="wall-icon">🧩</div>
+        <div class="wall-title">빌드의 벽</div>
+        <div class="wall-body">"폴더 어디 저장된 거지? 어떻게 동작하는 거지? 제대로 만든 거 맞나?"</div>
+      </div>
+    </div>
+    <p class="footer-text">강사도 그랬습니다. 지금은 자연스럽습니다.</p>
   </div>
 </section>
 
-<section class="slide" id="s22">
+<section class="slide" id="s24">
   <div class="slide-inner reveal">
     <div class="big-num">02</div>
     <h2 class="att-headline">반복하면<br>누구나 됩니다.</h2>
     <p class="att-body">한 번, 두 번, 세 번, 네 번.<br>의구심은 만들수록 사라집니다.</p>
+    <p class="att-cite">강사도 처음엔 똑같이 막막했습니다.</p>
     <div class="att-highlight">그리고 Claude에게 물어보면, 너무나 친절하게 알려줍니다.</div>
   </div>
 </section>
 
-<section class="slide soft" id="s23">
+<section class="slide soft" id="s25">
   <div class="slide-inner reveal">
     <div class="big-num">03</div>
     <h2 class="att-headline">단순한 것부터,<br>어려운 것은 나중에.</h2>
@@ -784,24 +1039,34 @@
   </div>
 </section>
 
-<section class="slide" id="s24">
+<section class="slide" id="s26">
   <div class="slide-inner reveal">
     <div class="big-num">04</div>
     <h2 class="att-headline">개인적 페인 포인트가<br>가장 좋은 출발점입니다.</h2>
     <p class="att-body">업무 외에도 페인 포인트는 분명히 있습니다.<br>호기심이 동력입니다.</p>
+    <p class="att-cite">청약홈 · 유튜브 요약 · 캘린더 자동 등록 — 모두 제 개인 페인에서 출발했습니다.</p>
   </div>
 </section>
 
-<section class="slide soft" id="s25">
+<section class="slide soft" id="s27">
   <div class="slide-inner reveal">
     <div class="big-num">05</div>
     <h2 class="att-headline">많이 보고,<br>많이 만들어 보세요.</h2>
     <p class="att-body">짤막한 워크플로우도 경험치.<br>경험이 쌓이면 에이전트들이 연결됩니다.</p>
-    <p class="footer-text" style="margin-top: 32px;">강사 80개 폴더 = 양적 축적의 산물</p>
+    <div class="connect">
+      <span class="connect-node">디스코드</span>
+      <span class="connect-arrow">→</span>
+      <span class="connect-node">Claude</span>
+      <span class="connect-arrow">→</span>
+      <span class="connect-node">노션</span>
+      <span class="connect-arrow">→</span>
+      <span class="connect-node">GitHub Pages</span>
+    </div>
+    <p class="footer-text">강사 80개 폴더 = 양적 축적의 산물</p>
   </div>
 </section>
 
-<section class="slide dark" id="s26">
+<section class="slide dark" id="s28">
   <div class="slide-inner reveal">
     <div class="big-num">06</div>
     <h2 class="att-headline" style="color: white;">겁먹지 말고,<br>일단 하세요.</h2>
@@ -823,7 +1088,7 @@
   </div>
 </section>
 
-<section class="slide soft" id="s27">
+<section class="slide soft" id="s29">
   <div class="slide-inner reveal">
     <div class="eyebrow">Today's Principles</div>
     <h2 class="headline">오늘 진행 방식.</h2>
@@ -849,7 +1114,7 @@
 
 <!-- ===== Section 5: Next & Q&A ===== -->
 
-<section class="slide dark" id="s28">
+<section class="slide dark" id="s30">
   <div class="slide-inner reveal">
     <div class="eyebrow">Next</div>
     <h2 class="headline">다음 시간.</h2>
@@ -894,7 +1159,6 @@
 
   // Keyboard navigation (arrow keys)
   document.addEventListener('keydown', (e) => {
-    const ids = Array.from(slides).map(s => s.id);
     const scrollY = window.scrollY;
     let currentIdx = 0;
     slides.forEach((s, i) => { if (s.offsetTop <= scrollY + 100) currentIdx = i; });
