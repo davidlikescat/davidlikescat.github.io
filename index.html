@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>davidlikescat — Solopreneur Research</title>
+<meta name="description" content="1인개발자·솔로프리너 관점의 부업, AI 도구, 콘텐츠 비즈니스 분석 모음.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf7;
+    --bg-card: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --text-soft: #999;
+    --border: #e8e6e0;
+    --accent: #ff5a1f;
+    --accent-soft: #fff1eb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans KR', 'Inter', -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  ::selection { background: var(--accent); color: white; }
+
+  header {
+    padding: 80px 24px 60px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+    text-align: center;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px; font-weight: 700;
+    color: var(--accent); letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 16px;
+    padding: 5px 14px; background: var(--accent-soft);
+    border-radius: 20px;
+  }
+  header h1 {
+    font-size: 44px; font-weight: 900; letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+  header p {
+    font-size: 17px; color: var(--text-muted); font-weight: 500;
+    max-width: 520px; margin: 0 auto;
+  }
+
+  main { max-width: 760px; margin: 0 auto; padding: 60px 24px 80px; }
+
+  .section-label {
+    font-size: 11px; font-weight: 800; color: var(--text-soft);
+    letter-spacing: 2px; margin-bottom: 16px;
+  }
+
+  .post-list { list-style: none; }
+  .post-list li { margin-bottom: 16px; }
+  .post-card {
+    display: block; padding: 22px 24px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; text-decoration: none; color: inherit;
+    transition: all 0.2s;
+  }
+  .post-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255,90,31,0.08);
+  }
+  .post-meta {
+    display: flex; gap: 12px; align-items: center;
+    font-size: 12px; color: var(--text-soft); margin-bottom: 8px;
+  }
+  .post-tag {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 2px 8px; border-radius: 10px; font-weight: 700;
+  }
+  .post-title {
+    font-size: 18px; font-weight: 700; margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .post-desc {
+    font-size: 14px; color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 24px;
+    text-align: center; color: var(--text-soft); font-size: 13px;
+    background: var(--bg-card);
+  }
+  footer a { color: var(--text-muted); }
+
+  @media (max-width: 640px) {
+    header { padding: 56px 20px 40px; }
+    header h1 { font-size: 32px; }
+    header p { font-size: 15px; }
+    main { padding: 40px 20px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">davidlikescat</span>
+  <h1>Solopreneur Research</h1>
+  <p>1인개발자·솔로프리너 관점에서 본 부업, AI 도구, 콘텐츠 비즈니스 분석</p>
+</header>
+
+<main>
+
+<div class="section-label">RECENT</div>
+
+<ul class="post-list">
+
+  <li>
+    <a href="20260528_naver-clip-48-commission-review/" class="post-card">
+      <div class="post-meta">
+        <span class="post-tag">Side Hustle</span>
+        <span>2026-05-28</span>
+      </div>
+      <div class="post-title">네이버 클립 + 쓰레드 4개월 1억 2천 — 48% 수수료의 진실</div>
+      <div class="post-desc">야미의 케이스를 수익화 관점과 비판적 시각 양쪽에서 검증. 공식 자료 검증 + 실전 워크플로우 + 7가지 리스크 분석.</div>
+    </a>
+  </li>
+
+</ul>
+
+</main>
+
+<footer>
+  <p>davidlikessangria@gmail.com</p>
+</footer>
+
+</body>
+</html>
