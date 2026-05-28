@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>session1 — zsh</title>
+<meta name="description" content="나의 에이전트, 그리고 마음가짐 · Terminal Edition">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;
+  --bg-deep:#010409;
+  --term-bg:#0a0e14;
+  --term-chrome:#1c2128;
+  --term-border:#30363d;
+  --txt:#e6edf3;
+  --txt-dim:#8b949e;
+  --txt-faint:#6e7681;
+  --green:#7ee787;
+  --cyan:#79c0ff;
+  --yellow:#f1e05a;
+  --pink:#ff7b72;
+  --purple:#d2a8ff;
+  --orange:#ffa657;
+  --emerald:#56d364;
+  --selection:#264f78;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg-deep)}
+body{
+  font-family:'JetBrains Mono','Fira Code','SF Mono',Menlo,Consolas,monospace;
+  background:var(--bg-deep);
+  color:var(--txt);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  font-size:14px;
+}
+::selection{background:var(--selection);color:#fff}
+
+/* ===== Nav ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(13,17,23,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--term-border);
+  height:44px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  font-size:11px;font-weight:500;color:var(--txt-dim);
+}
+nav .brand{color:var(--green)}
+nav .brand::before{content:'❯ ';color:var(--green);font-weight:700}
+nav .progress{font-variant-numeric:tabular-nums;color:var(--txt-faint)}
+
+/* ===== Slide ===== */
+.slide{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:80px 20px 60px;
+}
+.terminal{
+  width:100%;max-width:980px;
+  background:var(--term-bg);
+  border:1px solid var(--term-border);
+  border-radius:10px;
+  box-shadow:0 24px 48px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.02);
+  overflow:hidden;
+  font-size:14px;
+}
+.term-chrome{
+  background:var(--term-chrome);
+  padding:10px 14px;
+  display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--term-border);
+}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#ff5f57}
+.dot.y{background:#febc2e}
+.dot.g{background:#28c840}
+.term-title{
+  flex:1;text-align:center;
+  font-size:11px;color:var(--txt-dim);
+  letter-spacing:0.3px;
+}
+.term-body{
+  padding:28px 28px 32px;
+  background:var(--term-bg);
+  min-height:480px;
+}
+
+/* ===== Terminal output styles ===== */
+.cmd{display:block;margin:6px 0;color:var(--txt)}
+.cmd .prompt{color:var(--green);font-weight:700;margin-right:8px}
+.cmd .user{color:var(--cyan)}
+.cmd .at{color:var(--txt-dim)}
+.cmd .host{color:var(--purple)}
+.cmd .path{color:var(--yellow)}
+.cmd .arrow{color:var(--green);margin:0 4px}
+.cmd .cmd-text{color:var(--txt)}
+.cmd .flag{color:var(--orange)}
+.cmd .arg{color:var(--cyan)}
+.cmd .str{color:var(--yellow)}
+.out{display:block;color:var(--txt);margin:2px 0}
+.out.dim{color:var(--txt-dim)}
+.out.green{color:var(--green)}
+.out.cyan{color:var(--cyan)}
+.out.yellow{color:var(--yellow)}
+.out.pink{color:var(--pink)}
+.out.purple{color:var(--purple)}
+.out.orange{color:var(--orange)}
+.out.emerald{color:var(--emerald)}
+.out.bold{font-weight:700}
+.comment{color:var(--txt-faint);font-style:italic}
+.comment::before{content:'# ';color:var(--txt-faint)}
+
+.cursor{
+  display:inline-block;width:10px;height:18px;
+  background:var(--green);vertical-align:text-bottom;margin-left:4px;
+  animation:blink 1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+.spacer{display:block;height:14px}
+.thin{display:block;height:7px}
+
+/* ASCII art block */
+.ascii{
+  display:block;
+  color:var(--green);
+  font-size:14px;line-height:1.2;
+  white-space:pre;
+  margin:8px 0;
+  text-shadow:0 0 16px rgba(126,231,135,0.3);
+}
+.ascii.purple{color:var(--purple);text-shadow:0 0 16px rgba(210,168,255,0.25)}
+.ascii.pink{color:var(--pink);text-shadow:0 0 16px rgba(255,123,114,0.25)}
+.ascii.cyan{color:var(--cyan);text-shadow:0 0 16px rgba(121,192,255,0.25)}
+
+.box{
+  display:block;
+  white-space:pre;
+  color:var(--cyan);
+  font-size:13px;line-height:1.4;
+  margin:10px 0;
+}
+
+/* Hero big banner */
+.hero-banner{
+  display:block;text-align:center;
+  margin:24px 0 12px;
+  white-space:pre;
+  font-size:clamp(11px,1.4vw,16px);
+  line-height:1.1;
+  background:linear-gradient(135deg,#7ee787 0%,#79c0ff 50%,#d2a8ff 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  font-weight:800;
+  filter:drop-shadow(0 0 24px rgba(126,231,135,0.3));
+}
+
+/* Big stats */
+.stat-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+  margin:18px 0 8px;
+}
+.stat-cell{
+  border:1px solid var(--term-border);
+  padding:18px 12px;text-align:center;
+  background:rgba(255,255,255,0.02);
+  border-radius:4px;
+}
+.stat-num{
+  display:block;font-size:42px;font-weight:800;color:var(--green);
+  text-shadow:0 0 24px rgba(126,231,135,0.25);
+  line-height:1;margin-bottom:8px;
+}
+.stat-lab{font-size:11px;color:var(--txt-dim);letter-spacing:0.5px}
+
+/* Pipe flow */
+.pipe-flow{
+  display:block;color:var(--cyan);
+  white-space:pre;font-size:13px;line-height:1.5;
+  margin:14px 0;
+}
+.pipe-flow .green{color:var(--green)}
+.pipe-flow .yellow{color:var(--yellow)}
+.pipe-flow .purple{color:var(--purple)}
+.pipe-flow .pink{color:var(--pink)}
+
+/* Bento-ish exp grid */
+.exp-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+  margin:14px 0 8px;
+}
+.exp-cell{
+  border:1px solid var(--term-border);
+  padding:14px 10px;text-align:left;
+  background:rgba(255,255,255,0.02);
+  border-radius:4px;
+  font-size:12px;
+}
+.exp-cell .e-emoji{font-size:20px;display:block;margin-bottom:8px}
+.exp-cell .e-title{color:var(--green);font-weight:700;margin-bottom:4px}
+.exp-cell .e-body{color:var(--txt-dim);font-size:11px;line-height:1.4}
+
+/* Wall cards */
+.wall{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 8px;
+}
+.wall-c{
+  border:1px solid var(--term-border);
+  padding:18px 16px;background:rgba(255,255,255,0.02);
+  border-radius:4px;
+}
+.wall-h{color:var(--pink);font-weight:700;margin-bottom:8px}
+.wall-b{color:var(--txt-dim);font-size:13px;line-height:1.55}
+
+/* Connect nodes */
+.connect{
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+  gap:8px;margin:14px 0;color:var(--txt-dim);
+}
+.conn-node{
+  padding:8px 14px;border:1px solid var(--green);border-radius:3px;
+  color:var(--green);background:rgba(126,231,135,0.05);font-weight:600;
+}
+.conn-arrow{color:var(--yellow)}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* Mobile */
+@media (max-width:768px){
+  body{font-size:12px}
+  .terminal{font-size:12px}
+  .term-body{padding:20px 16px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .exp-grid{grid-template-columns:repeat(2,1fr)}
+  .wall{grid-template-columns:1fr}
+  .ascii,.box,.pipe-flow,.hero-banner{font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">session1 ~/agentic_ai/2026/session1</span>
+  <span class="progress" id="progress">01 / 30</span>
+</nav>
+
+<!-- ============ S01 ============ -->
+<section class="slide" id="s01">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/session1 — zsh — 120×40</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./start.sh</span></span>
+      <span class="thin"></span>
+      <span class="hero-banner">  ███╗   ██╗ █████╗ ██╗   ██╗██╗      █████╗  ██████╗ ███████╗███╗   ██╗████████╗
+  ████╗  ██║██╔══██╗╚██╗ ██╔╝██║     ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝
+  ██╔██╗ ██║███████║ ╚████╔╝ ██║     ███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║
+  ██║╚██╗██║██╔══██║  ╚██╔╝  ██║     ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║
+  ██║ ╚████║██║  ██║   ██║   ███████╗██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║
+  ╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝</span>
+      <span class="thin"></span>
+      <span class="out cyan bold" style="text-align:center;display:block;font-size:18px">나의 에이전트, 그리고 마음가짐</span>
+      <span class="out dim" style="text-align:center;display:block;margin-top:6px">Session 1 of 3 · Agentic AI 실습의 첫걸음</span>
+      <span class="thin"></span>
+      <span class="out dim" style="text-align:center;display:block">────────────────────────────────────</span>
+      <span class="out" style="text-align:center;display:block">AI사업2팀 에이스 역량 강화 5차수 · 2026 · 양준모</span>
+      <span class="spacer"></span>
+      <span class="comment">scroll, ↓, or press space to continue</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S02 ============ -->
+<section class="slide" id="s02">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/session1 — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">today.md</span></span>
+      <span class="thin"></span>
+      <span class="out yellow bold"># Today's Schedule</span>
+      <span class="thin"></span>
+      <span class="out green">[01] <span class="bold">Session 1</span> — 나의 에이전트 + 마음가짐<span style="color:var(--yellow)">  ← 현재</span></span>
+      <span class="out dim">[02] 환경 설정 (≈ 3h) — Antigravity · Claude Code 익스텐션</span>
+      <span class="out dim">[03] Session 2 — 첫 번째 에이전트 만들기</span>
+      <span class="out dim">[04] Session 3 — 두 번째 에이전트 + 응용</span>
+      <span class="spacer"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">echo </span><span class="str">"우리 팀의 디지털 인프라 위에서 만듭니다."</span></span>
+      <span class="out cyan">디스코드 · 노션 · 팀 공용 메일</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S03 ============ -->
+<section class="slide" id="s03">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/session1 — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">why_session1.txt</span></span>
+      <span class="thin"></span>
+      <span class="out yellow bold">실습 전, 두 가지를 드립니다.</span>
+      <span class="spacer"></span>
+      <span class="box">┌──────────────────────────────┐  ┌──────────────────────────────┐
+│ <span style="color:var(--green)">[1] 사례</span>                     │  │ <span style="color:var(--green)">[2] 마음가짐</span>                 │
+│ <span style="color:var(--txt-dim)">제가 만든 에이전트</span>           │  │ <span style="color:var(--txt-dim)">진입 전 정렬</span>                │
+└──────────────────────────────┘  └──────────────────────────────┘</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Section Divider 01 ============ -->
+<section class="slide" id="s04">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/about — zsh</span></div>
+    <div class="term-body">
+      <span class="comment">SECTION 01 · About Me</span>
+      <span class="thin"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">whoami</span></span>
+      <span class="out cyan bold" style="font-size:32px;margin:10px 0">양준모</span>
+      <span class="out dim">LG U+ · AI사업2팀 팀장</span>
+      <span class="spacer"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">id </span><span class="arg">--tags</span></span>
+      <span class="out">[<span class="cyan">영업 10년</span>] [<span class="yellow">문과생</span>] [<span class="pink">개발 경험 0</span>]</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S05 ============ -->
+<section class="slide" id="s05">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/about — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">history </span><span class="flag">|</span><span class="cmd-text"> grep </span><span class="str">"a year ago"</span></span>
+      <span class="thin"></span>
+      <span class="out pink bold" style="font-size:24px;line-height:1.4;text-align:center;display:block;margin:24px 0">"저, 작년 이맘때까지<br>코드 한 줄도 못 짰습니다."</span>
+      <span class="thin"></span>
+      <span class="comment">— 양준모, 2026</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S06 Timeline ============ -->
+<section class="slide" id="s06">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/journey — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">git log </span><span class="flag">--oneline</span><span class="cmd-text"> </span><span class="arg">2025-01..HEAD</span></span>
+      <span class="thin"></span>
+      <span class="out"><span class="yellow">a1b2c3d</span> <span class="dim">(2025 초)</span> BPO 사업 정체 · CFO 반대</span>
+      <span class="out dim" style="padding-left:16px"><span class="comment" style="font-style:italic">"뭐라도 해야 했습니다."</span></span>
+      <span class="out"><span class="yellow">e4f5g6h</span> <span class="dim">(2025 중)</span> 상무님: "요즘 대학생도 LangChain으로 만든다"</span>
+      <span class="out"><span class="yellow">i7j8k9l</span> <span class="dim">(2025 말)</span> 상담메모 분류 에이전트 — 첫 보고</span>
+      <span class="out"><span class="yellow">m0n1o2p</span> <span class="dim">(2026 초)</span> PQ 데이터 분석 에이전트</span>
+      <span class="out"><span class="yellow">q3r4s5t</span> <span class="dim">(2026 초)</span> 롤플레잉 에이전트 → 부사장 보고</span>
+      <span class="out green bold">* <span class="yellow">HEAD</span> <span class="dim">(오늘)</span> 약 80개 폴더, 실험 진행 중</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S07 ChatGPT era ============ -->
+<section class="slide" id="s07">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/first-steps — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">tree </span><span class="arg">first-steps/</span></span>
+      <span class="thin"></span>
+      <span class="out cyan">first-steps/</span>
+      <span class="out">├── <span class="green">[01]</span> ChatGPT에게 묻고</span>
+      <span class="out">├── <span class="green">[02]</span> 받은 코드를 그대로 붙여 실행</span>
+      <span class="out">└── <span class="green">[03]</span> 안 되면 왜 안 되는지 디버깅</span>
+      <span class="spacer"></span>
+      <span class="out dim">3 directories, 0 files — but each one became experience.</span>
+      <span class="spacer"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">echo </span><span class="str">"이 과정 자체가 경험이 됐습니다."</span></span>
+      <span class="out yellow">이 과정 자체가 경험이 됐습니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S08 Stats ============ -->
+<section class="slide" id="s08">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/stats — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./stats.sh </span><span class="flag">--year</span></span>
+      <span class="thin"></span>
+      <span class="out yellow bold"># Where I am now</span>
+      <div class="stat-grid">
+        <div class="stat-cell"><span class="stat-num">80</span><span class="stat-lab">폴더 실험</span></div>
+        <div class="stat-cell"><span class="stat-num">11+</span><span class="stat-lab">운영 중 에이전트</span></div>
+        <div class="stat-cell"><span class="stat-num">1</span><span class="stat-lab">부사장 보고</span></div>
+        <div class="stat-cell"><span class="stat-num">1</span><span class="stat-lab">그룹장 전용 스킬</span></div>
+      </div>
+      <span class="thin"></span>
+      <span class="out dim">모두 비개발자 출신의 결과물입니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S09 Core ============ -->
+<section class="slide" id="s09">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/message — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./core_message.sh</span></span>
+      <span class="thin"></span>
+      <span class="out cyan bold" style="font-size:22px;text-align:center;display:block;margin:24px 0;line-height:1.5">영업 10년, 문과생, 비개발자 —<br><span style="color:var(--yellow)">1년이면 여기까지 옵니다.</span></span>
+      <span class="thin"></span>
+      <span class="out green" style="text-align:center;display:block">여러분이 못 할 이유는 없습니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Section Divider 02 ============ -->
+<section class="slide" id="s10">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">junmo@macbook — ~/my-agents — zsh</span></div>
+    <div class="term-body">
+      <span class="comment">SECTION 02 · My Agents</span>
+      <span class="thin"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">ls </span><span class="flag">-la</span><span class="cmd-text"> </span><span class="arg">my-agents/</span></span>
+      <span class="thin"></span>
+      <span class="out dim">drwxr-xr-x  4 junmo  team  category</span>
+      <span class="out">drwxr-xr-x  3 junmo  team  <span class="green">business/</span>      🎯 업무용 · AICC 도메인</span>
+      <span class="out">drwxr-xr-x  4 junmo  team  <span class="green">productivity/</span>  ⚡ 생산성 · 팀/개인 워크플로우</span>
+      <span class="out">drwxr-xr-x  4 junmo  team  <span class="green">inputs/</span>        📥 개인 인풋 · 정보 수집/요약</span>
+      <span class="out">drwxr-xr-x  ~80 junmo team  <span class="pink">experiments/</span>   🧪 실험 · 약 80개</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S11 ============ -->
+<section class="slide" id="s11">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">business/01_memo_classifier — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">business/01_memo_classifier.yaml</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># 🎯 상담메모 분류 에이전트</span>
+      <span class="out cyan">status:</span> <span class="out" style="display:inline">2025 말 — 첫 보고</span>
+      <span class="out cyan">pain:</span> <span class="out" style="display:inline">AICC 전환 컨설팅 — 상담메모를 사람이 수작업 분류</span>
+      <span class="out cyan">solve:</span> <span class="out" style="display:inline">자동 분류 → <span class="green bold">단순 반복 문의 식별</span></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S12 ============ -->
+<section class="slide" id="s12">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">business/02_pq_analyzer — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">business/02_pq_analyzer.yaml</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># 🎯 PQ 데이터 분석 에이전트</span>
+      <span class="out cyan">status:</span> <span class="out" style="display:inline">2026 — 진행 중</span>
+      <span class="out cyan">solve:</span> <span class="out" style="display:inline"><span class="green bold">PQ 데이터 분석</span> 자동화</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S13 ============ -->
+<section class="slide" id="s13">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">business/03_roleplay ★ vp-reported — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">business/03_roleplay.yaml</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># 🎯 롤 플레잉 에이전트 ★ 부사장 보고</span>
+      <span class="out cyan">pain:</span> <span class="out" style="display:inline">팀 8명 중 도메인 엑스퍼트 2명 — 나머지 6명은 학습 필요</span>
+      <span class="out cyan">data:</span> <span class="out" style="display:inline">최근 3개월 <span class="green bold">150회+ 회의 STT 전사본</span></span>
+      <span class="out cyan">solve:</span> <span class="out" style="display:inline">실제 고객 발화 기반 시나리오 → 롤플레잉 훈련</span>
+      <span class="out cyan">now:</span> <span class="out" style="display:inline">파일럿 → 팀 피드백 반영 중 (UI/UX, 질문 패턴)</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S14 Meeting Note Pipe ============ -->
+<section class="slide" id="s14">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">productivity/01_meeting_notes ★ — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">productivity/meeting_notes.sh</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># ⚡ 미팅노트 자동화 ★</span>
+      <span class="comment">policy: 팀 내 모든 회의는 녹취가 정책</span>
+      <span class="spacer"></span>
+      <span class="pipe-flow">  <span class="green">녹취</span> <span class="yellow">|</span> <span class="green">STT 전사</span> <span class="yellow">|</span> <span class="green">discord-upload</span> <span class="yellow">|</span> <span class="green">discord-bot</span>
+       <span class="yellow">|</span> <span class="green">claude-cli --refine</span>
+       <span class="yellow">|</span> tee <span class="purple">notion://yangjunmo</span>
+              <span class="purple">mail://team-shared</span>
+              <span class="pink">github-pages://html-render</span></span>
+      <span class="spacer"></span>
+      <span class="comment">"예전엔 요약만 봤는데, 잘 안 읽혀서 HTML 시각화까지 갔습니다."</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S15 ============ -->
+<section class="slide" id="s15">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">productivity/02_calendar — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">productivity/calendar.yaml</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># ⚡ 캘린더 자동 등록</span>
+      <span class="out cyan">input:</span> <span class="out" style="display:inline">디스코드에 카톡 · 캡처 · 문자 드롭</span>
+      <span class="out cyan">process:</span> <span class="out" style="display:inline">OCR · 텍스트 파싱</span>
+      <span class="out cyan">output:</span> <span class="out" style="display:inline">구글 캘린더 자동 등록</span>
+      <span class="out cyan">example:</span> <span class="out" style="display:inline">동기 식사 약속, 골프 예약</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S16 Weekly Inbox ============ -->
+<section class="slide" id="s16">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">productivity/03_weekly_inbox — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">productivity/weekly_inbox.yaml</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># ⚡ 위클리 인박스</span>
+      <span class="out cyan">source:</span> <span class="out" style="display:inline">노션 "Weekly Inbox" DB</span>
+      <span class="out cyan">trigger:</span> <span class="out" style="display:inline">월요일 — 자동 또는 <span class="green bold">녹취 앱</span></span>
+      <span class="out cyan">flow:</span> <span class="out" style="display:inline">Not Started 수집 → 팀 공용 메일 → 컨플루언스 → ToDo</span>
+      <span class="spacer"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./weekly_inbox.sh </span><span class="flag">--record</span></span>
+      <span class="out dim">[RECORDING...] sample utterance:</span>
+      <span class="box" style="color:var(--yellow);border-left:2px solid var(--yellow);padding:8px 12px;margin-top:6px">"최종우 님, 이번 주 타겟리스트 6월 발주 예정 사업
+ 디테일 리뷰 예정이니 업데이트 공지해 주세요."</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S17 ============ -->
+<section class="slide" id="s17">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">productivity/04_intelligence — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">productivity/intelligence_skill.yaml</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># ⚡ 그룹장님 인텔리전스 스킬</span>
+      <span class="out cyan">trigger:</span> <span class="out" style="display:inline">구글 캘린더에 <span class="green bold">회사명_사람명_직책</span> 입력</span>
+      <span class="out cyan">poll:</span> <span class="out" style="display:inline">5분 단위 감지</span>
+      <span class="out cyan">collect:</span> <span class="out" style="display:inline">회사 정보 · 인물 프로파일 · 토킹 포인트 · 이슈/뉴스</span>
+      <span class="out cyan">output:</span> <span class="out" style="display:inline">노션 자동 정리 → 미팅 전 확인</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S18 ============ -->
+<section class="slide" id="s18">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">inputs/01_youtube — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">inputs/youtube_to_notion.yaml</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># 📥 유튜브 요약 → 노션</span>
+      <span class="out cyan">why:</span> <span class="out" style="display:inline">보고 싶은 영상 많음 / 시간 부족 (육아 · 출근 · 업무)</span>
+      <span class="out cyan">flow:</span> <span class="out" style="display:inline">디스코드 URL drop → Claude 분석 → 자막 → 요약 → 노션</span>
+      <span class="out cyan">use:</span> <span class="out" style="display:inline">틈새 시간 = 노션 요약 · 시간 될 때 = 영상 직접</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S19 3-set ============ -->
+<section class="slide" id="s19">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">inputs/02_collectors — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">ls </span><span class="arg">inputs/collectors/</span></span>
+      <span class="thin"></span>
+      <span class="out yellow"># 📥 정보 수집 채널 3종 세트</span>
+      <span class="spacer"></span>
+      <span class="out"><span class="green">🌍 solopreneur.sh</span></span>
+      <span class="out dim" style="padding-left:24px">1인 SaaS 외국 채널 사례 수집 — "얘네는 어떻게 돈을 벌지?"</span>
+      <span class="thin"></span>
+      <span class="out"><span class="green">📸 instagram_notion.sh</span></span>
+      <span class="out dim" style="padding-left:24px">카드뉴스 OCR + 릴스 STT → 한국어 요약 → 노션</span>
+      <span class="out dim" style="padding-left:24px;font-style:italic">// 주요 소스: Hannes Engineering · CLAUDE.md 글로벌 스킬 운영법 등</span>
+      <span class="thin"></span>
+      <span class="out"><span class="green">📰 news_url.sh</span></span>
+      <span class="out dim" style="padding-left:24px">기사 · 서비스 사이트 자동 분석 + 비판적 검토</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S20 80 Experiments ============ -->
+<section class="slide" id="s20">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">experiments — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">ls </span><span class="arg">experiments/</span><span class="cmd-text"> </span><span class="flag">|</span><span class="cmd-text"> wc -l</span></span>
+      <span class="out yellow bold">     ~80</span>
+      <span class="thin"></span>
+      <span class="out dim"># 이것저것 약 80개. 살아남은 것만 운영.</span>
+      <div class="exp-grid">
+        <div class="exp-cell"><span class="e-emoji">📕</span><div class="e-title">e-Book 생성</div><div class="e-body">콘텐츠 자동 빌드</div></div>
+        <div class="exp-cell"><span class="e-emoji">📖</span><div class="e-title">소설 만드는 AI</div><div class="e-body">스토리 생성 실험</div></div>
+        <div class="exp-cell"><span class="e-emoji">🏠</span><div class="e-title">청약홈 수집기</div><div class="e-body">지역 필터 → 노션</div></div>
+        <div class="exp-cell"><span class="e-emoji">💸</span><div class="e-title">이자납입 / 게임</div><div class="e-body">테트리스 · 사다리 (얄미운 동기 셋업)</div></div>
+        <div class="exp-cell"><span class="e-emoji">📰</span><div class="e-title">뉴스 스크랩</div><div class="e-body">초기 — 코드 받아 디버깅</div></div>
+      </div>
+      <span class="out dim">// 정답을 처음부터 만들지 않습니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S21 Section Closer ============ -->
+<section class="slide" id="s21">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">~/my-agents — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">echo </span><span class="str">"all categories are connected"</span></span>
+      <span class="thin"></span>
+      <span class="out cyan bold" style="font-size:22px;text-align:center;display:block;margin:24px 0;line-height:1.5">업무 · 생산성 · 개인용 —<br><span style="color:var(--yellow)">다 연결됩니다.</span></span>
+      <span class="thin"></span>
+      <span class="out green" style="text-align:center;display:block">80개 중 살아남은 것이 핵심입니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Section Divider 03 ============ -->
+<section class="slide" id="s22">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">~/attitude — man</span></div>
+    <div class="term-body">
+      <span class="comment">SECTION 03 · 과정에 앞서</span>
+      <span class="thin"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">man </span><span class="arg">attitude</span></span>
+      <span class="thin"></span>
+      <span class="out yellow bold">ATTITUDE(1)                User Commands               ATTITUDE(1)</span>
+      <span class="spacer"></span>
+      <span class="out cyan bold">NAME</span>
+      <span class="out" style="padding-left:24px">attitude — 6가지 마음가짐</span>
+      <span class="spacer"></span>
+      <span class="out cyan bold">SYNOPSIS</span>
+      <span class="out" style="padding-left:24px">./attitude.sh --rule [01..06]</span>
+      <span class="spacer"></span>
+      <span class="out cyan bold">DESCRIPTION</span>
+      <span class="out" style="padding-left:24px">실습을 시작하기 전 정렬해야 할 6가지 마음가짐.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S23 Attitude 01 ============ -->
+<section class="slide" id="s23">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">attitude/01 — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./attitude.sh </span><span class="flag">--rule</span><span class="cmd-text"> </span><span class="arg">01</span></span>
+      <span class="thin"></span>
+      <span class="out pink bold" style="font-size:48px;line-height:1;margin:8px 0">[01]</span>
+      <span class="out yellow bold" style="font-size:22px;margin:8px 0;display:block">처음엔 벽이 있어요. 당연합니다.</span>
+      <span class="out dim">벽은 두 종류입니다.</span>
+      <div class="wall">
+        <div class="wall-c"><div class="wall-h">🧱 환경의 벽</div><div class="wall-b">코드베이스 · IDE · 용어 · 폴더 구조 — 도구 자체가 처음인 낯섦.</div></div>
+        <div class="wall-c"><div class="wall-h">🧩 빌드의 벽</div><div class="wall-b">"폴더 어디 저장된 거지? 어떻게 동작하는 거지? 제대로 만든 거 맞나?"</div></div>
+      </div>
+      <span class="comment">강사도 그랬습니다. 지금은 자연스럽습니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S24 Attitude 02 ============ -->
+<section class="slide" id="s24">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">attitude/02 — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./attitude.sh </span><span class="flag">--rule</span><span class="cmd-text"> </span><span class="arg">02</span></span>
+      <span class="thin"></span>
+      <span class="out pink bold" style="font-size:48px;line-height:1;margin:8px 0">[02]</span>
+      <span class="out yellow bold" style="font-size:22px;margin:8px 0;display:block">반복하면 누구나 됩니다.</span>
+      <span class="spacer"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">for i in </span><span class="arg">1 2 3 4</span><span class="cmd-text">; do ./build_agent.sh; done</span></span>
+      <span class="out dim">→ iteration 1: 의구심</span>
+      <span class="out dim">→ iteration 2: 의구심</span>
+      <span class="out dim">→ iteration 3: <span class="yellow">조금 보이기 시작</span></span>
+      <span class="out green bold">→ iteration 4: 의구심은 사라집니다.</span>
+      <span class="spacer"></span>
+      <span class="comment">강사도 처음엔 똑같이 막막했습니다.</span>
+      <span class="spacer"></span>
+      <span class="out emerald" style="text-align:center;display:block;padding:14px;border:1px solid var(--emerald);border-radius:4px;background:rgba(86,211,100,0.06);margin-top:8px">💡 그리고 Claude에게 물어보면, 너무나 친절하게 알려줍니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S25 Attitude 03 ============ -->
+<section class="slide" id="s25">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">attitude/03 — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./attitude.sh </span><span class="flag">--rule</span><span class="cmd-text"> </span><span class="arg">03</span></span>
+      <span class="thin"></span>
+      <span class="out pink bold" style="font-size:48px;line-height:1;margin:8px 0">[03]</span>
+      <span class="out yellow bold" style="font-size:22px;margin:8px 0;display:block">단순한 것부터, 어려운 것은 나중에.</span>
+      <span class="spacer"></span>
+      <span class="out">작은 에이전트 하나 <span class="green">→</span> 동작 확인 <span class="green">→</span> 또 만들기</span>
+      <span class="out dim">"내 업무에 적용할 게 뭔지" 자연스럽게 보입니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S26 Attitude 04 ============ -->
+<section class="slide" id="s26">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">attitude/04 — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./attitude.sh </span><span class="flag">--rule</span><span class="cmd-text"> </span><span class="arg">04</span></span>
+      <span class="thin"></span>
+      <span class="out pink bold" style="font-size:48px;line-height:1;margin:8px 0">[04]</span>
+      <span class="out yellow bold" style="font-size:22px;margin:8px 0;display:block">개인적 페인 포인트가 가장 좋은 출발점입니다.</span>
+      <span class="spacer"></span>
+      <span class="out">업무 외에도 페인 포인트는 분명히 있습니다.</span>
+      <span class="out dim">호기심이 동력입니다.</span>
+      <span class="spacer"></span>
+      <span class="comment">청약홈 · 유튜브 요약 · 캘린더 자동 등록 — 모두 제 개인 페인에서 출발했습니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S27 Attitude 05 ============ -->
+<section class="slide" id="s27">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">attitude/05 — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./attitude.sh </span><span class="flag">--rule</span><span class="cmd-text"> </span><span class="arg">05</span></span>
+      <span class="thin"></span>
+      <span class="out pink bold" style="font-size:48px;line-height:1;margin:8px 0">[05]</span>
+      <span class="out yellow bold" style="font-size:22px;margin:8px 0;display:block">많이 보고, 많이 만들어 보세요.</span>
+      <span class="spacer"></span>
+      <span class="out">짤막한 워크플로우도 경험치.</span>
+      <span class="out dim">경험이 쌓이면 에이전트들이 연결됩니다.</span>
+      <div class="connect">
+        <span class="conn-node">디스코드</span><span class="conn-arrow">→</span>
+        <span class="conn-node">Claude</span><span class="conn-arrow">→</span>
+        <span class="conn-node">노션</span><span class="conn-arrow">→</span>
+        <span class="conn-node">GitHub Pages</span>
+      </div>
+      <span class="comment">강사 80개 폴더 = 양적 축적의 산물</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S28 Attitude 06 + Just Do It ============ -->
+<section class="slide" id="s28">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">attitude/06 — ./just_do_it.sh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./attitude.sh </span><span class="flag">--rule</span><span class="cmd-text"> </span><span class="arg">06</span></span>
+      <span class="thin"></span>
+      <span class="out pink bold" style="font-size:48px;line-height:1;margin:8px 0">[06]</span>
+      <span class="out yellow bold" style="font-size:22px;margin:8px 0;display:block">겁먹지 말고, 일단 하세요.</span>
+      <span class="out dim">주말 · 저녁 30분~1시간이면 충분합니다.</span>
+      <span class="spacer"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">./just_do_it.sh</span></span>
+      <span class="out green bold" style="font-size:18px">&gt; 그냥 해.</span>
+      <span class="out green bold" style="font-size:18px">&gt; 그냥 하는 거야.</span>
+      <span class="out green bold" style="font-size:18px">&gt; 그냥 해.</span>
+      <span class="out yellow bold" style="font-size:22px">&gt; 그냥 해!</span>
+      <span class="spacer"></span>
+      <span class="comment">🎬 [video playback triggered]</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S29 Principles ============ -->
+<section class="slide" id="s29">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">~/today — zsh</span></div>
+    <div class="term-body">
+      <span class="comment">SECTION 04 · How We Run</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">rules.today</span></span>
+      <span class="thin"></span>
+      <span class="out yellow bold"># 오늘 진행 방식</span>
+      <span class="spacer"></span>
+      <span class="out"><span class="green bold">[01] 일방향 강의 없음</span></span>
+      <span class="out dim" style="padding-left:24px">강사진이 돌아다니며 직접 지원합니다.</span>
+      <span class="thin"></span>
+      <span class="out"><span class="green bold">[02] 막히면 손 들기</span></span>
+      <span class="out dim" style="padding-left:24px">다 같이 해결합니다. 부끄러워하지 마세요.</span>
+      <span class="thin"></span>
+      <span class="out"><span class="green bold">[03] 스텝 바이 스텝</span></span>
+      <span class="out dim" style="padding-left:24px">진행 페이지를 함께 따라갑니다.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ S30 Next + Q&A ============ -->
+<section class="slide" id="s30">
+  <div class="terminal reveal">
+    <div class="term-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="term-title">~/next — zsh</span></div>
+    <div class="term-body">
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text">cat </span><span class="arg">next.md</span></span>
+      <span class="thin"></span>
+      <span class="out yellow bold"># 다음 시간</span>
+      <span class="spacer"></span>
+      <span class="out"><span class="cyan bold">[SESSION 2]</span> 첫 에이전트 만들기</span>
+      <span class="out"><span class="cyan bold">[SESSION 3]</span> 두 번째 에이전트 + 본인 페인 포인트 매핑</span>
+      <span class="spacer"></span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cmd-text"># awaiting input...</span></span>
+      <span class="thin"></span>
+      <span class="ascii cyan" style="text-align:center;font-size:clamp(28px,4vw,52px);line-height:1.1">  ____    ___      _
+ / __ \  ( _ )    / \
+| |  | | / _ \   / _ \
+| |__| || (_) | / ___ \
+ \___\_\ \___/ /_/   \_\</span>
+      <span class="thin"></span>
+      <span class="out green" style="text-align:center;display:block">무엇이든 물어보세요.</span>
+      <span class="cmd"><span class="prompt">❯</span><span class="cursor"></span></span>
+    </div>
+  </div>
+</section>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const slides=document.querySelectorAll('.slide');
+const progressEl=document.getElementById('progress');
+const total=slides.length;
+const po=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting&&e.intersectionRatio>0.5){
+      const idx=parseInt(e.target.id.replace('s',''),10);
+      if(!isNaN(idx)) progressEl.textContent=String(idx).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+    }
+  });
+},{threshold:[0.5]});
+slides.forEach(s=>po.observe(s));
+document.addEventListener('keydown',e=>{
+  const sy=window.scrollY;let ci=0;
+  slides.forEach((s,i)=>{if(s.offsetTop<=sy+100)ci=i});
+  if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();if(ci+1<slides.length)slides[ci+1].scrollIntoView({behavior:'smooth'})}
+  else if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();if(ci-1>=0)slides[ci-1].scrollIntoView({behavior:'smooth'})}
+});
+</script>
+
+</body>
+</html>

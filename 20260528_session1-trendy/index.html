@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 1 — Trendy Edition</title>
+<meta name="description" content="나의 에이전트, 그리고 마음가짐 · Bento + Aurora">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050507;
+  --bg-1: #0a0a0f;
+  --bg-2: #0f0f15;
+  --bg-card: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-soft: #71717a;
+  --pink: #ff5e87;
+  --purple: #a78bfa;
+  --blue: #5e9bff;
+  --cyan: #38bdf8;
+  --emerald: #34d399;
+  --aurora: linear-gradient(135deg, #ff5e87 0%, #a78bfa 50%, #5e9bff 100%);
+  --aurora-soft: linear-gradient(135deg, rgba(255,94,135,.18), rgba(167,139,250,.18), rgba(94,155,255,.18));
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  font-family:'Inter','Noto Sans KR',-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.011em;
+  overflow-x:hidden;
+}
+::selection{background:var(--purple);color:#fff}
+
+/* ====== Mesh background ====== */
+.mesh{
+  position:fixed;inset:0;z-index:-1;
+  background:
+    radial-gradient(60% 50% at 20% 10%, rgba(255,94,135,0.18) 0%, transparent 60%),
+    radial-gradient(50% 50% at 80% 20%, rgba(94,155,255,0.18) 0%, transparent 60%),
+    radial-gradient(60% 60% at 50% 90%, rgba(167,139,250,0.18) 0%, transparent 60%),
+    radial-gradient(40% 40% at 90% 70%, rgba(56,189,248,0.12) 0%, transparent 60%),
+    var(--bg);
+  animation:meshShift 24s ease-in-out infinite alternate;
+}
+@keyframes meshShift{
+  0%{filter:hue-rotate(0deg)}
+  100%{filter:hue-rotate(20deg)}
+}
+
+/* Sparkles dot pattern */
+.sparkles{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size:32px 32px;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* ====== Nav ====== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(5,5,7,0.6);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--border);
+  height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;font-size:12px;font-weight:500;
+}
+nav .brand{font-weight:600;letter-spacing:-0.02em;color:var(--text)}
+nav .brand .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--aurora);margin-right:10px;box-shadow:0 0 12px var(--pink);vertical-align:middle}
+nav .progress{color:var(--text-muted);font-variant-numeric:tabular-nums;letter-spacing:0.5px}
+
+/* ====== Slide base ====== */
+.slide{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:96px 24px 64px;
+  position:relative;text-align:center;
+}
+.slide-inner{width:100%;max-width:1200px;margin:0 auto}
+
+.section-divider{
+  min-height:60vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:96px 24px;position:relative;
+}
+.section-divider::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at center, rgba(167,139,250,0.15) 0%, transparent 60%);
+}
+.section-divider .label{
+  font-size:13px;font-weight:600;color:var(--text-muted);
+  letter-spacing:2.5px;text-transform:uppercase;margin-bottom:24px;
+  position:relative;
+}
+.section-divider h2{
+  font-size:clamp(56px,9vw,128px);
+  font-weight:900;line-height:1;letter-spacing:-0.04em;
+  background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  position:relative;
+}
+
+/* ====== Typography ====== */
+.eyebrow{
+  display:inline-block;
+  font-size:11px;font-weight:600;
+  letter-spacing:2.2px;text-transform:uppercase;
+  padding:6px 14px;border-radius:999px;
+  background:var(--aurora-soft);
+  border:1px solid var(--border-strong);
+  color:var(--text);
+  margin-bottom:28px;
+}
+h1.title{
+  font-size:clamp(48px,8vw,128px);
+  font-weight:900;line-height:1;letter-spacing:-0.045em;
+  margin-bottom:28px;
+}
+h2.headline{
+  font-size:clamp(40px,6.5vw,96px);
+  font-weight:800;line-height:1.04;letter-spacing:-0.04em;
+  margin-bottom:24px;
+}
+.gradient-text{
+  background:var(--aurora);
+  background-size:200% 200%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:gradShift 8s ease-in-out infinite;
+}
+@keyframes gradShift{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+h3.subhead{
+  font-size:clamp(20px,2.2vw,28px);
+  font-weight:500;color:var(--text-muted);line-height:1.4;
+  letter-spacing:-0.01em;margin-bottom:16px;
+}
+.body-text{
+  font-size:clamp(17px,1.4vw,21px);
+  color:var(--text-muted);line-height:1.65;
+  max-width:760px;margin:0 auto;
+}
+.hero-quote{
+  font-size:clamp(40px,6vw,88px);
+  font-weight:800;line-height:1.1;letter-spacing:-0.04em;
+  max-width:1080px;margin:0 auto;
+}
+.footer-text{
+  font-size:13px;color:var(--text-soft);
+  margin-top:40px;letter-spacing:0.4px;
+}
+.tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:24px 0}
+.tag{
+  display:inline-block;
+  padding:10px 18px;
+  background:var(--bg-card);
+  border:1px solid var(--border-strong);
+  border-radius:999px;
+  font-size:13px;font-weight:500;color:var(--text);
+  backdrop-filter:blur(10px);
+}
+
+/* ====== Glow card system ====== */
+.glow-card{
+  position:relative;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  overflow:hidden;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1), border-color .4s;
+}
+.glow-card::before{
+  content:'';position:absolute;inset:0;border-radius:24px;
+  padding:1px;
+  background:linear-gradient(135deg, rgba(255,94,135,0.3), rgba(167,139,250,0.3), rgba(94,155,255,0.3));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .4s;
+  pointer-events:none;
+}
+.glow-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.glow-card:hover::before{opacity:1}
+
+/* ====== Flow steps (s02) ====== */
+.flow{display:flex;flex-direction:column;gap:12px;max-width:780px;margin:48px auto 0}
+.flow-step{
+  display:flex;align-items:center;gap:24px;
+  padding:24px 32px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  text-align:left;
+  backdrop-filter:blur(20px);
+  transition:transform .3s, border-color .3s;
+}
+.flow-step:hover{transform:translateY(-2px);border-color:var(--border-strong)}
+.flow-step.current{
+  border-color:transparent;
+  background:linear-gradient(var(--bg-1),var(--bg-1)) padding-box, var(--aurora) border-box;
+  border:1.5px solid transparent;
+  box-shadow:0 0 32px rgba(167,139,250,0.18);
+}
+.flow-num{
+  font-size:14px;font-weight:700;color:var(--purple);
+  width:28px;flex-shrink:0;font-variant-numeric:tabular-nums;
+}
+.flow-title{font-size:18px;font-weight:600;margin-bottom:4px}
+.flow-sub{font-size:14px;color:var(--text-muted)}
+.context-line{
+  font-size:16px;color:var(--text-muted);
+  max-width:760px;margin:32px auto 0;line-height:1.6;
+}
+.context-line em{font-style:normal;color:var(--text);font-weight:600}
+
+/* ====== Bento grid (2x2 categories) ====== */
+.bento-2x2{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  max-width:820px;margin:56px auto 0;
+}
+.bento-card{
+  padding:44px 32px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  text-align:left;
+  backdrop-filter:blur(20px);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s;
+  position:relative;overflow:hidden;
+}
+.bento-card::after{
+  content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;
+  background:radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 50%);
+  opacity:0;transition:opacity .4s;pointer-events:none;
+}
+.bento-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.bento-card:hover::after{opacity:1}
+.bento-icon{font-size:42px;margin-bottom:18px}
+.bento-title{font-size:24px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em}
+.bento-sub{font-size:15px;color:var(--text-muted)}
+
+/* ====== Timeline (s06) ====== */
+.timeline{max-width:720px;margin:56px auto 0;text-align:left;position:relative}
+.timeline::before{
+  content:'';position:absolute;left:14px;top:8px;bottom:8px;width:2px;
+  background:linear-gradient(180deg, var(--pink), var(--purple), var(--blue));
+}
+.tl-item{display:flex;gap:24px;padding:18px 0;position:relative}
+.tl-dot{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--bg-1);border:2px solid var(--border-strong);
+  flex-shrink:0;position:relative;z-index:1;
+}
+.tl-item.now .tl-dot{
+  background:var(--aurora);border-color:transparent;
+  box-shadow:0 0 0 6px rgba(167,139,250,0.15), 0 0 24px rgba(255,94,135,0.4);
+}
+.tl-when{font-size:13px;font-weight:700;color:var(--purple);letter-spacing:0.6px;margin-bottom:4px;text-transform:uppercase}
+.tl-what{font-size:17px;font-weight:500;color:var(--text);line-height:1.45}
+.tl-sub{font-size:14px;color:var(--text-muted);font-style:italic;margin-top:4px}
+
+/* ====== 3-step (s07) ====== */
+.steps-3{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  max-width:1000px;margin:56px auto 0;
+}
+.step-box{
+  padding:40px 32px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  text-align:left;
+  backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+  transition:transform .3s, border-color .3s;
+}
+.step-box:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.step-num{
+  font-size:56px;font-weight:900;letter-spacing:-0.05em;line-height:1;
+  background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:20px;
+}
+.step-title{font-size:20px;font-weight:600;line-height:1.4;letter-spacing:-0.01em}
+
+/* ====== Stat numbers (s08) — Bento ====== */
+.stats-4{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  max-width:1080px;margin:56px auto 0;
+}
+.stat{
+  padding:48px 20px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  text-align:center;
+  backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+}
+.stat::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%, rgba(167,139,250,0.2) 0%, transparent 60%);
+  opacity:0.6;
+}
+.stat-num{
+  font-size:clamp(56px,7vw,104px);
+  font-weight:900;letter-spacing:-0.05em;line-height:1;
+  background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;position:relative;
+}
+.stat-label{font-size:15px;color:var(--text-muted);font-weight:500;position:relative}
+
+/* ====== Agent card ====== */
+.agent-card{
+  max-width:820px;margin:56px auto 0;
+  padding:48px 56px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:28px;
+  text-align:left;
+  backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+}
+.agent-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, var(--purple), transparent);
+}
+.agent-row{display:flex;gap:16px;padding:14px 0;align-items:baseline;border-bottom:1px solid var(--border)}
+.agent-row:last-child{border-bottom:none}
+.agent-label{
+  flex-shrink:0;width:96px;
+  font-size:11px;font-weight:700;color:var(--purple);
+  letter-spacing:1.8px;text-transform:uppercase;padding-top:4px;
+}
+.agent-value{font-size:18px;color:var(--text);line-height:1.55;font-weight:500}
+.agent-value b{font-weight:700;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ====== Meeting flow ====== */
+.mflow{display:grid;gap:16px;max-width:920px;margin:40px auto 0}
+.mflow-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.mflow-box{
+  padding:24px 22px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  text-align:left;
+  backdrop-filter:blur(20px);
+  transition:transform .3s, border-color .3s;
+}
+.mflow-box:hover{transform:translateY(-2px);border-color:var(--border-strong)}
+.mflow-box .mb-num{font-size:11px;font-weight:700;color:var(--pink);letter-spacing:1.5px;margin-bottom:10px}
+.mflow-box .mb-text{font-size:15px;font-weight:500;line-height:1.5}
+.mflow-box .mb-text b{background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+.mflow-arrow{text-align:center;font-size:22px;color:var(--purple)}
+
+/* Triples (s19) */
+.triples{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1040px;margin:56px auto 0}
+.triple{
+  padding:36px 28px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  text-align:left;
+  backdrop-filter:blur(20px);
+  transition:transform .3s, border-color .3s;
+}
+.triple:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.triple-emoji{font-size:36px;margin-bottom:18px}
+.triple-title{font-size:20px;font-weight:700;margin-bottom:10px;letter-spacing:-0.01em}
+.triple-body{font-size:14px;color:var(--text-muted);line-height:1.6}
+.triple-source{
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--text-soft);font-style:italic;line-height:1.5;
+}
+
+/* Quote box */
+.quote-box{
+  max-width:800px;margin:32px auto 0;
+  padding:36px 44px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:18px;text-align:left;
+  font-size:18px;line-height:1.6;color:var(--text);font-weight:500;font-style:italic;
+  backdrop-filter:blur(20px);position:relative;
+}
+.quote-box::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:18px 0 0 18px;
+  background:var(--aurora);
+}
+.quote-box .qb-label{
+  display:block;font-style:normal;font-size:11px;font-weight:700;
+  color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;
+}
+
+/* ====== Bento experiments (s20) ====== */
+.bento-exps{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-rows:auto auto;
+  gap:14px;max-width:1080px;margin:48px auto 0;
+}
+.bento-exps .exp{
+  padding:28px 22px;background:var(--bg-card);border:1px solid var(--border);
+  border-radius:20px;text-align:left;backdrop-filter:blur(20px);
+  transition:transform .3s,border-color .3s;
+}
+.bento-exps .exp:hover{transform:translateY(-2px);border-color:var(--border-strong)}
+.bento-exps .e1{grid-column:span 2;grid-row:span 2;background:linear-gradient(135deg, rgba(255,94,135,0.08), rgba(167,139,250,0.08))}
+.bento-exps .e2{grid-column:span 2}
+.bento-exps .e3{grid-column:span 2}
+.bento-exps .e4{grid-column:span 2}
+.bento-exps .e5{grid-column:span 2}
+.exp-emoji{font-size:32px;margin-bottom:14px}
+.exp-title{font-size:18px;font-weight:700;margin-bottom:6px;letter-spacing:-0.01em}
+.exp-body{font-size:13px;color:var(--text-muted);line-height:1.55}
+
+/* Big num (Attitude) */
+.big-num{
+  font-size:clamp(160px,24vw,320px);
+  font-weight:900;line-height:0.85;letter-spacing:-0.06em;
+  background:var(--aurora);background-size:200% 200%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:32px;animation:gradShift 6s ease-in-out infinite;
+  filter:drop-shadow(0 0 40px rgba(167,139,250,0.3));
+}
+.att-headline{font-size:clamp(40px,6vw,84px);font-weight:800;line-height:1.08;letter-spacing:-0.04em;max-width:980px;margin:0 auto 28px}
+.att-body{font-size:clamp(18px,1.6vw,24px);color:var(--text-muted);max-width:760px;margin:0 auto;line-height:1.6}
+.att-cite{margin-top:24px;font-size:16px;color:var(--text-muted);font-style:italic;max-width:680px;margin-left:auto;margin-right:auto}
+.att-highlight{
+  margin-top:32px;display:inline-block;
+  padding:16px 28px;
+  background:var(--aurora);
+  color:#0a0a0f;
+  border-radius:999px;font-size:16px;font-weight:700;
+  box-shadow:0 8px 32px rgba(167,139,250,0.35);
+}
+
+/* Wall grid (s23) */
+.wall-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:920px;margin:40px auto 0}
+.wall-card{
+  padding:36px 32px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:24px;text-align:left;
+  backdrop-filter:blur(20px);
+  transition:transform .3s,border-color .3s;
+}
+.wall-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.wall-icon{font-size:32px;margin-bottom:14px}
+.wall-title{font-size:20px;font-weight:700;margin-bottom:14px;letter-spacing:-0.01em;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.wall-body{font-size:15px;color:var(--text-muted);line-height:1.65}
+
+/* Connect diagram (s27) */
+.connect{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  max-width:840px;margin:48px auto 0;flex-wrap:wrap;
+}
+.connect-node{
+  padding:14px 22px;
+  background:linear-gradient(var(--bg-1),var(--bg-1)) padding-box, var(--aurora) border-box;
+  border:1.5px solid transparent;
+  border-radius:999px;font-size:14px;font-weight:600;color:var(--text);
+  box-shadow:0 0 24px rgba(167,139,250,0.18);
+}
+.connect-arrow{font-size:20px;color:var(--purple);font-weight:700}
+
+/* Principles (s29) */
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1040px;margin:56px auto 0}
+.principle{
+  padding:44px 30px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:24px;text-align:center;
+  backdrop-filter:blur(20px);
+  transition:transform .3s,border-color .3s;
+}
+.principle:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.pr-num{font-size:14px;font-weight:700;color:var(--pink);letter-spacing:2px;margin-bottom:18px}
+.pr-title{font-size:22px;font-weight:700;margin-bottom:14px;letter-spacing:-0.02em;line-height:1.25}
+.pr-body{font-size:14px;color:var(--text-muted);line-height:1.6}
+
+/* Next list (s30) */
+.next-list{max-width:680px;margin:56px auto 0;text-align:left}
+.next-item{
+  padding:28px 32px;
+  background:var(--bg-card);
+  border:1px solid var(--border);border-radius:20px;
+  margin-bottom:14px;backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;
+}
+.next-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--aurora);
+}
+.next-tag{font-size:11px;font-weight:700;letter-spacing:2px;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.next-title{font-size:20px;font-weight:600;color:var(--text)}
+
+/* Spotlight follow */
+.spotlight{position:relative}
+.spotlight::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(800px circle at var(--mx,50%) var(--my,50%), rgba(167,139,250,0.06), transparent 40%);
+  opacity:0;transition:opacity .3s;
+}
+.spotlight:hover::after{opacity:1}
+
+/* Scroll cue */
+.scroll-cue{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  font-size:11px;font-weight:600;color:var(--text-soft);
+  letter-spacing:2px;animation:bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* Mobile */
+@media (max-width:900px){
+  .stats-4{grid-template-columns:repeat(2,1fr)}
+  .bento-exps{grid-template-columns:repeat(2,1fr)}
+  .bento-exps .e1{grid-column:span 2;grid-row:span 1}
+  .bento-exps .e2,.bento-exps .e3,.bento-exps .e4,.bento-exps .e5{grid-column:span 1}
+}
+@media (max-width:768px){
+  .bento-2x2{grid-template-columns:1fr}
+  .triples{grid-template-columns:1fr}
+  .principles{grid-template-columns:1fr}
+  .mflow-row{grid-template-columns:1fr}
+  .mflow-arrow{transform:rotate(90deg)}
+  .agent-card{padding:36px 28px}
+  .agent-row{flex-direction:column;gap:6px}
+  .agent-label{width:auto}
+  .steps-3{grid-template-columns:1fr}
+  .wall-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="mesh"></div>
+<div class="sparkles"></div>
+
+<nav>
+  <span class="brand"><span class="dot"></span>Session 1 · 나의 에이전트, 그리고 마음가짐</span>
+  <span class="progress" id="progress">01 / 30</span>
+</nav>
+
+<!-- ===== Section 0 ===== -->
+
+<section class="slide" id="s01">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">SESSION 1 OF 3 · AI사업2팀 에이스 역량 강화 5차수</div>
+    <h1 class="title">나의 에이전트,<br><span class="gradient-text">그리고 마음가짐.</span></h1>
+    <h3 class="subhead">Agentic AI 실습의 첫걸음</h3>
+    <p class="footer-text">2026 · 양준모</p>
+  </div>
+  <div class="scroll-cue">SCROLL</div>
+</section>
+
+<section class="slide" id="s02">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Today</div>
+    <h2 class="headline">오늘 하루,<br><span class="gradient-text">이렇게 흘러갑니다.</span></h2>
+    <div class="flow">
+      <div class="flow-step current"><span class="flow-num">01</span><div><div class="flow-title">Session 1 — 나의 에이전트 + 마음가짐</div><div class="flow-sub">지금 이 시간</div></div></div>
+      <div class="flow-step"><span class="flow-num">02</span><div><div class="flow-title">환경 설정 (≈ 3h)</div><div class="flow-sub">Antigravity · Claude Code 익스텐션</div></div></div>
+      <div class="flow-step"><span class="flow-num">03</span><div><div class="flow-title">Session 2 — 첫 번째 에이전트 만들기</div><div class="flow-sub">간단한 자동화 한 개</div></div></div>
+      <div class="flow-step"><span class="flow-num">04</span><div><div class="flow-title">Session 3 — 두 번째 에이전트 + 응용</div><div class="flow-sub">본인 페인 포인트 매핑</div></div></div>
+    </div>
+    <p class="context-line">우리 팀의 디지털 인프라 위에서 만듭니다 — <em>디스코드 · 노션 · 팀 공용 메일.</em></p>
+  </div>
+</section>
+
+<section class="slide" id="s03">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Why Session 1</div>
+    <h2 class="headline">실습 전,<br><span class="gradient-text">두 가지를 드립니다.</span></h2>
+    <div class="bento-2x2" style="max-width:760px">
+      <div class="bento-card spotlight"><div class="bento-icon">📦</div><div class="bento-title">사례</div><div class="bento-sub">제가 만든 에이전트</div></div>
+      <div class="bento-card spotlight"><div class="bento-icon">🧭</div><div class="bento-title">마음가짐</div><div class="bento-sub">진입 전 정렬</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 1 ===== -->
+
+<section class="section-divider"><div><div class="label">Section 01</div><h2>About Me</h2></div></section>
+
+<section class="slide" id="s04">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Profile</div>
+    <h1 class="title gradient-text" style="font-size:clamp(64px,9vw,144px)">양준모</h1>
+    <h3 class="subhead">LG U+ · AI사업2팀 팀장</h3>
+    <div class="tags"><span class="tag">영업 10년</span><span class="tag">문과생</span><span class="tag">개발 경험 0</span></div>
+  </div>
+</section>
+
+<section class="slide" id="s05">
+  <div class="slide-inner reveal">
+    <p class="hero-quote">저, 작년 이맘때까지<br><span class="gradient-text">코드 한 줄도</span> 못 짰습니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s06">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">1-Year Timeline</div>
+    <h2 class="headline gradient-text">1년의 경로.</h2>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-when">2025 초</div><div class="tl-what">BPO 사업 정체 · CFO 반대</div><div class="tl-sub">"뭐라도 해야 했습니다."</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-when">2025 중</div><div class="tl-what">상무님 — "요즘 대학생도 LangChain으로 만든다"</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-when">2025 말</div><div class="tl-what">상담메모 분류 에이전트 — 첫 보고</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-when">2026 초</div><div class="tl-what">PQ 데이터 분석 에이전트</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-when">2026 초</div><div class="tl-what">롤플레잉 에이전트 → 부사장 보고</div></div></div>
+      <div class="tl-item now"><div class="tl-dot"></div><div><div class="tl-when">오늘</div><div class="tl-what">약 80개 폴더, 실험 진행 중</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s07">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">처음의 출발점</div>
+    <h2 class="headline">코드 한 줄도 못 짰지만,<br><span class="gradient-text">시작은 했습니다.</span></h2>
+    <div class="steps-3">
+      <div class="step-box spotlight"><div class="step-num">01</div><div class="step-title">ChatGPT에게<br>묻고</div></div>
+      <div class="step-box spotlight"><div class="step-num">02</div><div class="step-title">받은 코드를<br>그대로 붙여 실행</div></div>
+      <div class="step-box spotlight"><div class="step-num">03</div><div class="step-title">안 되면<br>왜 안 되는지 디버깅</div></div>
+    </div>
+    <p class="context-line" style="margin-top:40px"><em>이 과정 자체가 경험이 됐습니다.</em></p>
+  </div>
+</section>
+
+<section class="slide" id="s08">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Where I am now</div>
+    <h2 class="headline gradient-text">1년이 흐른 지금.</h2>
+    <div class="stats-4">
+      <div class="stat"><div class="stat-num">80</div><div class="stat-label">폴더 실험</div></div>
+      <div class="stat"><div class="stat-num">11+</div><div class="stat-label">운영 중 에이전트</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">부사장 보고</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">그룹장 전용 스킬</div></div>
+    </div>
+    <p class="footer-text">모두 비개발자 출신의 결과물입니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s09">
+  <div class="slide-inner reveal">
+    <p class="hero-quote">영업 10년, 문과생, 비개발자 —<br><span class="gradient-text">1년이면 여기까지</span> 옵니다.</p>
+    <p class="body-text" style="margin-top:32px">여러분이 못 할 이유는 없습니다.</p>
+  </div>
+</section>
+
+<!-- ===== Section 2 ===== -->
+
+<section class="section-divider"><div><div class="label">Section 02</div><h2>My Agents</h2></div></section>
+
+<section class="slide" id="s10">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Gallery</div>
+    <h2 class="headline gradient-text">만들어 본 것들.</h2>
+    <div class="bento-2x2">
+      <div class="bento-card spotlight"><div class="bento-icon">🎯</div><div class="bento-title">업무용</div><div class="bento-sub">AICC 도메인</div></div>
+      <div class="bento-card spotlight"><div class="bento-icon">⚡</div><div class="bento-title">생산성</div><div class="bento-sub">팀 · 개인 워크플로우</div></div>
+      <div class="bento-card spotlight"><div class="bento-icon">📥</div><div class="bento-title">개인 인풋</div><div class="bento-sub">정보 수집 · 요약</div></div>
+      <div class="bento-card spotlight"><div class="bento-icon">🧪</div><div class="bento-title">실험</div><div class="bento-sub">약 80개</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🎯 업무용 · 01</div>
+    <h2 class="headline">상담메모 분류<br><span class="gradient-text">에이전트.</span></h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Status</span><span class="agent-value">2025 말 — 첫 보고</span></div>
+      <div class="agent-row"><span class="agent-label">Pain</span><span class="agent-value">AICC 전환 컨설팅 — 상담메모를 사람이 수작업 분류</span></div>
+      <div class="agent-row"><span class="agent-label">Solve</span><span class="agent-value">자동 분류 → <b>단순 반복 문의 식별</b></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🎯 업무용 · 02</div>
+    <h2 class="headline">PQ 데이터 분석<br><span class="gradient-text">에이전트.</span></h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Status</span><span class="agent-value">2026 — 진행 중</span></div>
+      <div class="agent-row"><span class="agent-label">Solve</span><span class="agent-value"><b>PQ 데이터 분석</b> 자동화</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🎯 업무용 · 03 — 부사장 보고</div>
+    <h2 class="headline">롤 플레잉<br><span class="gradient-text">에이전트.</span></h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Pain</span><span class="agent-value">팀 8명 중 도메인 엑스퍼트 2명 — 나머지 6명은 학습 필요</span></div>
+      <div class="agent-row"><span class="agent-label">Data</span><span class="agent-value">최근 3개월 <b>150회+ 회의 STT 전사본</b></span></div>
+      <div class="agent-row"><span class="agent-label">Solve</span><span class="agent-value">실제 고객 발화 기반 시나리오 → 롤플레잉 훈련</span></div>
+      <div class="agent-row"><span class="agent-label">Now</span><span class="agent-value">파일럿 → 팀 피드백 반영 중 (UI/UX, 질문 패턴 자연스러움)</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성 · 핵심</div>
+    <h2 class="headline gradient-text">미팅노트 자동화.</h2>
+    <p class="context-line" style="margin-bottom:16px">팀 내 <em>모든 회의는 녹취가 정책</em>입니다.</p>
+    <div class="mflow">
+      <div class="mflow-row">
+        <div class="mflow-box"><div class="mb-num">STEP 1</div><div class="mb-text">녹취 → STT 전사</div></div>
+        <div class="mflow-box"><div class="mb-num">STEP 2</div><div class="mb-text">디스코드 채널 업로드</div></div>
+        <div class="mflow-box"><div class="mb-num">STEP 3</div><div class="mb-text">디스코드 봇 트리거</div></div>
+      </div>
+      <div class="mflow-arrow">↓</div>
+      <div class="mflow-row">
+        <div class="mflow-box"><div class="mb-num">STEP 4</div><div class="mb-text">Claude CLI 호출 → 정제</div></div>
+        <div class="mflow-box"><div class="mb-num">OUTPUT A</div><div class="mb-text">노션 (양준모)<br>팀 공용 메일 (전체 포워딩)</div></div>
+        <div class="mflow-box"><div class="mb-num">OUTPUT B</div><div class="mb-text"><b>HTML 변환 →<br>GitHub Pages</b></div></div>
+      </div>
+    </div>
+    <p class="context-line" style="margin-top:32px"><em>"예전엔 요약만 봤는데, 잘 안 읽혀서 HTML 시각화까지 갔습니다."</em></p>
+  </div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성</div>
+    <h2 class="headline gradient-text">캘린더 자동 등록.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Input</span><span class="agent-value">디스코드에 카톡 · 캡처 · 문자 드롭</span></div>
+      <div class="agent-row"><span class="agent-label">Process</span><span class="agent-value">OCR · 텍스트 파싱</span></div>
+      <div class="agent-row"><span class="agent-label">Output</span><span class="agent-value">구글 캘린더 자동 등록</span></div>
+      <div class="agent-row"><span class="agent-label">Example</span><span class="agent-value">동기 식사 약속, 골프 예약</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성</div>
+    <h2 class="headline gradient-text">위클리 인박스.</h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Source</span><span class="agent-value">노션 "Weekly Inbox" DB</span></div>
+      <div class="agent-row"><span class="agent-label">Trigger</span><span class="agent-value">월요일 — 자동 또는 <b>녹취 앱</b></span></div>
+      <div class="agent-row"><span class="agent-label">Flow</span><span class="agent-value">Not Started 수집 → 팀 공용 메일 → 컨플루언스 → ToDo</span></div>
+    </div>
+    <div class="quote-box"><span class="qb-label">실제 발화 예시</span>"최종우 님, 이번 주 타겟리스트 6월 발주 예정 사업 디테일 리뷰 예정이니 업데이트 공지해 주세요."</div>
+  </div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">⚡ 생산성</div>
+    <h2 class="headline">그룹장님<br><span class="gradient-text">인텔리전스 스킬.</span></h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Trigger</span><span class="agent-value">구글 캘린더에 <b>회사명_사람명_직책</b> 입력 (5분 단위 감지)</span></div>
+      <div class="agent-row"><span class="agent-label">Collect</span><span class="agent-value">회사 정보 · 인물 프로파일 · 토킹 포인트 · 이슈/뉴스</span></div>
+      <div class="agent-row"><span class="agent-label">Output</span><span class="agent-value">노션 자동 정리 → 미팅 전 확인</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">📥 개인 인풋</div>
+    <h2 class="headline">유튜브 요약<br><span class="gradient-text">→ 노션.</span></h2>
+    <div class="agent-card">
+      <div class="agent-row"><span class="agent-label">Why</span><span class="agent-value">보고 싶은 영상 많음 / 시간 부족 (육아 · 출근 · 업무)</span></div>
+      <div class="agent-row"><span class="agent-label">Flow</span><span class="agent-value">디스코드 URL drop → Claude 분석 → 자막 → 요약 → 노션</span></div>
+      <div class="agent-row"><span class="agent-label">Use</span><span class="agent-value">틈새 시간 = 노션 요약 · 시간 될 때 = 영상 직접</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">📥 개인 인풋</div>
+    <h2 class="headline">정보 수집 채널<br><span class="gradient-text">3종 세트.</span></h2>
+    <div class="triples">
+      <div class="triple spotlight"><div class="triple-emoji">🌍</div><div class="triple-title">솔로프리너</div><div class="triple-body">1인 SaaS 외국 채널 사례 수집 — "얘네는 어떻게 돈을 벌지?"</div></div>
+      <div class="triple spotlight"><div class="triple-emoji">📸</div><div class="triple-title">인스타 + 노션</div><div class="triple-body">카드뉴스 OCR + 릴스 STT → 한국어 요약 → 노션</div><div class="triple-source">주요 소스: Hannes Engineering · CLAUDE.md 글로벌 스킬 운영법 등</div></div>
+      <div class="triple spotlight"><div class="triple-emoji">📰</div><div class="triple-title">뉴스 · URL</div><div class="triple-body">기사 · 서비스 사이트 자동 분석 + 비판적 검토</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">🧪 실험</div>
+    <h2 class="headline gradient-text">80개의 실험.</h2>
+    <p class="body-text">이것저것 약 80개를 만들어 봤습니다.<br>살아남은 것만 운영합니다.</p>
+    <div class="bento-exps">
+      <div class="exp e1 spotlight">
+        <div class="exp-emoji">📕</div>
+        <div class="exp-title">e-Book 생성</div>
+        <div class="exp-body">콘텐츠 자동 빌드 — 텍스트에서 책 한 권으로</div>
+      </div>
+      <div class="exp e2 spotlight"><div class="exp-emoji">📖</div><div class="exp-title">소설 만드는 AI</div><div class="exp-body">스토리 생성 실험</div></div>
+      <div class="exp e3 spotlight"><div class="exp-emoji">🏠</div><div class="exp-title">청약홈 수집기</div><div class="exp-body">지역 필터 → 노션</div></div>
+      <div class="exp e4 spotlight"><div class="exp-emoji">💸</div><div class="exp-title">이자납입 / 게임</div><div class="exp-body">테트리스 · 사다리 (얄미운 동기 셋업)</div></div>
+      <div class="exp e5 spotlight"><div class="exp-emoji">📰</div><div class="exp-title">뉴스 스크랩</div><div class="exp-body">초기 — 코드 받아 디버깅</div></div>
+    </div>
+    <p class="footer-text">정답을 처음부터 만들지 않습니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="slide-inner reveal">
+    <p class="hero-quote">업무 · 생산성 · 개인용 —<br><span class="gradient-text">다 연결됩니다.</span></p>
+    <p class="body-text" style="margin-top:32px">80개 중 살아남은 것이 핵심입니다.</p>
+  </div>
+</section>
+
+<!-- ===== Section 3 ===== -->
+
+<section class="section-divider"><div><div class="label">Section 03 · 과정에 앞서</div><h2>Attitude</h2></div></section>
+
+<section class="slide" id="s22">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">6 Mindsets</div>
+    <h2 class="headline">실습을 시작하기 전,<br><span class="gradient-text">6가지 마음가짐.</span></h2>
+  </div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="slide-inner reveal">
+    <div class="big-num">01</div>
+    <h2 class="att-headline">처음엔 벽이 있어요.<br><span class="gradient-text">당연합니다.</span></h2>
+    <p class="att-body">벽은 두 종류입니다.</p>
+    <div class="wall-grid">
+      <div class="wall-card spotlight"><div class="wall-icon">🧱</div><div class="wall-title">환경의 벽</div><div class="wall-body">코드베이스 · IDE · 용어 · 폴더 구조 — 도구 자체가 처음인 낯섦.</div></div>
+      <div class="wall-card spotlight"><div class="wall-icon">🧩</div><div class="wall-title">빌드의 벽</div><div class="wall-body">"폴더 어디 저장된 거지? 어떻게 동작하는 거지? 제대로 만든 거 맞나?"</div></div>
+    </div>
+    <p class="footer-text">강사도 그랬습니다. 지금은 자연스럽습니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="slide-inner reveal">
+    <div class="big-num">02</div>
+    <h2 class="att-headline">반복하면<br><span class="gradient-text">누구나 됩니다.</span></h2>
+    <p class="att-body">한 번, 두 번, 세 번, 네 번.<br>의구심은 만들수록 사라집니다.</p>
+    <p class="att-cite">강사도 처음엔 똑같이 막막했습니다.</p>
+    <div class="att-highlight">그리고 Claude에게 물어보면, 너무나 친절하게 알려줍니다.</div>
+  </div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="slide-inner reveal">
+    <div class="big-num">03</div>
+    <h2 class="att-headline">단순한 것부터,<br><span class="gradient-text">어려운 것은 나중에.</span></h2>
+    <p class="att-body">작은 에이전트 하나 → 동작 확인 → 또 만들기.<br>"내 업무에 적용할 게 뭔지" 자연스럽게 보입니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="slide-inner reveal">
+    <div class="big-num">04</div>
+    <h2 class="att-headline">개인적 페인 포인트가<br><span class="gradient-text">가장 좋은 출발점입니다.</span></h2>
+    <p class="att-body">업무 외에도 페인 포인트는 분명히 있습니다.<br>호기심이 동력입니다.</p>
+    <p class="att-cite">청약홈 · 유튜브 요약 · 캘린더 자동 등록 — 모두 제 개인 페인에서 출발했습니다.</p>
+  </div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="slide-inner reveal">
+    <div class="big-num">05</div>
+    <h2 class="att-headline">많이 보고,<br><span class="gradient-text">많이 만들어 보세요.</span></h2>
+    <p class="att-body">짤막한 워크플로우도 경험치.<br>경험이 쌓이면 에이전트들이 연결됩니다.</p>
+    <div class="connect">
+      <span class="connect-node">디스코드</span><span class="connect-arrow">→</span>
+      <span class="connect-node">Claude</span><span class="connect-arrow">→</span>
+      <span class="connect-node">노션</span><span class="connect-arrow">→</span>
+      <span class="connect-node">GitHub Pages</span>
+    </div>
+    <p class="footer-text">강사 80개 폴더 = 양적 축적의 산물</p>
+  </div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="slide-inner reveal">
+    <div class="big-num">06</div>
+    <h2 class="att-headline">겁먹지 말고,<br><span class="gradient-text">일단 하세요.</span></h2>
+    <p class="att-body" style="margin-bottom:56px">주말 · 저녁 30분~1시간이면 충분합니다.</p>
+    <p class="hero-quote">그냥 해. 그냥 하는 거야.<br><span class="gradient-text">그냥 해. 그냥 해!</span></p>
+    <p class="footer-text" style="margin-top:40px">🎬 영상 재생</p>
+  </div>
+</section>
+
+<!-- ===== Section 4 ===== -->
+
+<section class="section-divider"><div><div class="label">Section 04</div><h2>How We Run</h2></div></section>
+
+<section class="slide" id="s29">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Today's Principles</div>
+    <h2 class="headline gradient-text">오늘 진행 방식.</h2>
+    <div class="principles">
+      <div class="principle spotlight"><div class="pr-num">01</div><div class="pr-title">일방향 강의<br>없음</div><div class="pr-body">강사진이 돌아다니며 직접 지원합니다.</div></div>
+      <div class="principle spotlight"><div class="pr-num">02</div><div class="pr-title">막히면<br>손 들기</div><div class="pr-body">다 같이 해결합니다. 부끄러워하지 마세요.</div></div>
+      <div class="principle spotlight"><div class="pr-num">03</div><div class="pr-title">스텝<br>바이 스텝</div><div class="pr-body">진행 페이지를 함께 따라갑니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section 5 ===== -->
+
+<section class="slide" id="s30">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Next</div>
+    <h2 class="headline gradient-text">다음 시간.</h2>
+    <div class="next-list">
+      <div class="next-item"><div class="next-tag">SESSION 2</div><div class="next-title">첫 에이전트 만들기</div></div>
+      <div class="next-item"><div class="next-tag">SESSION 3</div><div class="next-title">두 번째 에이전트 + 본인 페인 포인트 매핑</div></div>
+    </div>
+    <p class="hero-quote gradient-text" style="margin-top:80px;font-size:clamp(48px,7vw,104px)">Q &amp; A.</p>
+    <p class="body-text" style="margin-top:24px">무엇이든 물어보세요.</p>
+  </div>
+</section>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const slides=document.querySelectorAll('.slide');
+const progressEl=document.getElementById('progress');
+const total=slides.length;
+const po=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting&&e.intersectionRatio>0.5){
+      const idx=parseInt(e.target.id.replace('s',''),10);
+      if(!isNaN(idx)) progressEl.textContent=String(idx).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+    }
+  });
+},{threshold:[0.5]});
+slides.forEach(s=>po.observe(s));
+document.addEventListener('keydown',e=>{
+  const sy=window.scrollY;let ci=0;
+  slides.forEach((s,i)=>{if(s.offsetTop<=sy+100)ci=i});
+  if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();if(ci+1<slides.length)slides[ci+1].scrollIntoView({behavior:'smooth'})}
+  else if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();if(ci-1>=0)slides[ci-1].scrollIntoView({behavior:'smooth'})}
+});
+// Spotlight follow
+document.querySelectorAll('.spotlight').forEach(el=>{
+  el.addEventListener('mousemove',e=>{
+    const r=el.getBoundingClientRect();
+    el.style.setProperty('--mx',(e.clientX-r.left)+'px');
+    el.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+});
+</script>
+
+</body>
+</html>
