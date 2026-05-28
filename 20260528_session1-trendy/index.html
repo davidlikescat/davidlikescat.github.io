@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Session 1 — My Agents & Attitude</title>
+<title>Session 1 — 나의 에이전트, 그리고 마음가짐</title>
 <meta name="description" content="기업AI사업담당 AX 역량 강화 5차수 · Session 1 · 양준모">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,8 +12,7 @@
 :root{
   --bg:#050507;--bg-1:#0a0a0f;--bg-2:#0f0f15;
   --bg-card:rgba(255,255,255,0.03);
-  --border:rgba(255,255,255,0.08);
-  --border-strong:rgba(255,255,255,0.14);
+  --border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.14);
   --text:#fafafa;--text-muted:#a1a1aa;--text-soft:#71717a;
   --pink:#ff5e87;--purple:#a78bfa;--blue:#5e9bff;--cyan:#38bdf8;--emerald:#34d399;--orange:#ff8a3d;--yellow:#f1e05a;
   --aurora:linear-gradient(135deg,#ff5e87 0%,#a78bfa 50%,#5e9bff 100%);
@@ -21,41 +20,21 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;background:var(--bg)}
-body{
-  font-family:'Inter','Noto Sans KR',-apple-system,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.5;
-  -webkit-font-smoothing:antialiased;letter-spacing:-0.011em;overflow-x:hidden;
-}
+body{font-family:'Inter','Noto Sans KR',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.011em;overflow-x:hidden}
 ::selection{background:var(--purple);color:#fff}
 
-.mesh{
-  position:fixed;inset:0;z-index:-1;
+.mesh{position:fixed;inset:0;z-index:-1;
   background:
     radial-gradient(60% 50% at 20% 10%,rgba(255,94,135,0.18) 0%,transparent 60%),
     radial-gradient(50% 50% at 80% 20%,rgba(94,155,255,0.18) 0%,transparent 60%),
     radial-gradient(60% 60% at 50% 90%,rgba(167,139,250,0.18) 0%,transparent 60%),
     radial-gradient(40% 40% at 90% 70%,rgba(56,189,248,0.12) 0%,transparent 60%),
     var(--bg);
-  animation:meshShift 24s ease-in-out infinite alternate;
-}
+  animation:meshShift 24s ease-in-out infinite alternate;}
 @keyframes meshShift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(20deg)}}
-.sparkles{
-  position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background-image:radial-gradient(rgba(255,255,255,0.06) 1px,transparent 1px);
-  background-size:32px 32px;
-  mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
-  -webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
-}
+.sparkles{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,0.06) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%)}
 
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  background:rgba(5,5,7,0.6);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:1px solid var(--border);
-  height:52px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;font-size:12px;font-weight:500;
-}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,5,7,0.6);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:12px;font-weight:500}
 nav .brand{font-weight:600;letter-spacing:-0.02em;color:var(--text)}
 nav .brand .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--aurora);margin-right:10px;box-shadow:0 0 12px var(--pink);vertical-align:middle}
 nav .progress{color:var(--text-muted);font-variant-numeric:tabular-nums;letter-spacing:0.5px}
@@ -75,14 +54,13 @@ h2.headline{font-size:clamp(40px,6.5vw,96px);font-weight:800;line-height:1.04;le
 @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-muted);line-height:1.4;letter-spacing:-0.01em;margin-bottom:16px}
 .body-text{font-size:clamp(17px,1.4vw,21px);color:var(--text-muted);line-height:1.65;max-width:780px;margin:0 auto}
-.body-text-kr{font-size:clamp(16px,1.3vw,19px);color:var(--text-muted);line-height:1.75;max-width:800px;margin:24px auto 0}
+.body-text-kr{font-size:clamp(16px,1.3vw,19px);color:var(--text-muted);line-height:1.75;max-width:820px;margin:24px auto 0}
 .hero-quote{font-size:clamp(40px,6vw,88px);font-weight:800;line-height:1.1;letter-spacing:-0.04em;max-width:1080px;margin:0 auto}
 .footer-text{font-size:13px;color:var(--text-soft);margin-top:40px;letter-spacing:0.4px}
 
 .tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:24px 0}
 .tag{display:inline-block;padding:10px 18px;background:var(--bg-card);border:1px solid var(--border-strong);border-radius:999px;font-size:13px;font-weight:500;color:var(--text);backdrop-filter:blur(10px)}
 
-/* Flow (s02) */
 .flow{display:flex;flex-direction:column;gap:12px;max-width:780px;margin:48px auto 0}
 .flow-step{display:flex;align-items:center;gap:24px;padding:24px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;text-align:left;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s}
 .flow-step:hover{transform:translateY(-2px);border-color:var(--border-strong)}
@@ -91,44 +69,56 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .flow-title{font-size:18px;font-weight:600;margin-bottom:4px}
 .flow-sub{font-size:14px;color:var(--text-muted)}
 
-/* Bento 2x2 / 1x2 */
-.bento-2x2{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:820px;margin:56px auto 0}
-.bento-card{padding:44px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:24px;text-align:left;backdrop-filter:blur(20px);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s;position:relative;overflow:hidden;min-height:200px;display:flex;flex-direction:column;justify-content:center}
+.bento-2x2{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:880px;margin:56px auto 0}
+.bento-card{padding:44px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:24px;text-align:left;backdrop-filter:blur(20px);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s;position:relative;overflow:hidden;min-height:220px;display:flex;flex-direction:column;justify-content:center}
 .bento-card::after{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(167,139,250,0.12) 0%,transparent 50%);opacity:0;transition:opacity .4s;pointer-events:none}
 .bento-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
 .bento-card:hover::after{opacity:1}
 .bento-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--purple);margin-bottom:12px}
 .bento-title{font-size:36px;font-weight:800;margin-bottom:10px;letter-spacing:-0.03em;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.bento-sub{font-size:15px;color:var(--text-muted)}
+.bento-sub{font-size:15px;color:var(--text-muted);line-height:1.6}
 
-/* About card (s04) */
 .about-block{max-width:760px;margin:0 auto}
 .about-label{font-size:14px;font-weight:700;letter-spacing:3px;color:var(--text-muted);text-transform:uppercase;margin-bottom:24px;display:inline-block;padding:8px 18px;border:1px solid var(--border-strong);border-radius:999px;background:var(--bg-card)}
 .profile-name{font-size:clamp(72px,10vw,160px);font-weight:900;letter-spacing:-0.045em;line-height:1;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin:32px 0 12px;animation:gradShift 8s ease-in-out infinite}
 .profile-role{font-size:clamp(18px,1.8vw,24px);color:var(--text-muted);margin-bottom:32px;font-weight:500}
 .bio-list{display:flex;flex-direction:column;gap:12px;max-width:540px;margin:32px auto 0;text-align:left}
 .bio-row{display:flex;gap:24px;align-items:baseline;padding:14px 22px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(20px)}
-.bio-key{flex-shrink:0;width:88px;font-size:11px;font-weight:700;color:var(--purple);letter-spacing:1.5px;text-transform:uppercase}
+.bio-key{flex-shrink:0;width:96px;font-size:11px;font-weight:700;color:var(--purple);letter-spacing:1.5px;text-transform:uppercase}
 .bio-val{font-size:16px;color:var(--text);font-weight:500}
 
-/* Timeline (s06) */
-.timeline{max-width:720px;margin:56px auto 0;text-align:left;position:relative}
+.timeline{max-width:720px;margin:48px auto 0;text-align:left;position:relative}
 .timeline::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--pink),var(--purple),var(--blue))}
-.tl-item{display:flex;gap:24px;padding:18px 0;position:relative}
+.tl-item{display:flex;gap:24px;padding:14px 0;position:relative}
 .tl-dot{width:30px;height:30px;border-radius:50%;background:var(--bg-1);border:2px solid var(--border-strong);flex-shrink:0;position:relative;z-index:1}
 .tl-item.now .tl-dot{background:var(--aurora);border-color:transparent;box-shadow:0 0 0 6px rgba(167,139,250,0.15),0 0 24px rgba(255,94,135,0.4)}
 .tl-when{font-size:13px;font-weight:700;color:var(--purple);letter-spacing:0.6px;margin-bottom:4px;text-transform:uppercase}
 .tl-what{font-size:17px;font-weight:500;color:var(--text);line-height:1.45}
 .tl-sub{font-size:14px;color:var(--text-muted);font-style:italic;margin-top:4px}
 
-/* Stats 4 (s08) */
-.stats-4{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:780px;margin:56px auto 0}
+.stats-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:760px;margin:40px auto 0}
 .stat{padding:48px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:24px;text-align:center;backdrop-filter:blur(20px);position:relative;overflow:hidden}
 .stat::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(167,139,250,0.2) 0%,transparent 60%);opacity:0.6}
 .stat-num{font-size:clamp(64px,8vw,120px);font-weight:900;letter-spacing:-0.05em;line-height:1;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;position:relative}
 .stat-label{font-size:15px;color:var(--text-muted);font-weight:500;position:relative;letter-spacing:0.5px}
 
-/* Gallery 1x4 with photo slot (s10) */
+/* Pain cards (s04) */
+.pain-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1080px;margin:48px auto 0}
+.pain-card{padding:32px 28px;background:var(--bg-card);border:1px solid var(--border);border-radius:22px;text-align:left;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s}
+.pain-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.pain-num{font-size:13px;font-weight:700;color:var(--pink);letter-spacing:2px;margin-bottom:14px}
+.pain-title{font-size:20px;font-weight:700;line-height:1.4;letter-spacing:-0.015em;color:var(--text)}
+.pain-title .gt{background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+
+/* Time path (s10) */
+.timepath{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:1100px;margin:48px auto 0}
+.tp-step{padding:28px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;text-align:left;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s;position:relative}
+.tp-step:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.tp-when{font-size:28px;font-weight:900;letter-spacing:-0.03em;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;line-height:1}
+.tp-sub{font-size:11px;font-weight:700;color:var(--text-soft);letter-spacing:1.5px;margin-bottom:14px;text-transform:uppercase}
+.tp-body{font-size:14px;color:var(--text);line-height:1.55;font-weight:500}
+
+/* Gallery 1x4 with photo slot */
 .gallery-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1180px;margin:56px auto 0}
 .gal-card{padding:24px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;text-align:left;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s;display:flex;flex-direction:column}
 .gal-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
@@ -147,28 +137,39 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .wfn-sub{font-size:11px;color:var(--text-soft);margin-top:2px;letter-spacing:0.4px;text-transform:uppercase;font-weight:600}
 .wfe{display:flex;align-items:center;height:2px;width:32px;background:linear-gradient(90deg,var(--purple),var(--blue));position:relative;flex-shrink:0}
 .wfe::after{content:'';position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left-color:var(--blue);border-right:0}
-.wfe.down{width:2px;height:28px;background:linear-gradient(180deg,var(--purple),var(--blue))}
-.wfe.down::after{right:auto;top:auto;bottom:-1px;left:-5px;border:6px solid transparent;border-top-color:var(--blue);border-bottom:0}
-.wf-col{display:flex;flex-direction:column;align-items:center;gap:0}
-.wf-branch{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
-.wf-fan{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-left:8px;border-left:2px dashed var(--border-strong);margin-left:8px}
 .wfn[data-c="orange"] .wfn-ico{background:linear-gradient(135deg,#ff8a3d,#ff5e3d)}
 .wfn[data-c="purple"] .wfn-ico{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
 .wfn[data-c="blue"] .wfn-ico{background:linear-gradient(135deg,#5e9bff,#3b82f6)}
 .wfn[data-c="green"] .wfn-ico{background:linear-gradient(135deg,#34d399,#10b981)}
 .wfn[data-c="cyan"] .wfn-ico{background:linear-gradient(135deg,#38bdf8,#0ea5e9)}
 .wfn[data-c="pink"] .wfn-ico{background:linear-gradient(135deg,#ff5e87,#e11d48)}
-.wfn[data-c="yellow"] .wfn-ico{background:linear-gradient(135deg,#f1e05a,#ca8a04);color:#0a0a0f}
-.wf-meta{margin-top:24px;display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--text-soft);flex-wrap:wrap;gap:12px}
+.wf-meta{margin-top:24px;display:flex;justify-content:center;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--text-soft);flex-wrap:wrap;gap:12px}
 .wf-meta .pill{padding:6px 12px;background:var(--bg-card);border:1px solid var(--border-strong);border-radius:999px;color:var(--text-muted)}
 
-/* Capture slot (for samples) */
+/* Rest gallery (s16) — 6 cards with screenshot */
+.rest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1180px;margin:48px auto 0}
+.rest-card{padding:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;text-align:left;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s;display:flex;flex-direction:column}
+.rest-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.rest-shot{background:linear-gradient(135deg,rgba(255,94,135,0.05),rgba(167,139,250,0.05),rgba(94,155,255,0.05));border:1px dashed var(--border-strong);border-radius:10px;aspect-ratio:16/10;display:grid;place-items:center;margin-bottom:14px;color:var(--text-soft);font-size:10px;letter-spacing:1.8px;font-weight:700}
+.rest-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--purple);margin-bottom:6px}
+.rest-title{font-size:16px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;color:var(--text)}
+.rest-sub{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* Capture row (s17) */
 .cap-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:24px auto 0}
 .cap-slot{aspect-ratio:4/3;background:linear-gradient(135deg,rgba(255,94,135,0.05),rgba(167,139,250,0.05),rgba(94,155,255,0.05));border:1px dashed var(--border-strong);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-soft);gap:6px}
 .cap-slot .cap-label{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--text-soft)}
 .cap-slot .cap-name{font-size:12px;color:var(--text-muted);font-weight:500}
 
-/* Video window (s13 AICC Role-Playing) */
+/* First five (s18) — 청중용 */
+.f5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:1180px;margin:48px auto 0}
+.f5-card{padding:24px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;text-align:left;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s;display:flex;flex-direction:column;gap:14px;min-height:240px}
+.f5-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.f5-num{font-size:32px;font-weight:900;letter-spacing:-0.04em;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.f5-title{font-size:15px;font-weight:700;line-height:1.4;letter-spacing:-0.01em;color:var(--text)}
+.f5-body{font-size:12px;color:var(--text-muted);line-height:1.55;margin-top:auto}
+
+/* Video window */
 .video-window{max-width:760px;margin:32px auto 0;border-radius:14px;overflow:hidden;background:#0a0a0f;border:1px solid var(--border-strong);box-shadow:0 24px 64px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.04)}
 .vw-chrome{padding:12px 16px;background:#1a1a22;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
 .vw-chrome .vd{width:12px;height:12px;border-radius:50%}
@@ -177,9 +178,16 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .vw-chrome .vd.g{background:#28c840}
 .vw-chrome .vw-addr{flex:1;text-align:center;font-size:11px;color:var(--text-muted);font-weight:500;font-family:'JetBrains Mono',monospace;background:var(--bg-1);padding:6px 16px;border-radius:6px;margin:0 60px}
 .vw-screen{aspect-ratio:16/9;background:radial-gradient(circle at center,rgba(167,139,250,0.12) 0%,transparent 70%),#050507;display:grid;place-items:center;color:var(--text-soft);position:relative}
-.vw-screen .play{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.08);border:1.5px solid var(--border-strong);display:grid;place-items:center;font-size:24px;color:var(--text)}
+.vw-screen .play{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.08);border:1.5px solid var(--border-strong);display:grid;place-items:center}
 .vw-screen .play::before{content:'';width:0;height:0;border-left:18px solid var(--text);border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:5px}
 .vw-cap{position:absolute;bottom:14px;left:14px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-soft);padding:4px 10px;background:rgba(0,0,0,0.5);border-radius:999px}
+
+/* Long quote — 인용 (s21, s28) */
+.qbox{max-width:920px;margin:0 auto;padding:48px 56px;background:var(--bg-card);border:1px solid var(--border);border-radius:28px;backdrop-filter:blur(20px);position:relative;text-align:left}
+.qbox::before{content:'';position:absolute;left:0;top:24px;bottom:24px;width:3px;background:var(--aurora);border-radius:0 4px 4px 0}
+.q-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:18px}
+.q-text{font-size:clamp(20px,2.2vw,28px);font-weight:500;line-height:1.6;color:var(--text)}
+.q-attr{margin-top:24px;font-size:13px;color:var(--text-soft);font-style:italic;letter-spacing:0.3px}
 
 /* Big num (Attitude) */
 .big-num{font-size:clamp(160px,24vw,320px);font-weight:900;line-height:0.85;letter-spacing:-0.06em;background:var(--aurora);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:32px;animation:gradShift 6s ease-in-out infinite;filter:drop-shadow(0 0 40px rgba(167,139,250,0.3))}
@@ -188,7 +196,6 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .att-cite{margin-top:24px;font-size:16px;color:var(--text-muted);font-style:italic;max-width:680px;margin-left:auto;margin-right:auto}
 .att-highlight{margin-top:32px;display:inline-block;padding:16px 28px;background:var(--aurora);color:#0a0a0f;border-radius:999px;font-size:16px;font-weight:700;box-shadow:0 8px 32px rgba(167,139,250,0.35)}
 
-/* Wall grid (s23) */
 .wall-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:920px;margin:40px auto 0}
 .wall-card{padding:36px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:24px;text-align:left;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s}
 .wall-card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
@@ -196,12 +203,10 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .wall-title{font-size:24px;font-weight:800;margin-bottom:14px;letter-spacing:-0.02em;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .wall-body{font-size:15px;color:var(--text-muted);line-height:1.65}
 
-/* Connect diagram (s27) */
 .connect{display:flex;align-items:center;justify-content:center;gap:10px;max-width:840px;margin:48px auto 0;flex-wrap:wrap}
 .connect-node{padding:14px 22px;background:linear-gradient(var(--bg-1),var(--bg-1)) padding-box,var(--aurora) border-box;border:1.5px solid transparent;border-radius:999px;font-size:14px;font-weight:600;color:var(--text);box-shadow:0 0 24px rgba(167,139,250,0.18)}
 .connect-arrow{font-size:20px;color:var(--purple);font-weight:700}
 
-/* Principles */
 .principles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1040px;margin:56px auto 0}
 .principle{padding:44px 30px;background:var(--bg-card);border:1px solid var(--border);border-radius:24px;text-align:center;backdrop-filter:blur(20px);transition:transform .3s,border-color .3s}
 .principle:hover{transform:translateY(-4px);border-color:var(--border-strong)}
@@ -209,14 +214,13 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .pr-title{font-size:22px;font-weight:700;margin-bottom:14px;letter-spacing:-0.02em;line-height:1.25}
 .pr-body{font-size:14px;color:var(--text-muted);line-height:1.6}
 
-/* Next list */
 .next-list{max-width:680px;margin:56px auto 0;text-align:left}
 .next-item{padding:28px 32px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;margin-bottom:14px;backdrop-filter:blur(20px);position:relative;overflow:hidden}
 .next-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--aurora)}
 .next-tag{font-size:11px;font-weight:700;letter-spacing:2px;background:var(--aurora);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
 .next-title{font-size:20px;font-weight:600;color:var(--text)}
 
-/* Jarvis network background for s20 */
+/* Jarvis background for s20 */
 .jarvis-wrap{position:relative;overflow:hidden;border-radius:32px;padding:64px 32px;margin:48px auto 0;max-width:1120px;background:radial-gradient(ellipse at center,rgba(94,155,255,0.10),transparent 70%),var(--bg-1);border:1px solid var(--border)}
 .jarvis-bg{position:absolute;inset:0;opacity:0.45;pointer-events:none}
 .jarvis-bg svg{width:100%;height:100%}
@@ -238,7 +242,6 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .jarvis-msg{font-size:clamp(28px,4vw,56px);font-weight:800;letter-spacing:-0.03em;line-height:1.15;max-width:900px;margin:0 auto;text-align:center}
 .jarvis-sub{font-size:clamp(15px,1.3vw,18px);color:var(--text-muted);line-height:1.7;max-width:760px;margin:28px auto 0;text-align:center}
 
-/* Scroll cue */
 .scroll-cue{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:600;color:var(--text-soft);letter-spacing:2px;animation:bounce 2s infinite}
 @keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
 
@@ -246,19 +249,27 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 .reveal.in{opacity:1;transform:translateY(0)}
 
 @media (max-width:900px){
-  .stats-4{grid-template-columns:repeat(2,1fr)}
+  .stats-2{grid-template-columns:repeat(2,1fr)}
   .gallery-4{grid-template-columns:repeat(2,1fr)}
   .cap-row{grid-template-columns:repeat(2,1fr)}
   .jarvis-grid{grid-template-columns:repeat(2,1fr)}
+  .pain-cards{grid-template-columns:1fr}
+  .timepath{grid-template-columns:repeat(2,1fr)}
+  .f5{grid-template-columns:repeat(2,1fr)}
+  .rest-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:768px){
   .bento-2x2{grid-template-columns:1fr}
   .principles{grid-template-columns:1fr}
   .wall-grid{grid-template-columns:1fr}
   .gallery-4{grid-template-columns:1fr}
+  .timepath{grid-template-columns:1fr}
+  .f5{grid-template-columns:1fr}
+  .rest-grid{grid-template-columns:1fr}
   .wfe{display:none}
   .wf-row{flex-direction:column;align-items:stretch;gap:12px}
   .wfn{min-width:auto}
+  .qbox{padding:32px 24px}
 }
 </style>
 </head>
@@ -268,11 +279,13 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
 <div class="sparkles"></div>
 
 <nav>
-  <span class="brand"><span class="dot"></span>Session 1 · My Agents &amp; Attitude</span>
-  <span class="progress" id="progress">01 / 30</span>
+  <span class="brand"><span class="dot"></span>Session 1 · 나의 에이전트, 그리고 마음가짐</span>
+  <span class="progress" id="progress">01 / 31</span>
 </nav>
 
-<!-- ===== s01 ===== -->
+<!-- ===== ACT 0: OPEN ===== -->
+
+<!-- s01 Title -->
 <section class="slide" id="s01">
   <div class="slide-inner reveal">
     <div class="eyebrow">SESSION 1 OF 3 · 기업AI사업담당 AX 역량 강화 5차수</div>
@@ -283,7 +296,7 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   <div class="scroll-cue">SCROLL</div>
 </section>
 
-<!-- ===== s02 Today's Flow ===== -->
+<!-- s02 Today's Flow -->
 <section class="slide" id="s02">
   <div class="slide-inner reveal">
     <div class="eyebrow">Today</div>
@@ -291,54 +304,64 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
     <div class="flow">
       <div class="flow-step current">
         <span class="flow-num">01</span>
-        <div>
-          <div class="flow-title">Session 1 — My Agents &amp; Attitude</div>
-          <div class="flow-sub">현재 진행 중 · 사례 투어와 마음가짐 정렬</div>
-        </div>
+        <div><div class="flow-title">Session 1 — 나의 에이전트 &amp; 마음가짐</div><div class="flow-sub">현재 진행 중 · 사례 투어와 마음가짐 정렬</div></div>
       </div>
       <div class="flow-step">
         <span class="flow-num">02</span>
-        <div>
-          <div class="flow-title">Session 2 — Setup &amp; Build Your First Agent</div>
-          <div class="flow-sub">환경 설정 · 첫 에이전트 만들기</div>
-        </div>
+        <div><div class="flow-title">Session 2 — 환경 설정 + 첫 에이전트 만들기</div><div class="flow-sub">Antigravity · Claude Code · 첫 실습</div></div>
       </div>
       <div class="flow-step">
         <span class="flow-num">03</span>
-        <div>
-          <div class="flow-title">Session 3 — Build Your Second Agent</div>
-          <div class="flow-sub">두 번째 에이전트 + 본인 페인 포인트 매핑</div>
-        </div>
+        <div><div class="flow-title">Session 3 — 두 번째 에이전트 + 응용</div><div class="flow-sub">본인 페인 매핑 · 실무 연결</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== s03 Two Things ===== -->
+<!-- ===== ACT 1: WHY NOW ===== -->
+
+<!-- s03 딸깍 시대 -->
 <section class="slide" id="s03">
   <div class="slide-inner reveal">
-    <div class="eyebrow">Before We Start</div>
-    <h2 class="headline">실습 전,<br><span class="gradient-text">두 가지.</span></h2>
-    <div class="bento-2x2" style="max-width:880px">
-      <div class="bento-card">
-        <div class="bento-eyebrow">PART 01</div>
-        <div class="bento-title">AGENTS</div>
-        <div class="bento-sub">제가 직접 만든 에이전트들을 보여드립니다.</div>
-      </div>
-      <div class="bento-card">
-        <div class="bento-eyebrow">PART 02</div>
-        <div class="bento-title">ATTITUDE</div>
-        <div class="bento-sub">실습 진입 전, 함께 정렬할 마음가짐.</div>
-      </div>
+    <div class="eyebrow">시대가 바뀝니다</div>
+    <h2 class="headline">딸깍 한 번이면,<br><span class="gradient-text">앱이 나옵니다.</span></h2>
+    <p class="body-text-kr">누구나 70~80점짜리 결과물을 만들고,<br>머지않아 모두가 90점에 도달합니다.</p>
+    <div class="qbox" style="margin-top:48px">
+      <div class="q-eyebrow">Quote</div>
+      <p class="q-text">"1회용 애플리케이션의 시대가 왔다."</p>
+      <p class="q-attr">— 고승원 · 디지털타임스 「궁금한 건 못 참아」</p>
     </div>
   </div>
 </section>
 
-<!-- ===== Section 01 ===== -->
+<!-- s04 옆자리 동료가 이미 -->
+<section class="slide" id="s04">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">그래서, 여러분은?</div>
+    <h2 class="headline"><span class="gradient-text">옆자리 동료가</span><br>이미 시작했다면?</h2>
+    <div class="pain-cards">
+      <div class="pain-card">
+        <div class="pain-num">CASE 01</div>
+        <div class="pain-title">매주 같은 보고서를<br><span class="gt">30분에 끝낸다면</span></div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-num">CASE 02</div>
+        <div class="pain-title">미팅 준비를<br><span class="gt">한 번 클릭으로 끝낸다면</span></div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-num">CASE 03</div>
+        <div class="pain-title">고객 인사이트를<br><span class="gt">매일 자동으로 받는다면</span></div>
+      </div>
+    </div>
+    <p class="footer-text">1년 뒤, 여러분은 어디에 있고 싶으신가요?</p>
+  </div>
+</section>
+
+<!-- ===== Section divider: About Me ===== -->
 <section class="section-divider"><div><div class="label">Section 01</div><h2>About Me</h2></div></section>
 
-<!-- ===== s04 Profile ===== -->
-<section class="slide" id="s04">
+<!-- s05 Profile -->
+<section class="slide" id="s05">
   <div class="slide-inner reveal">
     <div class="about-block">
       <div class="about-label">ABOUT ME</div>
@@ -354,18 +377,29 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s05 Positive Honest Line ===== -->
-<section class="slide" id="s05">
+<!-- s06 Honest line -->
+<section class="slide" id="s06">
   <div class="slide-inner reveal">
-    <p class="hero-quote">코딩 한 줄 못 짜던 비개발자가,<br><span class="gradient-text">지금은 실무에 쓰는</span><br><span class="gradient-text">에이전트를 만듭니다.</span></p>
-    <p class="body-text-kr">코딩 경험이 전혀 없던 비개발자가, 지금은 스스로 에이전트를 구축해 실무에 적용하는 수준에 도달했습니다.</p>
+    <p class="hero-quote">저도 작년까진,<br><span class="gradient-text">GPT 채팅 창만</span><br>쓰던 사람이었습니다.</p>
+    <p class="body-text-kr">코딩 한 줄 못 짜던 비개발자가, 지금은 실무에 쓰는 에이전트를 직접 만듭니다.</p>
   </div>
 </section>
 
-<!-- ===== s06 The Journey ===== -->
-<section class="slide" id="s06">
+<!-- s07 묻고 붙이고 디버깅 -->
+<section class="slide" id="s07">
   <div class="slide-inner reveal">
-    <div class="eyebrow">The Journey</div>
+    <div class="eyebrow">처음의 출발점</div>
+    <h2 class="headline"><span class="gradient-text">묻고,</span> 붙이고,<br><span class="gradient-text">디버깅하고,</span> 다시.</h2>
+    <p class="body-text-kr">ChatGPT, Gemini, Claude에게 묻고 — 받은 코드를 IDE에 붙여 넣고 — 터미널에서 실행하고 — 안 되면 왜 안 되는지 다시 물었습니다.</p>
+    <p class="body-text-kr" style="margin-top:16px">작년까지만 해도 이렇게 무식하게 시작했지만, 지금은 <span class="gradient-text" style="font-weight:700">Coding Assistant</span>가 너무 강력해서 그 과정조차 거의 필요 없어졌습니다.</p>
+    <p class="body-text-kr" style="margin-top:16px;font-weight:600;color:var(--text)">6개월 전과 지금은 너무 다릅니다. 너무 많이 편해졌습니다.</p>
+  </div>
+</section>
+
+<!-- s08 강사 1년 타임라인 + 결과 -->
+<section class="slide" id="s08">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">My Journey</div>
     <h2 class="headline gradient-text">지난 1년</h2>
     <div class="timeline">
       <div class="tl-item"><div class="tl-dot"></div><div>
@@ -383,179 +417,107 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
       </div></div>
       <div class="tl-item"><div class="tl-dot"></div><div>
         <div class="tl-when">2026년 초</div>
-        <div class="tl-what">PQ Data Analysis Agent</div>
-      </div></div>
-      <div class="tl-item"><div class="tl-dot"></div><div>
-        <div class="tl-when">2026년 초</div>
-        <div class="tl-what">AICC Role-Playing Agent</div>
+        <div class="tl-what">PQ Data Analysis · AICC Role-Playing Agent</div>
       </div></div>
       <div class="tl-item now"><div class="tl-dot"></div><div>
         <div class="tl-when">오늘</div>
         <div class="tl-what">50개 폴더로 이것저것 실험 중</div>
       </div></div>
     </div>
-  </div>
-</section>
-
-<!-- ===== s07 Ask. Paste. Debug. ===== -->
-<section class="slide" id="s07">
-  <div class="slide-inner reveal">
-    <div class="eyebrow">How I started</div>
-    <h2 class="headline"><span class="gradient-text">묻고,</span> 붙이고,<br><span class="gradient-text">디버깅하고,</span> 다시.</h2>
-    <p class="body-text-kr">ChatGPT, Gemini, Claude에게 묻고 — 받은 코드를 IDE 창에 붙여 넣고 — 터미널에서 실행하고 — 안 되면 왜 안 되는지 다시 물어보는 과정을 수없이 반복했습니다.</p>
-    <p class="body-text-kr" style="margin-top:16px">작년까지만 해도 이렇게 무식한 방법으로 시작했지만, 지금은 <span class="gradient-text" style="font-weight:700">Coding Assistant</span>가 너무나 강력하고 파워풀해져서 그 과정조차 필요 없는 시대가 왔습니다.</p>
-    <p class="body-text-kr" style="margin-top:16px;font-weight:600;color:var(--text)">6개월 전과 지금은 너무 다릅니다. 너무 많이 변화했고, 너무 많이 편해졌습니다.</p>
-  </div>
-</section>
-
-<!-- ===== s08 1 Year Later ===== -->
-<section class="slide" id="s08">
-  <div class="slide-inner reveal">
-    <div class="eyebrow">One Year Later</div>
-    <h2 class="headline"><span class="gradient-text">1년이 흐른 지금.</span></h2>
-    <div class="stats-4">
+    <div class="stats-2">
       <div class="stat"><div class="stat-num">50+</div><div class="stat-label">폴더 실험</div></div>
       <div class="stat"><div class="stat-num">11+</div><div class="stat-label">운영 중 에이전트</div></div>
     </div>
-    <p class="body-text-kr" style="margin-top:48px">이 모든 것은 비개발자 출신의 결과물입니다.<br>저도 비전공자임에도 한번 해보니 되더라는 메시지를 드리고 싶었습니다.</p>
-    <p class="body-text-kr" style="margin-top:8px;font-weight:600;color:var(--text)">저도 할 수 있었으니, 여러분도 충분히 할 수 있습니다.</p>
   </div>
 </section>
 
-<!-- ===== s09 Core ===== -->
+<!-- s09 Core Message -->
 <section class="slide" id="s09">
   <div class="slide-inner reveal">
-    <p class="hero-quote">영업 10년, 문과생, 비개발자 —<br><span class="gradient-text">1년이면 여기까지 옵니다.</span></p>
-    <p class="body-text-kr" style="margin-top:32px">여러분이 못 할 이유는 없습니다.</p>
+    <p class="hero-quote">영업 10년, 문과생, 비개발자 —<br><span class="gradient-text">됩니다.</span></p>
+    <p class="body-text-kr" style="margin-top:32px">제가 1년 걸렸다고, 여러분도 1년이 걸리는 건 아닙니다.<br>도구는 그동안 너무 좋아졌습니다.</p>
   </div>
 </section>
 
-<!-- ===== Section 02 ===== -->
-<section class="section-divider"><div><div class="label">Section 02 · My Agents</div><h2>The Gallery</h2></div></section>
-
-<!-- ===== s10 Gallery 1x4 with photo slots ===== -->
+<!-- s10 여러분의 시간 단위 (NEW) -->
 <section class="slide" id="s10">
   <div class="slide-inner reveal">
-    <div class="eyebrow">My Agents</div>
-    <h2 class="headline"><span class="gradient-text">1년 동안 만들어 본 것들.</span></h2>
-    <div class="gallery-4">
-      <div class="gal-card">
-        <div class="gal-photo">PHOTO</div>
-        <div class="gal-eyebrow">CATEGORY 01</div>
-        <div class="gal-title">Work</div>
-        <div class="gal-sub">AICC 도메인 자동화</div>
+    <div class="eyebrow">여러분의 1년</div>
+    <h2 class="headline">한 달이면<br><span class="gradient-text">시작합니다.</span></h2>
+    <div class="timepath">
+      <div class="tp-step">
+        <div class="tp-when">1주</div>
+        <div class="tp-sub">Week 1</div>
+        <div class="tp-body">환경 설정 + 첫 에이전트 동작</div>
       </div>
-      <div class="gal-card">
-        <div class="gal-photo">PHOTO</div>
-        <div class="gal-eyebrow">CATEGORY 02</div>
-        <div class="gal-title">Productivity</div>
-        <div class="gal-sub">팀 · 개인 워크플로우</div>
+      <div class="tp-step">
+        <div class="tp-when">1달</div>
+        <div class="tp-sub">Month 1</div>
+        <div class="tp-body">내 페인 1개를 자동화</div>
       </div>
-      <div class="gal-card">
-        <div class="gal-photo">PHOTO</div>
-        <div class="gal-eyebrow">CATEGORY 03</div>
-        <div class="gal-title">Share Content</div>
-        <div class="gal-sub">정보 수집 · 요약 · 정제</div>
+      <div class="tp-step">
+        <div class="tp-when">3개월</div>
+        <div class="tp-sub">Quarter 1</div>
+        <div class="tp-body">업무 워크플로우 연결</div>
       </div>
-      <div class="gal-card">
-        <div class="gal-photo">PHOTO</div>
-        <div class="gal-eyebrow">CATEGORY 04</div>
-        <div class="gal-title">Experiments</div>
-        <div class="gal-sub">50+ 폴더의 실험</div>
+      <div class="tp-step">
+        <div class="tp-when">6개월</div>
+        <div class="tp-sub">Half</div>
+        <div class="tp-body">팀이 체감하는 변화</div>
+      </div>
+      <div class="tp-step">
+        <div class="tp-when">1년</div>
+        <div class="tp-sub">Year 1</div>
+        <div class="tp-body">나만의 에이전트 팀</div>
       </div>
     </div>
+    <p class="footer-text">강사보다 빠를 겁니다. 도구가 좋아졌으니까요.</p>
   </div>
 </section>
 
-<!-- ===== s11 Memo Classification Agent ===== -->
+<!-- ===== Section divider: What's Possible ===== -->
+<section class="section-divider"><div><div class="label">Section 02</div><h2>What's Possible</h2></div></section>
+
+<!-- s11 두 가지 -->
 <section class="slide" id="s11">
   <div class="slide-inner reveal">
-    <div class="eyebrow">Work · 01</div>
-    <h2 class="headline"><span class="gradient-text">Memo Classification Agent</span></h2>
-    <div class="wf-wrap">
-      <div class="wf-row">
-        <div class="wfn" data-c="orange"><div class="wfn-ico">DB</div><div class="wfn-body"><div class="wfn-name">Raw Counsel Memos</div><div class="wfn-sub">Source · CSV</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="cyan"><div class="wfn-ico">PRE</div><div class="wfn-body"><div class="wfn-name">Preprocess &amp; Clean</div><div class="wfn-sub">Normalize</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="purple"><div class="wfn-ico">CL</div><div class="wfn-body"><div class="wfn-name">Claude · Few-shot</div><div class="wfn-sub">Classify</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="blue"><div class="wfn-ico">TAG</div><div class="wfn-body"><div class="wfn-name">Category Tagging</div><div class="wfn-sub">Routing</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="green"><div class="wfn-ico">RPT</div><div class="wfn-body"><div class="wfn-name">AICC Candidates Report</div><div class="wfn-sub">Output</div></div></div>
+    <div class="eyebrow">Before We Start</div>
+    <h2 class="headline">지금부터,<br><span class="gradient-text">두 가지.</span></h2>
+    <div class="bento-2x2" style="max-width:880px">
+      <div class="bento-card">
+        <div class="bento-eyebrow">PART 01</div>
+        <div class="bento-title">AGENTS</div>
+        <div class="bento-sub">제가 직접 만든 에이전트들 — 대표 3개를 자세히, 나머지는 갤러리로.</div>
       </div>
-      <div class="wf-meta">
-        <span class="pill">상담메모 사람이 수작업 분류 → 자동</span>
-        <span class="pill">단순 반복 문의 식별 자동화</span>
-        <span class="pill">Shipped · 2025 Q4</span>
+      <div class="bento-card">
+        <div class="bento-eyebrow">PART 02</div>
+        <div class="bento-title">ATTITUDE</div>
+        <div class="bento-sub">실습 진입 전, 함께 정렬할 마음가짐 여섯 가지.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== s12 PQ Data Analysis Agent ===== -->
+<!-- s12 1x4 갤러리 -->
 <section class="slide" id="s12">
   <div class="slide-inner reveal">
-    <div class="eyebrow">Work · 02</div>
-    <h2 class="headline"><span class="gradient-text">PQ Data Analysis Agent</span></h2>
-    <div class="wf-wrap">
-      <div class="wf-row">
-        <div class="wfn" data-c="orange"><div class="wfn-ico">PQ</div><div class="wfn-body"><div class="wfn-name">PQ Raw Logs</div><div class="wfn-sub">Source</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="cyan"><div class="wfn-ico">ETL</div><div class="wfn-body"><div class="wfn-name">Parse &amp; Segment</div><div class="wfn-sub">Pipeline</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="purple"><div class="wfn-ico">CL</div><div class="wfn-body"><div class="wfn-name">Claude · Analysis</div><div class="wfn-sub">Pattern Mining</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="blue"><div class="wfn-ico">VIZ</div><div class="wfn-body"><div class="wfn-name">Visualization</div><div class="wfn-sub">Charts</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="green"><div class="wfn-ico">DOC</div><div class="wfn-body"><div class="wfn-name">Insight Report</div><div class="wfn-sub">Output</div></div></div>
-      </div>
-      <div class="wf-meta">
-        <span class="pill">In Progress · 2026 Q1</span>
-      </div>
+    <div class="eyebrow">My Agents</div>
+    <h2 class="headline"><span class="gradient-text">1년 동안</span><br>만들어 본 것들.</h2>
+    <div class="gallery-4">
+      <div class="gal-card"><div class="gal-photo">PHOTO</div><div class="gal-eyebrow">CATEGORY 01</div><div class="gal-title">Work</div><div class="gal-sub">AICC 도메인 자동화</div></div>
+      <div class="gal-card"><div class="gal-photo">PHOTO</div><div class="gal-eyebrow">CATEGORY 02</div><div class="gal-title">Productivity</div><div class="gal-sub">팀 · 개인 워크플로우</div></div>
+      <div class="gal-card"><div class="gal-photo">PHOTO</div><div class="gal-eyebrow">CATEGORY 03</div><div class="gal-title">Share Content</div><div class="gal-sub">정보 수집 · 요약 · 정제</div></div>
+      <div class="gal-card"><div class="gal-photo">PHOTO</div><div class="gal-eyebrow">CATEGORY 04</div><div class="gal-title">Experiments</div><div class="gal-sub">50+ 폴더의 실험</div></div>
     </div>
   </div>
 </section>
 
-<!-- ===== s13 AICC Role-Playing Agent + Video ===== -->
+<!-- s13 대표 1: Meeting Notes Automation -->
 <section class="slide" id="s13">
   <div class="slide-inner reveal">
-    <div class="eyebrow">Work · 03</div>
-    <h2 class="headline"><span class="gradient-text">AICC Role-Playing Agent</span></h2>
-    <div class="wf-wrap">
-      <div class="wf-row">
-        <div class="wfn" data-c="orange"><div class="wfn-ico">STT</div><div class="wfn-body"><div class="wfn-name">150+ Meeting Transcripts</div><div class="wfn-sub">Last 3 months</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="purple"><div class="wfn-ico">CL</div><div class="wfn-body"><div class="wfn-name">Scenario Builder</div><div class="wfn-sub">Claude</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="cyan"><div class="wfn-ico">RP</div><div class="wfn-body"><div class="wfn-name">Role-Play Engine</div><div class="wfn-sub">Customer voice</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="green"><div class="wfn-ico">UI</div><div class="wfn-body"><div class="wfn-name">Trainee Interface</div><div class="wfn-sub">Pilot · Feedback loop</div></div></div>
-      </div>
-      <div class="wf-meta">
-        <span class="pill">팀 8명 · 도메인 학습 필요 6명</span>
-        <span class="pill">실제 고객 발화 기반 시나리오</span>
-        <span class="pill">Pilot · UI/UX 피드백 반영 중</span>
-      </div>
-    </div>
-    <div class="video-window">
-      <div class="vw-chrome">
-        <span class="vd r"></span><span class="vd y"></span><span class="vd g"></span>
-        <span class="vw-addr">aicc-roleplay.demo</span>
-      </div>
-      <div class="vw-screen">
-        <div class="play"></div>
-        <div class="vw-cap">SAMPLE VIDEO SLOT</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== s14 Meeting Notes Automation ===== -->
-<section class="slide" id="s14">
-  <div class="slide-inner reveal">
-    <div class="eyebrow">Productivity · 01</div>
-    <h2 class="headline"><span class="gradient-text">Meeting Notes Automation</span></h2>
+    <div class="eyebrow">대표 사례 · 01</div>
+    <h2 class="headline"><span class="gradient-text">Meeting Notes</span><br>Automation</h2>
+    <p class="body-text-kr">팀 내 모든 회의가 자동으로 요약돼, 노션·팀 메일·GitHub Pages까지 한 번에 들어갑니다.</p>
     <div class="wf-wrap">
       <div class="wf-row">
         <div class="wfn" data-c="orange"><div class="wfn-ico">REC</div><div class="wfn-body"><div class="wfn-name">Voice Record</div><div class="wfn-sub">Trigger · All meetings</div></div></div>
@@ -582,37 +544,12 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s15 Calendar Auto-Sync ===== -->
-<section class="slide" id="s15">
+<!-- s14 대표 2: Weekly Impacts -->
+<section class="slide" id="s14">
   <div class="slide-inner reveal">
-    <div class="eyebrow">Productivity · 02</div>
-    <h2 class="headline"><span class="gradient-text">Calendar Auto-Sync</span></h2>
-    <div class="wf-wrap">
-      <div class="wf-row">
-        <div class="wfn" data-c="orange"><div class="wfn-ico">DC</div><div class="wfn-body"><div class="wfn-name">Discord Drop</div><div class="wfn-sub">KakaoTalk · Capture · SMS</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="cyan"><div class="wfn-ico">OCR</div><div class="wfn-body"><div class="wfn-name">OCR &amp; Parse</div><div class="wfn-sub">Image + Text</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="purple"><div class="wfn-ico">CL</div><div class="wfn-body"><div class="wfn-name">Claude · Extract</div><div class="wfn-sub">Date · Place · Attendees</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="blue"><div class="wfn-ico">API</div><div class="wfn-body"><div class="wfn-name">Calendar API</div><div class="wfn-sub">Google</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="green"><div class="wfn-ico">CAL</div><div class="wfn-body"><div class="wfn-name">Google Calendar</div><div class="wfn-sub">Event created</div></div></div>
-      </div>
-      <div class="wf-meta">
-        <span class="pill">Repo · 002-8_discord_schedule_calendar</span>
-        <span class="pill">launchd · 상시 실행</span>
-        <span class="pill">예: 식사 약속 · 골프 예약</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== s16 Weekly Impacts ===== -->
-<section class="slide" id="s16">
-  <div class="slide-inner reveal">
-    <div class="eyebrow">Productivity · 03</div>
+    <div class="eyebrow">대표 사례 · 02</div>
     <h2 class="headline"><span class="gradient-text">Weekly Impacts</span></h2>
+    <p class="body-text-kr">평소 머릿속에 떠오르는 태스크를 말 한 마디로 인박스에 적재 → 월요일 아침, 팀원별 페이지로 자동 정리됩니다.</p>
     <div class="wf-wrap">
       <div class="wf-row">
         <div class="wfn" data-c="orange"><div class="wfn-ico">REC</div><div class="wfn-body"><div class="wfn-name">Voice Capture</div><div class="wfn-sub">Custom App</div></div></div>
@@ -639,61 +576,96 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s17 Intelligence Skill ===== -->
-<section class="slide" id="s17">
+<!-- s15 대표 3: AICC Role-Playing Agent -->
+<section class="slide" id="s15">
   <div class="slide-inner reveal">
-    <div class="eyebrow">Productivity · 04</div>
-    <h2 class="headline"><span class="gradient-text">Pre-Meeting Intelligence</span></h2>
+    <div class="eyebrow">대표 사례 · 03</div>
+    <h2 class="headline"><span class="gradient-text">AICC Role-Playing</span><br>Agent</h2>
+    <p class="body-text-kr">실제 고객 발화 150회+의 회의록을 학습해, 팀이 도메인을 빠르게 익히도록 돕는 롤플레잉 시뮬레이터.</p>
     <div class="wf-wrap">
       <div class="wf-row">
-        <div class="wfn" data-c="orange"><div class="wfn-ico">CAL</div><div class="wfn-body"><div class="wfn-name">Calendar Event</div><div class="wfn-sub">company_name_role</div></div></div>
+        <div class="wfn" data-c="orange"><div class="wfn-ico">STT</div><div class="wfn-body"><div class="wfn-name">150+ Meeting Transcripts</div><div class="wfn-sub">Last 3 months</div></div></div>
         <div class="wfe"></div>
-        <div class="wfn" data-c="cyan"><div class="wfn-ico">5m</div><div class="wfn-body"><div class="wfn-name">5-min Polling</div><div class="wfn-sub">Detector</div></div></div>
+        <div class="wfn" data-c="purple"><div class="wfn-ico">CL</div><div class="wfn-body"><div class="wfn-name">Scenario Builder</div><div class="wfn-sub">Claude</div></div></div>
         <div class="wfe"></div>
-        <div class="wfn" data-c="purple"><div class="wfn-ico">CL</div><div class="wfn-body"><div class="wfn-name">Claude · Research</div><div class="wfn-sub">Company · People · News</div></div></div>
+        <div class="wfn" data-c="cyan"><div class="wfn-ico">RP</div><div class="wfn-body"><div class="wfn-name">Role-Play Engine</div><div class="wfn-sub">Customer voice</div></div></div>
         <div class="wfe"></div>
-        <div class="wfn" data-c="blue"><div class="wfn-ico">TP</div><div class="wfn-body"><div class="wfn-name">Talking Points</div><div class="wfn-sub">Compose</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="green"><div class="wfn-ico">NT</div><div class="wfn-body"><div class="wfn-name">Notion Brief</div><div class="wfn-sub">Read before meeting</div></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== s18 Share Content (YouTube) ===== -->
-<section class="slide" id="s18">
-  <div class="slide-inner reveal">
-    <div class="eyebrow">Share Content · 01</div>
-    <h2 class="headline"><span class="gradient-text">YouTube to Notion</span></h2>
-    <div class="wf-wrap">
-      <div class="wf-row">
-        <div class="wfn" data-c="orange"><div class="wfn-ico">DC</div><div class="wfn-body"><div class="wfn-name">Discord URL Drop</div><div class="wfn-sub">Trigger</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="cyan"><div class="wfn-ico">YT</div><div class="wfn-body"><div class="wfn-name">Transcript Extract</div><div class="wfn-sub">Captions</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="purple"><div class="wfn-ico">CL</div><div class="wfn-body"><div class="wfn-name">Claude CLI · Summarize</div><div class="wfn-sub">Key points</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="blue"><div class="wfn-ico">FMT</div><div class="wfn-body"><div class="wfn-name">Reformat</div><div class="wfn-sub">Notion-ready</div></div></div>
-        <div class="wfe"></div>
-        <div class="wfn" data-c="green"><div class="wfn-ico">NT</div><div class="wfn-body"><div class="wfn-name">Notion</div><div class="wfn-sub">Personal brief</div></div></div>
+        <div class="wfn" data-c="green"><div class="wfn-ico">UI</div><div class="wfn-body"><div class="wfn-name">Trainee Interface</div><div class="wfn-sub">Pilot · Feedback loop</div></div></div>
       </div>
       <div class="wf-meta">
-        <span class="pill">Repo · 002-1_Claude_CLI_Youtube</span>
-        <span class="pill">틈새 시간 = 노션 요약 · 시간 될 때 = 영상 직접</span>
+        <span class="pill">팀 8명 · 도메인 학습 필요 6명</span>
+        <span class="pill">실제 고객 발화 기반 시나리오</span>
+      </div>
+    </div>
+    <div class="video-window">
+      <div class="vw-chrome">
+        <span class="vd r"></span><span class="vd y"></span><span class="vd g"></span>
+        <span class="vw-addr">aicc-roleplay.demo</span>
+      </div>
+      <div class="vw-screen">
+        <div class="play"></div>
+        <div class="vw-cap">SAMPLE VIDEO SLOT</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== s19 Knowledge Collection Hub (4-set) ===== -->
-<section class="slide" id="s19">
+<!-- s16 나머지 갤러리 -->
+<section class="slide" id="s16">
   <div class="slide-inner reveal">
-    <div class="eyebrow">Share Content · The Hub</div>
-    <h2 class="headline"><span class="gradient-text">Knowledge Collection Hub</span></h2>
+    <div class="eyebrow">The Rest</div>
+    <h2 class="headline">그 외에도,<br><span class="gradient-text">이런 것들이 돌아갑니다.</span></h2>
+    <div class="rest-grid">
+      <div class="rest-card">
+        <div class="rest-shot">SCREENSHOT</div>
+        <div class="rest-eyebrow">WORK</div>
+        <div class="rest-title">Memo Classification Agent</div>
+        <div class="rest-sub">AICC 전환 컨설팅용 상담메모 자동 분류</div>
+      </div>
+      <div class="rest-card">
+        <div class="rest-shot">SCREENSHOT</div>
+        <div class="rest-eyebrow">WORK</div>
+        <div class="rest-title">PQ Data Analysis Agent</div>
+        <div class="rest-sub">PQ 데이터 분석 자동화 (진행 중)</div>
+      </div>
+      <div class="rest-card">
+        <div class="rest-shot">SCREENSHOT</div>
+        <div class="rest-eyebrow">PRODUCTIVITY</div>
+        <div class="rest-title">Calendar Auto-Sync</div>
+        <div class="rest-sub">디스코드 드롭 → OCR → 구글 캘린더</div>
+      </div>
+      <div class="rest-card">
+        <div class="rest-shot">SCREENSHOT</div>
+        <div class="rest-eyebrow">PRODUCTIVITY</div>
+        <div class="rest-title">Pre-Meeting Intelligence</div>
+        <div class="rest-sub">캘린더 이벤트 → 회사/인물/이슈 → 노션 브리프</div>
+      </div>
+      <div class="rest-card">
+        <div class="rest-shot">SCREENSHOT</div>
+        <div class="rest-eyebrow">SHARE CONTENT</div>
+        <div class="rest-title">YouTube to Notion</div>
+        <div class="rest-sub">디스코드 URL drop → 요약 → 노션</div>
+      </div>
+      <div class="rest-card">
+        <div class="rest-shot">SCREENSHOT</div>
+        <div class="rest-eyebrow">EXPERIMENTS</div>
+        <div class="rest-title">50+ Folder Experiments</div>
+        <div class="rest-sub">e-Book · 소설 · 청약홈 · 게임 · 뉴스 스크랩</div>
+      </div>
+    </div>
+    <p class="footer-text">각 모듈은 독립적으로 동작하고, 필요에 따라 서로 연결됩니다.</p>
+  </div>
+</section>
+
+<!-- s17 Knowledge Collection Hub -->
+<section class="slide" id="s17">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">The Hub</div>
+    <h2 class="headline"><span class="gradient-text">Knowledge</span><br>Collection Hub</h2>
     <p class="body-text-kr">서로 다른 채널의 콘텐츠가 Discord를 거쳐 Notion에 모입니다.</p>
     <div class="wf-wrap">
       <div class="wf-row" style="justify-content:space-between">
-        <div class="wf-fan" style="border-left:none;padding:0;gap:14px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
           <div class="wfn" data-c="orange"><div class="wfn-ico">YT</div><div class="wfn-body"><div class="wfn-name">YouTube</div><div class="wfn-sub">Long-form summary</div></div></div>
           <div class="wfn" data-c="orange"><div class="wfn-ico">SP</div><div class="wfn-body"><div class="wfn-name">Solopreneur</div><div class="wfn-sub">Reference clips</div></div></div>
           <div class="wfn" data-c="orange"><div class="wfn-ico">IG</div><div class="wfn-body"><div class="wfn-name">Instagram</div><div class="wfn-sub">Cards (OCR) · Reels (STT)</div></div></div>
@@ -718,7 +690,51 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s20 Jarvis-style 50 Experiments ===== -->
+<!-- s18 여러분의 첫 5개 (NEW) -->
+<section class="slide" id="s18">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">Your First Five</div>
+    <h2 class="headline"><span class="gradient-text">여러분이</span><br>내일부터 만들 수 있는 것.</h2>
+    <div class="f5">
+      <div class="f5-card">
+        <div class="f5-num">01</div>
+        <div class="f5-title">영업 미팅 준비<br>자동화</div>
+        <div class="f5-body">고객·인물·이슈 수집 → 토킹 포인트 자동 생성</div>
+      </div>
+      <div class="f5-card">
+        <div class="f5-num">02</div>
+        <div class="f5-title">제안서 톤<br>1차 검수</div>
+        <div class="f5-body">초안을 Claude가 비판적으로 리뷰</div>
+      </div>
+      <div class="f5-card">
+        <div class="f5-num">03</div>
+        <div class="f5-title">주간 보고<br>자동 정리</div>
+        <div class="f5-body">Weekly Impacts 응용 — 내 인박스 → 보고서</div>
+      </div>
+      <div class="f5-card">
+        <div class="f5-num">04</div>
+        <div class="f5-title">경쟁사 동향<br>일일 브리프</div>
+        <div class="f5-body">RSS · 뉴스 · 사이트 → 매일 한 페이지 요약</div>
+      </div>
+      <div class="f5-card">
+        <div class="f5-num">05</div>
+        <div class="f5-title">고객 응답 메일<br>초안 생성</div>
+        <div class="f5-body">인텐트 + 톤만 입력 → 초안 자동 작성</div>
+      </div>
+    </div>
+    <p class="footer-text">이 중 하나만 잡으면, 충분합니다.</p>
+  </div>
+</section>
+
+<!-- s19 페인 → 자신감 → 생산성 -->
+<section class="slide" id="s19">
+  <div class="slide-inner reveal">
+    <p class="hero-quote">개인 페인 →<br>자신감 →<br><span class="gradient-text">팀의 생산성.</span></p>
+    <p class="body-text-kr" style="margin-top:32px">개인적인 페인 포인트를 해결하며 얻은 작은 자신감이,<br>업무 영역으로 확장되어 팀의 효율로 연결됩니다.</p>
+  </div>
+</section>
+
+<!-- s20 모든 게 연결됩니다 (Jarvis) -->
 <section class="slide" id="s20">
   <div class="slide-inner reveal">
     <div class="eyebrow">The System</div>
@@ -764,8 +780,8 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
         </svg>
       </div>
       <div class="jarvis-fg">
-        <p class="jarvis-msg">개인 페인을 풀자<br>업무가 따라왔습니다.</p>
-        <p class="jarvis-sub">개인적인 페인 포인트를 해결하며 얻은 자신감이 업무 영역으로 확장됐고,<br>그렇게 만든 도구들이 다시 팀의 생산성과 효율성을 끌어올리는 흐름을 만들었습니다.</p>
+        <p class="jarvis-msg">업무 · 생산성 · 개인용 —<br>네 가지 스킬이 하나로.</p>
+        <p class="jarvis-sub">방향만 잡으면, 나머지 실행은 에이전트들이 합니다.<br>리더는 무엇을 만들지 결정하고, 에이전트들은 만듭니다.</p>
         <div class="jarvis-grid">
           <div class="jarvis-cell"><div class="jc-num">SKILL 01</div><div class="jc-title">Work Automation</div><div class="jc-body">AICC 도메인 — 분류 · 분석 · 훈련</div></div>
           <div class="jarvis-cell"><div class="jc-num">SKILL 02</div><div class="jc-title">Productivity</div><div class="jc-body">미팅노트 · 캘린더 · Weekly Impacts</div></div>
@@ -777,18 +793,24 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s21 Section Closer ===== -->
+<!-- s21 AI는 압축, 가치는 사람 (NEW · 고승원) -->
 <section class="slide" id="s21">
   <div class="slide-inner reveal">
-    <p class="hero-quote">개인 페인 →<br>자신감 →<br><span class="gradient-text">팀의 생산성.</span></p>
-    <p class="body-text-kr" style="margin-top:32px">개인 페인을 해결한 작은 자신감이, 결국 팀의 효율로 연결됩니다.</p>
+    <div class="eyebrow">한 가지만</div>
+    <h2 class="headline">AI는 압축할 뿐,<br><span class="gradient-text">가치는 만들지 않습니다.</span></h2>
+    <div class="qbox" style="margin-top:48px">
+      <div class="q-eyebrow">Quote</div>
+      <p class="q-text">"AI는 생산성을 압축해 주는 도구일 뿐, 내게 없던 가치를 만들어 주는 도구는 아닙니다. 가치는 온전히 '나'로부터 나옵니다."</p>
+      <p class="q-attr">— 고승원 · 디지털타임스 「궁금한 건 못 참아」</p>
+    </div>
+    <p class="body-text-kr" style="margin-top:32px;font-weight:600;color:var(--text)">그래서 — 페인이 출발점이고, 사람이 중심입니다.</p>
   </div>
 </section>
 
-<!-- ===== Section 03 ===== -->
-<section class="section-divider"><div><div class="label">Section 03 · Before The Build</div><h2>Attitude</h2></div></section>
+<!-- ===== Section divider: Attitude ===== -->
+<section class="section-divider"><div><div class="label">Section 03 · 과정에 앞서</div><h2>Attitude</h2></div></section>
 
-<!-- ===== s22 Attitude Intro ===== -->
+<!-- s22 Attitude intro -->
 <section class="slide" id="s22">
   <div class="slide-inner reveal">
     <div class="eyebrow">Attitude</div>
@@ -796,7 +818,7 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s23 Attitude 01 ===== -->
+<!-- s23 Attitude 01 -->
 <section class="slide" id="s23">
   <div class="slide-inner reveal">
     <div class="big-num">01</div>
@@ -818,7 +840,7 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s24 Attitude 02 ===== -->
+<!-- s24 Attitude 02 -->
 <section class="slide" id="s24">
   <div class="slide-inner reveal">
     <div class="big-num">02</div>
@@ -829,7 +851,7 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s25 Attitude 03 ===== -->
+<!-- s25 Attitude 03 -->
 <section class="slide" id="s25">
   <div class="slide-inner reveal">
     <div class="big-num">03</div>
@@ -838,7 +860,7 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s26 Attitude 04 ===== -->
+<!-- s26 Attitude 04 -->
 <section class="slide" id="s26">
   <div class="slide-inner reveal">
     <div class="big-num">04</div>
@@ -848,7 +870,7 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s27 Attitude 05 ===== -->
+<!-- s27 Attitude 05 -->
 <section class="slide" id="s27">
   <div class="slide-inner reveal">
     <div class="big-num">05</div>
@@ -864,8 +886,22 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s28 Attitude 06 + Just Do It ===== -->
+<!-- s28 RizzGPT — 고민 대신 시도 (NEW) -->
 <section class="slide" id="s28">
+  <div class="slide-inner reveal">
+    <div class="eyebrow">한 사람 이야기</div>
+    <h2 class="headline">고민 대신,<br><span class="gradient-text">시도.</span></h2>
+    <p class="body-text-kr" style="max-width:880px">블레이크 앤더슨은 개발자가 아니었습니다. 친구가 데이팅 앱 메시지로 고민하는 걸 보고, "ChatGPT에 물어보자"고 했죠. 그 한 번이 발단이 되어, ChatGPT에 하나하나 물어가며 <span class="gradient-text" style="font-weight:700">한 달 반</span>에 앱을 만들었습니다. 그 앱이 <span class="gradient-text" style="font-weight:700">RizzGPT</span> — 1년 만에 수십억 매출.</p>
+    <div class="qbox" style="margin-top:48px">
+      <div class="q-eyebrow">Quote</div>
+      <p class="q-text">"굉장히 많이 고민하기보다, 생각나는 것은 그냥 무조건 다 시도하세요. 끊임없이 시도하는 것 — 그게 경쟁력입니다."</p>
+      <p class="q-attr">— 고승원 · 디지털타임스 「궁금한 건 못 참아」</p>
+    </div>
+  </div>
+</section>
+
+<!-- s29 Attitude 06 + Just Do It -->
+<section class="slide" id="s29">
   <div class="slide-inner reveal">
     <div class="big-num">06</div>
     <h2 class="att-headline">겁먹지 말고,<br><span class="gradient-text">일단 하세요.</span></h2>
@@ -875,11 +911,11 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== Section 04 ===== -->
+<!-- ===== Section divider: How We Run ===== -->
 <section class="section-divider"><div><div class="label">Section 04</div><h2>How We Run</h2></div></section>
 
-<!-- ===== s29 Principles ===== -->
-<section class="slide" id="s29">
+<!-- s30 세 가지 약속 -->
+<section class="slide" id="s30">
   <div class="slide-inner reveal">
     <div class="eyebrow">Today's Principles</div>
     <h2 class="headline"><span class="gradient-text">세 가지 약속.</span></h2>
@@ -891,8 +927,8 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
   </div>
 </section>
 
-<!-- ===== s30 Q&A ===== -->
-<section class="slide" id="s30">
+<!-- s31 다음 시간 + Q&A -->
+<section class="slide" id="s31">
   <div class="slide-inner reveal">
     <div class="eyebrow">Next</div>
     <h2 class="headline"><span class="gradient-text">다음 시간.</span></h2>
@@ -901,7 +937,7 @@ h3.subhead{font-size:clamp(20px,2.2vw,28px);font-weight:500;color:var(--text-mut
       <div class="next-item"><div class="next-tag">SESSION 3</div><div class="next-title">두 번째 에이전트 + 본인 페인 매핑</div></div>
     </div>
     <p class="hero-quote gradient-text" style="margin-top:80px;font-size:clamp(56px,9vw,144px)">Q &amp; A.</p>
-    <p class="body-text" style="margin-top:24px">무엇이든 물어보세요.</p>
+    <p class="body-text" style="margin-top:24px">오늘 끝나면 가져갈 한 가지를 꼭 정하고 가세요.</p>
   </div>
 </section>
 
