@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 코더 랩 · 파이프라인 한눈에 보기</title>
+<style>
+  :root {
+    --bg: #fbfbfd;
+    --surface: #ffffff;
+    --surface-2: #f5f5f7;
+    --text-1: #1d1d1f;
+    --text-2: #6e6e73;
+    --text-3: #86868b;
+    --blue: #0071e3;
+    --blue-light: #e3f2ff;
+    --pink: #ff375f;
+    --pink-light: #ffe5ec;
+    --green: #34c759;
+    --green-light: #e2f7e8;
+    --orange: #ff9500;
+    --orange-light: #fff1dc;
+    --purple: #af52de;
+    --purple-light: #f4e9ff;
+    --indigo: #5e5ce6;
+    --teal: #30b0c7;
+    --border: #e5e5ea;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+    --shadow: 0 8px 32px rgba(0,0,0,0.06);
+    --shadow-lg: 0 24px 64px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                 "Pretendard", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text-1);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    padding-top: 56px;
+  }
+
+  /* ===== Nav ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 100;
+    background: rgba(251,251,253,0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
+  }
+  nav .brand { font-size: 17px; font-weight: 600; }
+  nav .brand .gradient {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  nav .meta { display: flex; gap: 16px; align-items: center; }
+  nav .pill-mini {
+    font-size: 12px; padding: 4px 10px; border-radius: 100px;
+    background: var(--green-light); color: var(--green); font-weight: 600;
+  }
+  @media (max-width: 600px) { nav .meta .pill-mini { display: none; } }
+
+  /* ===== Hero — Big Picture One-Screen ===== */
+  .hero {
+    padding: 40px 24px 24px;
+    text-align: center;
+  }
+  .hero-tag {
+    display: inline-block;
+    color: var(--blue); font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    background: var(--blue-light);
+    padding: 6px 14px; border-radius: 100px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, #0071e3 0%, #af52de 50%, #ff375f 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p { color: var(--text-2); font-size: 17px; max-width: 720px; margin: 0 auto; }
+
+  /* ===== Big Infographic ===== */
+  .infographic {
+    max-width: 1400px; margin: 32px auto;
+    padding: 32px;
+    background: var(--surface);
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .infographic h3 {
+    font-size: 13px; font-weight: 700;
+    color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  /* M1-M7 horizontal flow */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 1100px) { .flow { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 700px) { .flow { grid-template-columns: repeat(2, 1fr); } }
+
+  .flow-node {
+    background: var(--surface-2);
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .flow-node:hover { transform: translateY(-3px); }
+  .flow-node .badge {
+    position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+    background: white; padding: 2px 8px; border-radius: 100px;
+    font-size: 10px; font-weight: 700;
+    border: 1px solid var(--border);
+  }
+  .flow-node .ico {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    margin: 12px auto 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+  }
+  .flow-node .label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .flow-node .desc { font-size: 11px; color: var(--text-2); line-height: 1.3; }
+  .flow-node .status { font-size: 10px; margin-top: 8px; font-weight: 600; }
+  .flow-node[data-status="auto"] .ico { background: var(--green); }
+  .flow-node[data-status="auto"] .badge { color: var(--green); }
+  .flow-node[data-status="auto"] .status { color: var(--green); }
+  .flow-node[data-status="manual"] .ico { background: var(--pink); }
+  .flow-node[data-status="manual"] .badge { color: var(--pink); }
+  .flow-node[data-status="manual"] .status { color: var(--pink); }
+  .flow-node[data-status="pending"] .ico { background: var(--text-3); }
+  .flow-node[data-status="pending"] .badge { color: var(--text-3); }
+  .flow-node[data-status="pending"] .status { color: var(--text-3); }
+
+  /* Bottom row: actor split */
+  .actor-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  @media (max-width: 700px) { .actor-split { grid-template-columns: 1fr; } }
+  .actor-card {
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .actor-card.human {
+    background: var(--pink-light);
+    border-left: 4px solid var(--pink);
+  }
+  .actor-card.auto {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+  }
+  .actor-card h4 {
+    font-size: 14px; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .actor-card.human h4 { color: var(--pink); }
+  .actor-card.auto h4 { color: var(--green); }
+  .actor-card ul { list-style: none; padding: 0; }
+  .actor-card li {
+    font-size: 13px; padding: 6px 0; color: var(--text-1);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .actor-card li::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .actor-card.human li::before { background: var(--pink); }
+  .actor-card.auto li::before { background: var(--green); }
+
+  /* ===== Sections ===== */
+  section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+  .sec-tag {
+    color: var(--blue); font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .sec-title {
+    font-size: clamp(28px, 4vw, 42px); font-weight: 700;
+    letter-spacing: -0.025em; margin-top: 4px; margin-bottom: 12px;
+  }
+  .sec-desc { color: var(--text-2); font-size: 16px; max-width: 720px; margin-bottom: 36px; }
+
+  /* ===== Daily Routine Timeline ===== */
+  .timeline {
+    display: grid; gap: 8px;
+  }
+  .tl-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 90px;
+    gap: 16px; align-items: center;
+    padding: 18px 20px;
+    background: var(--surface);
+    border-radius: 14px;
+    border-left: 4px solid transparent;
+    transition: transform 0.15s;
+  }
+  .tl-row:hover { transform: translateX(4px); }
+  .tl-row[data-type="auto"] { border-left-color: var(--green); }
+  .tl-row[data-type="hitl"] { border-left-color: var(--pink); }
+  .tl-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--text-1); color: white;
+    font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tl-row[data-type="auto"] .tl-num { background: var(--green); }
+  .tl-row[data-type="hitl"] .tl-num { background: var(--pink); }
+  .tl-time {
+    font-size: 12px; color: var(--text-3); margin-top: 4px;
+  }
+  .tl-content h5 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .tl-content p { font-size: 13px; color: var(--text-2); }
+  .tl-badge {
+    text-align: right;
+    font-size: 11px; font-weight: 700;
+    padding: 6px 12px; border-radius: 100px;
+    display: inline-block;
+  }
+  .tl-row[data-type="auto"] .tl-badge { background: var(--green-light); color: var(--green); }
+  .tl-row[data-type="hitl"] .tl-badge { background: var(--pink-light); color: var(--pink); }
+  .tl-time-total {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--text-1); color: white;
+    padding: 14px 24px; border-radius: 100px;
+    margin-top: 24px;
+    font-weight: 600; font-size: 14px;
+  }
+  .tl-time-total .v {
+    background: white; color: var(--text-1);
+    padding: 4px 12px; border-radius: 100px; font-weight: 700;
+  }
+
+  /* ===== Phase Roadmap Timeline ===== */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  @media (max-width: 900px) {
+    .roadmap { grid-template-columns: 1fr; gap: 12px; }
+  }
+  .roadmap-line {
+    position: absolute; top: 32px; left: 5%; right: 5%; height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--purple), var(--pink), var(--orange), var(--green));
+    border-radius: 100px;
+    z-index: 0;
+  }
+  @media (max-width: 900px) { .roadmap-line { display: none; } }
+  .roadmap-step {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 0 8px;
+  }
+  .roadmap-dot {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: white;
+    border: 4px solid var(--blue);
+    margin: 0 auto 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 24px; color: var(--blue);
+    box-shadow: var(--shadow);
+  }
+  .roadmap-step:nth-child(2) .roadmap-dot { border-color: var(--blue); color: var(--blue); }
+  .roadmap-step:nth-child(3) .roadmap-dot { border-color: var(--purple); color: var(--purple); }
+  .roadmap-step:nth-child(4) .roadmap-dot { border-color: var(--pink); color: var(--pink); }
+  .roadmap-step:nth-child(5) .roadmap-dot { border-color: var(--orange); color: var(--orange); }
+  .roadmap-step:nth-child(6) .roadmap-dot { border-color: var(--green); color: var(--green); }
+  .roadmap-step.current .roadmap-dot {
+    background: var(--blue);
+    color: white;
+    transform: scale(1.1);
+  }
+  .roadmap-step.current::after {
+    content: "현재"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--blue); color: white;
+    padding: 3px 10px; border-radius: 100px;
+    font-size: 10px; font-weight: 700;
+  }
+  .roadmap-step h5 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .roadmap-step .when { font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+  .roadmap-step .goal { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+
+  /* ===== Folder Structure Cards ===== */
+  .folder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .folder-grid { grid-template-columns: 1fr; } }
+  .folder-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .folder-card .top {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .folder-card .top .icon-box {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 16px;
+  }
+  .folder-card[data-color="blue"] .icon-box { background: var(--blue); }
+  .folder-card[data-color="purple"] .icon-box { background: var(--purple); }
+  .folder-card[data-color="pink"] .icon-box { background: var(--pink); }
+  .folder-card[data-color="green"] .icon-box { background: var(--green); }
+  .folder-card[data-color="orange"] .icon-box { background: var(--orange); }
+  .folder-card[data-color="teal"] .icon-box { background: var(--teal); }
+  .folder-card .name {
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 14px; font-weight: 600;
+  }
+  .folder-card .role { font-size: 13px; color: var(--text-2); margin-bottom: 12px; }
+  .folder-card .files { list-style: none; padding: 0; }
+  .folder-card .files li {
+    font-size: 12px; color: var(--text-2); padding: 3px 0;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .folder-card .files li.new::before {
+    content: "★ "; color: var(--orange); font-weight: 700;
+  }
+
+  /* ===== Trigger Cards ===== */
+  .triggers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 700px) { .triggers-grid { grid-template-columns: 1fr; } }
+  .trigger {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .trigger code {
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 13px; font-weight: 600;
+    background: var(--text-1); color: #fff;
+    padding: 8px 12px; border-radius: 8px;
+    display: inline-block;
+  }
+  .trigger code .kw { color: #ff6482; }
+  .trigger .arrow { color: var(--text-3); font-size: 11px; }
+  .trigger .out { font-size: 13px; color: var(--text-1); line-height: 1.4; }
+
+  /* ===== Articles Grid ===== */
+  .articles-status {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 900px) { .articles-status { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .articles-status { grid-template-columns: 1fr; } }
+  .article-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .article-box .episode {
+    font-size: 11px; font-weight: 700; color: var(--text-3);
+    letter-spacing: 0.05em; margin-bottom: 6px;
+  }
+  .article-box .title {
+    font-size: 13px; font-weight: 600; line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .article-box .meta {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    font-size: 10px;
+  }
+  .article-box .meta .tag {
+    padding: 3px 8px; border-radius: 100px;
+    background: var(--surface-2); color: var(--text-2);
+    font-weight: 600;
+  }
+  .article-box .meta .tag.golden { background: var(--green-light); color: var(--green); }
+  .article-box .meta .tag.var-b { background: var(--orange-light); color: var(--orange); }
+  .article-box .meta .tag.live { background: var(--blue-light); color: var(--blue); }
+  .article-box .meta .tag.adsense { background: var(--pink); color: white; }
+
+  /* ===== KPI grid ===== */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 700px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .kpi .v {
+    font-size: 36px; font-weight: 700;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1; margin-bottom: 8px;
+  }
+  .kpi .l { font-size: 12px; color: var(--text-2); font-weight: 500; }
+
+  /* ===== Footer ===== */
+  footer {
+    text-align: center; padding: 48px 24px;
+    color: var(--text-3); font-size: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+  footer a { color: var(--blue); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><span class="gradient">AI 코더 랩</span> · Pipeline</div>
+  <div class="meta">
+    <span class="pill-mini">● Phase 1 진행 중</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-tag">한눈에 보는 자동화 파이프라인</span>
+  <h1>1인 개발자가<br><span class="gradient">한국어 IT 블로그를</span><br>매일 발행하는 법</h1>
+  <p>Notion에서 주제 발굴 → SEO 검증 → 본인 환경 실측 → Blogger 발행까지. 7단계 모듈 · 자동화 4 스크립트 · HITL 5체크포인트.</p>
+</div>
+
+<!-- BIG INFOGRAPHIC -->
+<div class="infographic">
+  <h3>· 한 화면 워크플로우 · 데이터·사람·자동화 흐름</h3>
+
+  <!-- M1-M7 Flow -->
+  <div class="flow">
+    <div class="flow-node" data-status="pending">
+      <div class="badge">M1</div>
+      <div class="ico">●</div>
+      <div class="label">Trends</div>
+      <div class="desc">트렌드 수집</div>
+      <div class="status">Phase 5+</div>
+    </div>
+    <div class="flow-node" data-status="auto">
+      <div class="badge">M2</div>
+      <div class="ico">✓</div>
+      <div class="label">Keywords</div>
+      <div class="desc">6지표 평가</div>
+      <div class="status">완성</div>
+    </div>
+    <div class="flow-node" data-status="manual">
+      <div class="badge">M3</div>
+      <div class="ico">✎</div>
+      <div class="label">Drafts</div>
+      <div class="desc">Skeleton·Draft·Final</div>
+      <div class="status">사람 · P1</div>
+    </div>
+    <div class="flow-node" data-status="pending">
+      <div class="badge">M4</div>
+      <div class="ico">▦</div>
+      <div class="label">Images</div>
+      <div class="desc">스샷·일러스트</div>
+      <div class="status">Phase 4+</div>
+    </div>
+    <div class="flow-node" data-status="manual">
+      <div class="badge">M5</div>
+      <div class="ico">↑</div>
+      <div class="label">Publish</div>
+      <div class="desc">Blogger 발행</div>
+      <div class="status">사람 · P1</div>
+    </div>
+    <div class="flow-node" data-status="manual">
+      <div class="badge">M6</div>
+      <div class="ico">⊙</div>
+      <div class="label">Index</div>
+      <div class="desc">색인 요청</div>
+      <div class="status">사람 · P1</div>
+    </div>
+    <div class="flow-node" data-status="pending">
+      <div class="badge">M7</div>
+      <div class="ico">⤴</div>
+      <div class="label">Monitor</div>
+      <div class="desc">GSC·학습</div>
+      <div class="status">Phase 3+</div>
+    </div>
+  </div>
+
+  <!-- Actor Split -->
+  <div class="actor-split">
+    <div class="actor-card human">
+      <h4>● 사람이 하는 일 (HITL 5체크포인트)</h4>
+      <ul>
+        <li>매뉴얼 단계 1~5 실행 + 본인 환경 스샷 (30~40분)</li>
+        <li>draft.md 검수 · H2 4 에러 본인 경험 교체 (10분)</li>
+        <li>H2 5 1주일 운영 결과 실측 수치 입력 (10분)</li>
+        <li>모바일 미리보기 · 본업 정보 노출 X 확인 (3분)</li>
+        <li>Blogger 발행 클릭 + Indexing API 호출 (6분)</li>
+      </ul>
+    </div>
+    <div class="actor-card auto">
+      <h4>● 자동화 (Claude · 4 scripts)</h4>
+      <ul>
+        <li>scripts/new_article.sh · 새 글 폴더 + 5파일 생성</li>
+        <li>scripts/check_seo.py · SEO 룰 8가지 검증</li>
+        <li>scripts/md_to_html.py · final.md → Blogger HTML</li>
+        <li>scripts/publish_checklist.sh · 발행 직전 9가지 점검</li>
+        <li>CLAUDE.md 트리거 · 한 줄 명령으로 모든 자동화 실행</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- KPI -->
+<section>
+  <div class="kpis">
+    <div class="kpi"><div class="v">12</div><div class="l">Phase 1 폴더 완성 (06-01~06-20)</div></div>
+    <div class="kpi"><div class="v">65</div><div class="l">Notion DB 등록 주제</div></div>
+    <div class="kpi"><div class="v">9/12</div><div class="l">골든존 (발행량 &lt; 100)</div></div>
+    <div class="kpi"><div class="v">60분</div><div class="l">편당 평균 작업 시간 목표</div></div>
+  </div>
+</section>
+
+<!-- DAILY ROUTINE -->
+<section>
+  <span class="sec-tag">일일 루틴 · 1시간/편</span>
+  <h2 class="sec-title">9단계 흐름</h2>
+  <p class="sec-desc"><strong style="color: var(--green)">자동 5개</strong> · <strong style="color: var(--pink)">사람 4개</strong> · 사람이 꼭 해야 하는 부분만 HITL로 배치.</p>
+
+  <div class="timeline">
+    <div class="tl-row" data-type="auto">
+      <div>
+        <div class="tl-num">1</div>
+        <div class="tl-time">0~1분</div>
+      </div>
+      <div class="tl-content">
+        <h5>claude "{N}번 글 시작"</h5>
+        <p>Claude가 skeleton.md 열고 매뉴얼 단계 1 안내</p>
+      </div>
+      <div class="tl-badge">자동</div>
+    </div>
+    <div class="tl-row" data-type="hitl">
+      <div>
+        <div class="tl-num">2</div>
+        <div class="tl-time">30~40분</div>
+      </div>
+      <div class="tl-content">
+        <h5>매뉴얼 단계 1~5 실행 + 스샷</h5>
+        <p>본인 환경에서 직접 실행 · screenshots/ 저장 · notes.md 메모</p>
+      </div>
+      <div class="tl-badge">HITL</div>
+    </div>
+    <div class="tl-row" data-type="hitl">
+      <div>
+        <div class="tl-num">3</div>
+        <div class="tl-time">20분</div>
+      </div>
+      <div class="tl-content">
+        <h5>draft.md 검수 + H2 4·5 본인 경험 교체</h5>
+        <p>AI 일반 케이스 → 본인 실측·실제 시행착오 (AdSense 정책 핵심)</p>
+      </div>
+      <div class="tl-badge">HITL</div>
+    </div>
+    <div class="tl-row" data-type="auto">
+      <div>
+        <div class="tl-num">4</div>
+        <div class="tl-time">1분</div>
+      </div>
+      <div class="tl-content">
+        <h5>claude /seo-check</h5>
+        <p>SEO 룰 8가지 자동 검증 · 경고 표시</p>
+      </div>
+      <div class="tl-badge">자동</div>
+    </div>
+    <div class="tl-row" data-type="auto">
+      <div>
+        <div class="tl-num">5</div>
+        <div class="tl-time">1분</div>
+      </div>
+      <div class="tl-content">
+        <h5>claude /to-html</h5>
+        <p>final.md → final.html · Blogger HTML 보기 호환</p>
+      </div>
+      <div class="tl-badge">자동</div>
+    </div>
+    <div class="tl-row" data-type="hitl">
+      <div>
+        <div class="tl-num">6</div>
+        <div class="tl-time">3분</div>
+      </div>
+      <div class="tl-content">
+        <h5>모바일 미리보기</h5>
+        <p>본업 정보 노출 X 확인 · 마지막 눈으로 검수</p>
+      </div>
+      <div class="tl-badge">HITL</div>
+    </div>
+    <div class="tl-row" data-type="auto">
+      <div>
+        <div class="tl-num">7</div>
+        <div class="tl-time">1분</div>
+      </div>
+      <div class="tl-content">
+        <h5>claude /publish-check</h5>
+        <p>9가지 점검 + Blogger URL 안내 + 클립보드 복사</p>
+      </div>
+      <div class="tl-badge">자동</div>
+    </div>
+    <div class="tl-row" data-type="hitl">
+      <div>
+        <div class="tl-num">8</div>
+        <div class="tl-time">5분</div>
+      </div>
+      <div class="tl-content">
+        <h5>Blogger 발행</h5>
+        <p>HTML 보기 → ⌘V → 카테고리·메타 입력 → 발행 클릭</p>
+      </div>
+      <div class="tl-badge">HITL</div>
+    </div>
+    <div class="tl-row" data-type="hitl">
+      <div>
+        <div class="tl-num">9</div>
+        <div class="tl-time">1분</div>
+      </div>
+      <div class="tl-content">
+        <h5>Indexing API 호출 (Phase 1 수동)</h5>
+        <p>URL_UPDATED 요청 · meta.yaml 갱신 · Phase 2부터 자동</p>
+      </div>
+      <div class="tl-badge">HITL</div>
+    </div>
+  </div>
+
+  <div class="tl-time-total">
+    총 작업 시간 <span class="v">60~75분 / 편</span>
+  </div>
+</section>
+
+<!-- PHASE ROADMAP -->
+<section>
+  <span class="sec-tag">로드맵</span>
+  <h2 class="sec-title">Phase 1 → Phase 5</h2>
+  <p class="sec-desc">각 Phase 진입 트리거 명확. 결국 자기 강화 시스템으로 진화.</p>
+
+  <div class="roadmap">
+    <div class="roadmap-line"></div>
+    <div class="roadmap-step current">
+      <div class="roadmap-dot">1</div>
+      <h5>시동</h5>
+      <div class="when">06-01 ~ 06-28</div>
+      <div class="goal">16편 발행 · 12편 시점 AdSense 신청</div>
+    </div>
+    <div class="roadmap-step">
+      <div class="roadmap-dot">2</div>
+      <h5>자동 발행</h5>
+      <div class="when">7월~</div>
+      <div class="goal">M3·M5·M6 자동 · Discord 일일 리포트</div>
+    </div>
+    <div class="roadmap-step">
+      <div class="roadmap-dot">3</div>
+      <h5>에이전트화</h5>
+      <div class="when">누적 30편</div>
+      <div class="goal">LangGraph 다중 에이전트 · 환각 검증</div>
+    </div>
+    <div class="roadmap-step">
+      <div class="roadmap-dot">4</div>
+      <h5>이미지 자동</h5>
+      <div class="when">월 30만원</div>
+      <div class="goal">스샷 OCR · AI 일러스트 자동 매칭</div>
+    </div>
+    <div class="roadmap-step">
+      <div class="roadmap-dot">5</div>
+      <h5>학습 루프</h5>
+      <div class="when">월 100만원</div>
+      <div class="goal">GSC → M1 신규 시드 · 자기 강화 완성</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRIGGERS -->
+<section>
+  <span class="sec-tag">자동 트리거</span>
+  <h2 class="sec-title">CLAUDE.md에 박제된 명령</h2>
+  <p class="sec-desc">한 줄 명령으로 즉시 실행. 매번 형식·룰 반복 설명 X.</p>
+
+  <div class="triggers-grid">
+    <div class="trigger">
+      <code><span class="kw">"{N}번 글 만들어줘 #{ID} 기반"</span></code>
+      <div class="arrow">↓ Claude 자동 액션</div>
+      <div class="out">new_article.sh 호출 · 1번 폴더 형식 복사 · Notion DB row 생성 · 발행 예정일 매핑</div>
+    </div>
+    <div class="trigger">
+      <code><span class="kw">"오늘 글 시작"</span></code>
+      <div class="arrow">↓</div>
+      <div class="out">skeleton.md 열고 매뉴얼 단계 1 안내</div>
+    </div>
+    <div class="trigger">
+      <code><span class="kw">"draft 검수해줘"</span></code>
+      <div class="arrow">↓</div>
+      <div class="out">draft.md SEO 룰 검증 + 다듬기 제안</div>
+    </div>
+    <div class="trigger">
+      <code>/seo-check {N}번</code>
+      <div class="arrow">↓</div>
+      <div class="out">check_seo.py 자동 실행 · 8가지 룰</div>
+    </div>
+    <div class="trigger">
+      <code>/to-html {N}번</code>
+      <div class="arrow">↓</div>
+      <div class="out">md_to_html.py · Blogger HTML 변환</div>
+    </div>
+    <div class="trigger">
+      <code>/publish-check {N}번</code>
+      <div class="arrow">↓</div>
+      <div class="out">9가지 점검 + Blogger URL + ⌘V 안내</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLDER STRUCTURE -->
+<section>
+  <span class="sec-tag">폴더 구조</span>
+  <h2 class="sec-title">1편 = 1폴더</h2>
+  <p class="sec-desc">발행 전·중·후 모든 자산이 편별 폴더 안에. IDE 트리에서 폴더 하나만 열면 끝.</p>
+
+  <div class="folder-grid">
+    <div class="folder-card" data-color="blue">
+      <div class="top">
+        <div class="icon-box">✎</div>
+        <div class="name">articles/</div>
+      </div>
+      <div class="role">편별 산출물 (1편 = 1폴더)</div>
+      <ul class="files">
+        <li class="new">_TEMPLATE/ (scaffolding)</li>
+        <li>_backlog/ (발행 미확정)</li>
+        <li>_archive/ (6개월+ 지난 글)</li>
+        <li>{NN}_{YYYYMMDD}_{slug}/</li>
+        <li>　├ skeleton.md</li>
+        <li>　├ draft.md → final.md</li>
+        <li>　├ final.html (Blogger)</li>
+        <li>　├ meta.yaml</li>
+        <li>　├ notes.md</li>
+        <li>　├ screenshots/</li>
+        <li>　└ code/</li>
+      </ul>
+    </div>
+    <div class="folder-card" data-color="orange">
+      <div class="top">
+        <div class="icon-box">⚙</div>
+        <div class="name">scripts/</div>
+      </div>
+      <div class="role">★ 자동화 CLI 4종 (2026-05-31 신규)</div>
+      <ul class="files">
+        <li class="new">new_article.sh</li>
+        <li class="new">check_seo.py</li>
+        <li class="new">md_to_html.py</li>
+        <li class="new">publish_checklist.sh</li>
+      </ul>
+    </div>
+    <div class="folder-card" data-color="purple">
+      <div class="top">
+        <div class="icon-box">▦</div>
+        <div class="name">automation/</div>
+      </div>
+      <div class="role">변하지 않는 룰·프롬프트</div>
+      <ul class="files">
+        <li>M1_trends/README.md</li>
+        <li>M2_keywords/README.md + .py</li>
+        <li>M3_drafts/</li>
+        <li>　├ README.md (SEO 룰)</li>
+        <li>　└ gems/ (시스템 프롬프트 5종)</li>
+        <li>M4_images/</li>
+        <li>M5_publish/ + auth.py</li>
+        <li>M6_index/</li>
+        <li>M7_monitor/</li>
+      </ul>
+    </div>
+    <div class="folder-card" data-color="green">
+      <div class="top">
+        <div class="icon-box">▤</div>
+        <div class="name">data/</div>
+      </div>
+      <div class="role">주제 DB · 키워드 · 통계</div>
+      <ul class="files">
+        <li>topics/ (150편 + 평가)</li>
+        <li>keywords/ (시드)</li>
+        <li>published/ (통계, P2+)</li>
+        <li>reports/ (일일, P2+)</li>
+        <li>_shared_assets/</li>
+      </ul>
+    </div>
+    <div class="folder-card" data-color="teal">
+      <div class="top">
+        <div class="icon-box">▽</div>
+        <div class="name">docs/</div>
+      </div>
+      <div class="role">기획 · BP 분석 · 세팅 가이드</div>
+      <ul class="files">
+        <li>BP_반지하_analysis.md</li>
+        <li>BP_알파남_*.md</li>
+        <li>blogger_theme_setup.md</li>
+        <li>setup_blogger_api.md</li>
+        <li class="new">_archive/DESIGN_v1.md</li>
+      </ul>
+    </div>
+    <div class="folder-card" data-color="pink">
+      <div class="top">
+        <div class="icon-box">⌘</div>
+        <div class="name">루트</div>
+      </div>
+      <div class="role">최상위 4개 문서 (슬림)</div>
+      <ul class="files">
+        <li>README.md (빠른 시작)</li>
+        <li>CLAUDE.md (트리거·규칙)</li>
+        <li>PIPELINE.md (시스템 다이어그램)</li>
+        <li>PROGRESS.md (진행·To-do·KPI)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLES STATUS -->
+<section>
+  <span class="sec-tag">현재 상태 · Phase 1 D-1</span>
+  <h2 class="sec-title">12편 폴더·초안 완성</h2>
+  <p class="sec-desc">각 폴더에 5개 파일 + 스샷 폴더. 1번 글은 운영자가 직접 작성 중.</p>
+
+  <div class="articles-status">
+    <div class="article-box">
+      <div class="episode">EP 01 · 06-01 월</div>
+      <div class="title">Claude Code + Ollama 하이브리드 코딩</div>
+      <div class="meta"><span class="tag live">작성 중</span><span class="tag">A</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 02 · 06-03 수</div>
+      <div class="title">RSS → Readwise → Obsidian 지식 파이프라인</div>
+      <div class="meta"><span class="tag">완성</span><span class="tag golden">골든존</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 03 · 06-05 금</div>
+      <div class="title">Cline + 로컬 모델 무료 에이전트 구축</div>
+      <div class="meta"><span class="tag">완성</span><span class="tag golden">초골든</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 04 · 06-06 토</div>
+      <div class="title">n8n + Telegram + Claude 개인 비서 봇</div>
+      <div class="meta"><span class="tag">완성</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 05 · 06-08 월</div>
+      <div class="title">Notion 관계형 DB + 수식 2.0 CRM</div>
+      <div class="meta"><span class="tag">완성</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 06 · 06-10 수</div>
+      <div class="title">Obsidian iCloud 동기화 깨짐 해결</div>
+      <div class="meta"><span class="tag">완성</span><span class="tag var-b">변주 B</span><span class="tag golden">골든존</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 07 · 06-12 금</div>
+      <div class="title">Typless → Claude 회의록 요약 템플릿</div>
+      <div class="meta"><span class="tag">완성</span><span class="tag golden">초골든</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 08 · 06-13 토</div>
+      <div class="title">Obsidian Canvas + ChatGPT 마인드맵 자동</div>
+      <div class="meta"><span class="tag">완성</span><span class="tag golden">골든존</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 09 · 06-15 월</div>
+      <div class="title">Obsidian Dataview + AI 데일리노트 자동 요약</div>
+      <div class="meta"><span class="tag">완성</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 10 · 06-17 수</div>
+      <div class="title">ChatGPT + Make + Slack 미팅 노트 자동 분배</div>
+      <div class="meta"><span class="tag">완성</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 11 · 06-19 금</div>
+      <div class="title">Notion 한글 검색 안됨 5가지 우회</div>
+      <div class="meta"><span class="tag">완성</span><span class="tag var-b">변주 B</span><span class="tag golden">골든존</span></div>
+    </div>
+    <div class="article-box">
+      <div class="episode">EP 12 · 06-20 토</div>
+      <div class="title">Notion API + Discord 봇 작업 알림 자동화</div>
+      <div class="meta"><span class="tag">완성</span><span class="tag adsense">AdSense 트리거</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><strong>AI 코더 랩</strong> · 1인 개발자 한국어 블로그 자동화</div>
+  <div style="margin-top: 8px;">
+    <a href="https://aicoder-lab.blogspot.com" target="_blank">aicoder-lab.blogspot.com</a> ·
+    <a href="https://github.com/davidlikescat" target="_blank">@davidlikescat</a>
+  </div>
+  <div style="margin-top: 8px; color: var(--text-3); font-size: 11px;">Last updated: 2026-05-31</div>
+</footer>
+
+</body>
+</html>
