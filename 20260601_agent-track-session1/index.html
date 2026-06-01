@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 에이전트 트랙 1강 — 클로드 코드 입문</title>
+<meta name="description" content="클로드 코드 설치 · 핵심 개념 · 스킬 활용법 · 멀티에이전트 개요. AI 에이전트 트랙 Session 1 교육 슬라이드.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbfbfd;
+    --bg-dark: #000;
+    --bg-soft: #f5f5f7;
+    --text: #1d1d1f;
+    --text-muted: #6e6e73;
+    --text-soft: #86868b;
+    --text-on-dark: #f5f5f7;
+    --text-on-dark-muted: #a1a1a6;
+    --accent: #0071e3;
+    --accent-soft: #e8f1fb;
+    --border: #d2d2d7;
+    --green: #30d158;
+    --purple: #bf5af2;
+    --orange: #ff9f0a;
+    --grad-blue: linear-gradient(135deg, #0a84ff 0%, #5e9bff 100%);
+    --grad-warm: linear-gradient(135deg, #ff8a3d 0%, #ffb86b 100%);
+    --grad-purple: linear-gradient(135deg, #bf5af2 0%, #5e9bff 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+  ::selection { background: var(--accent); color: white; }
+
+  /* ===== Nav ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(251, 251, 253, 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 22px;
+    font-size: 12px; font-weight: 500; color: var(--text);
+  }
+  nav .brand { font-weight: 600; letter-spacing: -0.02em; }
+  nav .brand b { color: var(--accent); }
+  nav .progress { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .progress-bar {
+    position: fixed; top: 48px; left: 0; z-index: 100;
+    height: 2px; background: var(--accent); width: 0%;
+    transition: width 0.15s ease;
+  }
+
+  /* ===== Slide ===== */
+  .slide {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 100px 24px 72px;
+    position: relative; text-align: center;
+  }
+  .slide.dark { background: var(--bg-dark); color: var(--text-on-dark); }
+  .slide.dark .muted { color: var(--text-on-dark-muted); }
+  .slide.soft { background: var(--bg-soft); }
+  .slide-inner { width: 100%; max-width: 1080px; margin: 0 auto; }
+
+  .slide-no {
+    position: absolute; top: 72px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    color: var(--text-soft);
+  }
+  .slide.dark .slide-no { color: var(--text-on-dark-muted); }
+
+  /* Typography */
+  .eyebrow {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 22px;
+  }
+  .slide.dark .eyebrow { color: #5e9bff; }
+  h1.title {
+    font-size: clamp(44px, 7.5vw, 104px);
+    font-weight: 800; line-height: 1.04;
+    letter-spacing: -0.04em; margin-bottom: 22px;
+  }
+  h2.headline {
+    font-size: clamp(34px, 5.4vw, 72px);
+    font-weight: 700; line-height: 1.08;
+    letter-spacing: -0.035em; margin-bottom: 22px;
+  }
+  h3.subhead {
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 500; color: var(--text-muted);
+    line-height: 1.4; letter-spacing: -0.01em; margin-bottom: 16px;
+  }
+  .slide.dark h3.subhead { color: var(--text-on-dark-muted); }
+  .body-text {
+    font-size: clamp(16px, 1.4vw, 20px);
+    color: var(--text-muted); line-height: 1.65;
+    max-width: 720px; margin: 0 auto;
+  }
+  .slide.dark .body-text { color: var(--text-on-dark-muted); }
+
+  .hero-quote {
+    font-size: clamp(30px, 5vw, 64px);
+    font-weight: 700; line-height: 1.18;
+    letter-spacing: -0.035em; max-width: 980px; margin: 0 auto;
+  }
+  .hero-quote em {
+    font-style: normal;
+    background: var(--grad-blue);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .slide.dark .hero-quote em { background: var(--grad-purple); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+  .footer-text {
+    font-size: 13px; color: var(--text-soft);
+    margin-top: 44px; letter-spacing: 0.4px;
+  }
+  .slide.dark .footer-text { color: var(--text-on-dark-muted); }
+
+  /* Tags */
+  .tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 26px 0; }
+  .tag {
+    padding: 8px 16px; background: rgba(0,0,0,0.05);
+    border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--text);
+  }
+  .slide.dark .tag { background: rgba(255,255,255,0.1); color: var(--text-on-dark); }
+
+  /* Numbered goal list */
+  .goals { display: flex; flex-direction: column; gap: 14px; max-width: 720px; margin: 44px auto 0; }
+  .goal {
+    display: flex; align-items: center; gap: 22px;
+    padding: 24px 30px; background: white;
+    border-radius: 20px; text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.03);
+  }
+  .goal-num {
+    flex-shrink: 0; width: 44px; height: 44px;
+    border-radius: 50%; background: var(--accent-soft);
+    color: var(--accent); font-weight: 800; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .goal-text { font-size: clamp(17px, 1.6vw, 21px); font-weight: 600; }
+  .goal-sub { font-size: 14px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+
+  /* Capability grid */
+  .cap-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+    max-width: 920px; margin: 48px auto 0;
+  }
+  .cap-card {
+    padding: 30px 24px; background: white;
+    border-radius: 20px; text-align: left;
+    border: 1px solid var(--border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .slide.dark .cap-card { background: #1d1d1f; border-color: #333; }
+  .cap-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(0,0,0,0.08); }
+  .cap-badge {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; color: var(--accent);
+    background: var(--accent-soft); padding: 4px 10px;
+    border-radius: 6px; margin-bottom: 14px;
+  }
+  .cap-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .cap-sub { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+  .slide.dark .cap-sub { color: var(--text-on-dark-muted); }
+
+  /* Flow steps (horizontal) */
+  .flow-h {
+    display: flex; align-items: stretch; gap: 0;
+    max-width: 980px; margin: 48px auto 0; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .flow-node {
+    flex: 1; min-width: 150px;
+    padding: 26px 18px; background: white;
+    border: 1px solid var(--border); border-radius: 18px;
+    text-align: center;
+  }
+  .slide.dark .flow-node { background: #1d1d1f; border-color: #333; }
+  .flow-node .fn-label { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 1px; margin-bottom: 8px; }
+  .flow-node .fn-title { font-size: 16px; font-weight: 600; line-height: 1.4; }
+  .flow-arrow { display: flex; align-items: center; color: var(--text-soft); font-size: 24px; padding: 0 8px; }
+
+  /* Steps vertical */
+  .flow { display: flex; flex-direction: column; gap: 12px; max-width: 760px; margin: 44px auto 0; }
+  .flow-step {
+    display: flex; align-items: center; gap: 20px;
+    padding: 22px 28px; background: white; border-radius: 18px; text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.3s ease;
+  }
+  .slide.dark .flow-step { background: #1d1d1f; }
+  .flow-step:hover { transform: translateY(-2px); }
+  .flow-step.current { border: 2px solid var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .flow-num { font-size: 14px; font-weight: 800; color: var(--accent); width: 28px; flex-shrink: 0; }
+  .flow-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .flow-sub { font-size: 14px; color: var(--text-muted); }
+  .slide.dark .flow-sub { color: var(--text-on-dark-muted); }
+
+  /* Comparison two-col */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 880px; margin: 48px auto 0; }
+  .compare-card { padding: 36px 32px; border-radius: 24px; text-align: left; }
+  .compare-card.old { background: var(--bg-soft); border: 1px solid var(--border); }
+  .compare-card.new { background: var(--text); color: var(--text-on-dark); }
+  .compare-card.new .cc-item { color: var(--text-on-dark-muted); }
+  .cc-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 18px; color: var(--text-soft); }
+  .compare-card.new .cc-label { color: #5e9bff; }
+  .cc-head { font-size: 24px; font-weight: 700; margin-bottom: 18px; letter-spacing: -0.02em; }
+  .cc-item { font-size: 16px; color: var(--text-muted); padding: 8px 0; line-height: 1.5; display: flex; gap: 10px; }
+  .cc-item b { color: inherit; font-weight: 600; }
+  .cc-mark { color: var(--accent); font-weight: 800; flex-shrink: 0; }
+  .compare-card.new .cc-mark { color: var(--green); }
+
+  /* Modes 3 col */
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 920px; margin: 48px auto 0; }
+  .mode-card { padding: 32px 26px; background: white; border: 1px solid var(--border); border-radius: 22px; text-align: left; }
+  .slide.dark .mode-card { background: #1d1d1f; border-color: #333; }
+  .mode-card.hl { border: 2px solid var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .mode-tag { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text-soft); margin-bottom: 12px; }
+  .mode-card.hl .mode-tag { color: var(--accent); }
+  .mode-title { font-size: 21px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.02em; }
+  .mode-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+  .slide.dark .mode-desc { color: var(--text-on-dark-muted); }
+
+  /* Code block */
+  .code {
+    max-width: 720px; margin: 40px auto 0;
+    background: #161617; color: #e6edf3;
+    border-radius: 16px; padding: 28px 32px;
+    text-align: left; font-family: 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+    font-size: clamp(13px, 1.3vw, 16px); line-height: 1.8;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    overflow-x: auto;
+  }
+  .code .c-prompt { color: var(--green); font-weight: 700; }
+  .code .c-cmt { color: #6e7681; }
+  .code .c-key { color: #ff9f0a; }
+  .code .c-str { color: #79c0ff; }
+
+  /* Two-up concept (skill vs subagent) */
+  .twoup { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; max-width: 900px; margin: 48px auto 0; }
+  .tu-card { padding: 40px 34px; border-radius: 26px; text-align: left; }
+  .tu-card.a { background: var(--accent-soft); }
+  .tu-card.b { background: #f3e8fb; }
+  .tu-role { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+  .tu-card.a .tu-role { color: var(--accent); }
+  .tu-card.b .tu-role { color: var(--purple); }
+  .tu-name { font-size: 26px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .tu-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 18px; }
+  .tu-list { list-style: none; }
+  .tu-list li { font-size: 15px; color: var(--text); padding: 7px 0; display: flex; gap: 10px; line-height: 1.5; }
+  .tu-list li::before { content: '·'; font-weight: 800; flex-shrink: 0; }
+  .tu-card.a .tu-list li::before { color: var(--accent); }
+  .tu-card.b .tu-list li::before { color: var(--purple); }
+
+  /* Org / team grid */
+  .team { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 48px auto 0; }
+  .team-main { padding: 26px 32px; background: var(--text); color: var(--text-on-dark); border-radius: 22px; text-align: center; }
+  .team-main .tm-role { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: #5e9bff; margin-bottom: 8px; }
+  .team-main .tm-name { font-size: 24px; font-weight: 700; }
+  .team-main .tm-sub { font-size: 14px; color: var(--text-on-dark-muted); margin-top: 6px; }
+  .team-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .team-node { padding: 26px 22px; background: white; border: 1px solid var(--border); border-radius: 20px; text-align: left; }
+  .tn-type { font-size: 11px; font-weight: 700; letter-spacing: 1px; padding: 3px 9px; border-radius: 6px; display: inline-block; margin-bottom: 12px; }
+  .tn-type.full { background: var(--accent-soft); color: var(--accent); }
+  .tn-type.free { background: #f3e8fb; color: var(--purple); }
+  .tn-name { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
+  .tn-sub { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* Assignment box */
+  .assign { max-width: 760px; margin: 44px auto 0; padding: 44px 48px; background: white; border-radius: 28px; text-align: left; box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+  .assign-q { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--orange); margin-bottom: 14px; }
+  .assign h4 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 18px; }
+  .assign ol { padding-left: 22px; }
+  .assign li { font-size: 16px; color: var(--text-muted); padding: 7px 0; line-height: 1.6; }
+  .assign li b { color: var(--text); font-weight: 600; }
+  .assign .submit { margin-top: 22px; padding: 16px 20px; background: var(--accent-soft); border-radius: 14px; font-size: 15px; font-weight: 600; color: var(--accent); }
+
+  /* Stat row */
+  .stats { display: flex; justify-content: center; gap: clamp(28px, 6vw, 80px); flex-wrap: wrap; margin: 48px auto 0; }
+  .stat-num { font-size: clamp(44px, 7vw, 88px); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: var(--grad-blue); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .slide.dark .stat-num { background: var(--grad-purple); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-label { font-size: 15px; color: var(--text-muted); margin-top: 12px; font-weight: 500; }
+  .slide.dark .stat-label { color: var(--text-on-dark-muted); }
+
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: 0.08s; }
+  .reveal.d2 { transition-delay: 0.16s; }
+  .reveal.d3 { transition-delay: 0.24s; }
+  .reveal.d4 { transition-delay: 0.32s; }
+
+  /* Section divider */
+  .divider { min-height: 70vh; background: var(--bg-dark); color: var(--text-on-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 24px; }
+  .divider .label { font-size: 13px; font-weight: 600; color: var(--text-on-dark-muted); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 22px; }
+  .divider h2 { font-size: clamp(44px, 7vw, 96px); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; }
+  .divider .chip { display: inline-block; margin-top: 20px; font-size: 14px; color: #5e9bff; font-weight: 600; }
+
+  @media (max-width: 760px) {
+    .cap-grid, .modes, .team-row { grid-template-columns: 1fr; }
+    .compare, .twoup { grid-template-columns: 1fr; }
+    .flow-arrow { transform: rotate(90deg); }
+    .slide { padding: 90px 18px 60px; }
+    .goal { padding: 18px 20px; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand"><b>AI 에이전트 트랙</b> · Session 1</span>
+  <span class="progress" id="prog">01 / 26</span>
+</nav>
+<div class="progress-bar" id="bar"></div>
+
+<!-- 01 TITLE -->
+<section class="slide dark">
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Agent Track · 1강</p>
+    <h1 class="title reveal d1">클로드 코드로<br>일상을 자동화하다</h1>
+    <h3 class="subhead reveal d2">설치부터 핵심 개념, 스킬 제작, 멀티에이전트까지</h3>
+    <div class="tags reveal d3">
+      <span class="tag">Claude Code</span>
+      <span class="tag">Skills</span>
+      <span class="tag">Multi-Agent</span>
+    </div>
+    <p class="footer-text reveal d4">에이전트 트랙에 오신 여러분, 환영합니다</p>
+  </div>
+</section>
+
+<!-- 02 GOALS -->
+<section class="slide soft">
+  <div class="slide-no">02</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Learning Goals</p>
+    <h2 class="headline reveal d1">오늘의 학습 목표</h2>
+    <div class="goals">
+      <div class="goal reveal d1">
+        <div class="goal-num">1</div>
+        <div><div class="goal-text">클로드 코드 기본 이해</div><div class="goal-sub">처음이어도 괜찮습니다. 개념부터 차근차근.</div></div>
+      </div>
+      <div class="goal reveal d2">
+        <div class="goal-num">2</div>
+        <div><div class="goal-text">스킬을 함께 만들어 보기</div><div class="goal-sub">PPT 스킬을 직접 시연하며 제작합니다.</div></div>
+      </div>
+      <div class="goal reveal d3">
+        <div class="goal-num">3</div>
+        <div><div class="goal-text">멀티에이전트 개념 잡기</div><div class="goal-sub">개요만 짚고, 심화는 2주차에서.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 WHY DIVIDER -->
+<section class="divider">
+  <div class="slide-inner">
+    <p class="label">Part 1</p>
+    <h2>왜 클로드 코드인가</h2>
+    <span class="chip">동시다발 · 유기적 협력 · 무한한 가능성</span>
+  </div>
+</section>
+
+<!-- 04 WHY -->
+<section class="slide">
+  <div class="slide-no">04</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Why Claude Code</p>
+    <h2 class="headline reveal d1">에이전트가<br><em style="background:var(--grad-blue);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">서로 협력</em>합니다</h2>
+    <p class="body-text reveal d2">여러 에이전트가 동시에 결과물을 쏟아낼 수도, 하나의 결과물에 건축하듯 집중할 수도 있습니다. 에이전트끼리 소통하며 유기적으로 이어지는 플로우 — n8n·Make에서는 어려운, 클로드 코드만의 혁신입니다.</p>
+    <div class="stats">
+      <div class="reveal d2"><div class="stat-num">100+</div><div class="stat-label">병렬 에이전트 동시 실행</div></div>
+      <div class="reveal d3"><div class="stat-num">1회</div><div class="stat-label">명령으로 멀티 산출물</div></div>
+      <div class="reveal d4"><div class="stat-num">0</div><div class="stat-label">노드·연동의 제약</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 CAPABILITIES -->
+<section class="slide soft">
+  <div class="slide-no">05</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">What It Can Do</p>
+    <h2 class="headline reveal d1">한 번의 명령으로</h2>
+    <div class="cap-grid">
+      <div class="cap-card reveal d1"><span class="cap-badge">DOCS</span><div class="cap-title">멀티 문서 생성</div><div class="cap-sub">Word · PDF · PPT를 한 번에</div></div>
+      <div class="cap-card reveal d1"><span class="cap-badge">CONTENT</span><div class="cap-title">멀티 콘텐츠</div><div class="cap-sub">쓰레드 · 링크드인 · 인스타 자동 발행</div></div>
+      <div class="cap-card reveal d2"><span class="cap-badge">MEETING</span><div class="cap-title">회의록 요약</div><div class="cap-sub">자동 정리 후 발송까지</div></div>
+      <div class="cap-card reveal d2"><span class="cap-badge">DATA</span><div class="cap-title">데이터 분석</div><div class="cap-sub">코딩 에이전트의 주특기</div></div>
+      <div class="cap-card reveal d3"><span class="cap-badge">WEB</span><div class="cap-title">웹 크롤링·조사</div><div class="cap-sub">별도 모듈 없이 기본 제공</div></div>
+      <div class="cap-card reveal d3"><span class="cap-badge">DESIGN</span><div class="cap-title">디자인 제작</div><div class="cap-sub">섹션별 멀티 에이전트로 한 번에</div></div>
+    </div>
+    <p class="footer-text reveal d4">개발 자동화 · 콘텐츠 변환까지 — API 연동이 가능하기에 상상 이상으로 잘 됩니다</p>
+  </div>
+</section>
+
+<!-- 06 WORKFLOW EXAMPLE -->
+<section class="slide">
+  <div class="slide-no">06</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Example Workflow</p>
+    <h2 class="headline reveal d1">블로그 URL 하나로</h2>
+    <div class="flow-h">
+      <div class="flow-node reveal d1"><div class="fn-label">INPUT</div><div class="fn-title">블로그 URL 입력</div></div>
+      <div class="flow-arrow reveal d1">→</div>
+      <div class="flow-node reveal d2"><div class="fn-label">CONVERT</div><div class="fn-title">쓰레드 · 뉴스레터<br>카드뉴스 · 숏폼</div></div>
+      <div class="flow-arrow reveal d2">→</div>
+      <div class="flow-node reveal d3"><div class="fn-label">OPTIMIZE</div><div class="fn-title">에이전트별<br>최적화·대기</div></div>
+      <div class="flow-arrow reveal d3">→</div>
+      <div class="flow-node reveal d4"><div class="fn-label">PUBLISH</div><div class="fn-title">API 동시 게시</div></div>
+    </div>
+    <p class="footer-text reveal d4">Buffer로 SNS 동시 게시 · Stibee로 뉴스레터 발송 · Notion으로 아카이빙</p>
+  </div>
+</section>
+
+<!-- 07 PART2 DIVIDER -->
+<section class="divider">
+  <div class="slide-inner">
+    <p class="label">Part 2</p>
+    <h2>클로드 코드란?</h2>
+    <span class="chip">터미널 기반 AI 코딩 에이전트</span>
+  </div>
+</section>
+
+<!-- 08 WHAT IS -->
+<section class="slide">
+  <div class="slide-no">08</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Definition</p>
+    <h2 class="headline reveal d1">Anthropic이 만든<br>코딩 에이전트</h2>
+    <p class="body-text reveal d2">클로드를 만든 회사 Anthropic의 터미널 기반 AI 코딩 도구입니다. 인터페이스만 낯설 뿐, ChatGPT처럼 대화하면 됩니다. 제작자 보리스의 철학은 분명합니다.</p>
+    <div class="code reveal d3">
+<span class="c-cmt"># 터미널에서</span>
+<span class="c-prompt">❯</span> claude
+<span class="c-cmt"># "너는 누구야?"</span>
+<span class="c-str">"저는 클로드 코드입니다. 명령줄 인터페이스로</span>
+<span class="c-str"> 소프트웨어 엔지니어링 작업을 도와드립니다."</span>
+    </div>
+    <p class="footer-text reveal d4">"앞으로 모든 코딩은 입코딩(Vibe Coding)이 될 것이다"</p>
+  </div>
+</section>
+
+<!-- 09 INSTALL 3 WAYS -->
+<section class="slide soft">
+  <div class="slide-no">09</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Installation</p>
+    <h2 class="headline reveal d1">설치하는 세 가지 방법</h2>
+    <div class="modes">
+      <div class="mode-card reveal d1"><div class="mode-tag">METHOD 1</div><div class="mode-title">터미널 / CLI</div><div class="mode-desc">제작자가 의도한 기본 방식. 터미널을 열고 <b>claude</b> 입력.</div></div>
+      <div class="mode-card reveal d2"><div class="mode-tag">METHOD 2</div><div class="mode-title">커서 · IDE</div><div class="mode-desc">Cursor·Antigravity에서 폴더를 열고 내장 터미널로 실행. 실습은 이 방식으로.</div></div>
+      <div class="mode-card hl reveal d3"><div class="mode-tag">METHOD 3 · 가장 쉬움</div><div class="mode-title">데스크탑 앱</div><div class="mode-desc">설치가 어렵다면 Claude 데스크탑 앱 하나로 클로드와 코드를 모두 사용.</div></div>
+    </div>
+    <p class="footer-text reveal d4">설치가 안 되면 꼭 말씀 주세요 — 가능하면 커서로 먼저 들어가 보길 추천</p>
+  </div>
+</section>
+
+<!-- 10 WEB VS LOCAL -->
+<section class="slide">
+  <div class="slide-no">10</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">The Difference</p>
+    <h2 class="headline reveal d1">웹 기반 vs 로컬 기반</h2>
+    <div class="compare">
+      <div class="compare-card old reveal d1">
+        <div class="cc-label">기존 AI 도구</div>
+        <div class="cc-head">웹에서 작동</div>
+        <div class="cc-item"><span class="cc-mark">·</span><span>웹에서 파일·PPT·보고서 생성</span></div>
+        <div class="cc-item"><span class="cc-mark">·</span><span>내 컴퓨터에 따로 저장 필요</span></div>
+        <div class="cc-item"><span class="cc-mark">·</span><span>내 환경과 연동되지 않음</span></div>
+      </div>
+      <div class="compare-card new reveal d2">
+        <div class="cc-label">클로드 코드</div>
+        <div class="cc-head">내 컴퓨터에서 작동</div>
+        <div class="cc-item"><span class="cc-mark">✓</span><span>로컬 폴더에 자동 저장</span></div>
+        <div class="cc-item"><span class="cc-mark">✓</span><span><b>PPT 100개 동시 수정</b>도 가능</span></div>
+        <div class="cc-item"><span class="cc-mark">✓</span><span>인터넷 연결로 최신 정보 활용</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ABILITIES -->
+<section class="slide soft">
+  <div class="slide-no">11</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Core Abilities</p>
+    <h2 class="headline reveal d1">클로드 코드의 능력</h2>
+    <div class="cap-grid">
+      <div class="cap-card reveal d1"><span class="cap-badge">FILE</span><div class="cap-title">파일 생성·편집</div><div class="cap-sub">로컬 폴더에서 거의 모든 산출물 제작</div></div>
+      <div class="cap-card reveal d2"><span class="cap-badge">GIT</span><div class="cap-title">GitHub 버전 관리</div><div class="cap-sub">v1·v2·v3 배포 관리, 협업·고객 배포</div></div>
+      <div class="cap-card reveal d3"><span class="cap-badge">WEB</span><div class="cap-title">웹 검색</div><div class="cap-sub">최신 정보를 기본으로 잘 찾아줌</div></div>
+      <div class="cap-card reveal d1"><span class="cap-badge">MCP</span><div class="cap-title">외부 도구 연동</div><div class="cap-sub">Notion·Slack·Jira 등 MCP로 손쉽게</div></div>
+    </div>
+    <p class="footer-text reveal d4">처음엔 Claude Pro로 시작 → 익숙해지면 <b style="color:var(--accent)">Claude Max</b>가 전 모델 통틀어 최고 가성비</p>
+  </div>
+</section>
+
+<!-- 12 PART3 DIVIDER -->
+<section class="divider">
+  <div class="slide-inner">
+    <p class="label">Part 3</p>
+    <h2>핵심 개념</h2>
+    <span class="chip">에이전트형 코딩 · 컨텍스트 윈도우 · 작동 모드</span>
+  </div>
+</section>
+
+<!-- 13 AGENTIC CODING -->
+<section class="slide">
+  <div class="slide-no">13</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Agentic Coding</p>
+    <h2 class="headline reveal d1">싱글턴을 넘어<br>에이전트형으로</h2>
+    <p class="body-text reveal d2">기존 AI 코딩은 한 번 묻고 한 번 받는 싱글턴. 클로드 코드는 다릅니다.</p>
+    <div class="flow">
+      <div class="flow-step reveal d1"><div class="flow-num">1</div><div><div class="flow-title">목표 분석</div><div class="flow-sub">사용자가 설명한 요청을 이해</div></div></div>
+      <div class="flow-step reveal d2"><div class="flow-num">2</div><div><div class="flow-title">계획 수립</div><div class="flow-sub">기본 탑재 — 플랜 모드가 디폴트에 가까움</div></div></div>
+      <div class="flow-step reveal d3"><div class="flow-num">3</div><div><div class="flow-title">직접 실행</div><div class="flow-sub">100개·1000개 병렬로 일을 뿌려서 처리</div></div></div>
+      <div class="flow-step current reveal d4"><div class="flow-num">4</div><div><div class="flow-title">검증·수정</div><div class="flow-sub">테스트·수정·제출까지 알아서</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 CONTEXT WINDOW -->
+<section class="slide soft">
+  <div class="slide-no">14</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Context Window</p>
+    <h2 class="headline reveal d1">컨텍스트 윈도우</h2>
+    <p class="hero-quote reveal d2">에이전트가 <em>한 번에 기억</em>할 수 있는<br>정보의 양</p>
+    <p class="body-text reveal d3" style="margin-top:36px">문서 100개를 모두 탐색하고 종합해 답할수록 결과 품질이 좋아집니다. 대화·파일·실행 결과를 먼저 제시하고 그 위에서 코딩하면, 더 일관되고 균일한 산출물이 나옵니다. <b style="color:var(--text)">양이 많을수록 좋다</b> — 꼭 기억하세요.</p>
+  </div>
+</section>
+
+<!-- 15 CLAUDE.md -->
+<section class="slide">
+  <div class="slide-no">15</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">System Guideline</p>
+    <h2 class="headline reveal d1">CLAUDE.md</h2>
+    <h3 class="subhead reveal d2">가장 중요한 시스템 가이드라인 프롬프팅</h3>
+    <p class="body-text reveal d3">매번 새 가이드라인을 줄 필요 없이, 한 번 작성해두면 클로드가 명령마다 자동 참조합니다. 균일한 결과물의 핵심.</p>
+    <div class="code reveal d4">
+<span class="c-cmt"># CLAUDE.md — 뉴스레터 자동화 프로젝트</span>
+<span class="c-key">## 톤앤매너</span>
+  - 간결체, 핵심 먼저
+<span class="c-key">## 출력 형식</span>
+  - 제목 → 요약 3줄 → 본문 → CTA
+<span class="c-cmt"># 명령할 때마다 이 규칙을 참조합니다</span>
+    </div>
+  </div>
+</section>
+
+<!-- 16 MODES -->
+<section class="slide soft">
+  <div class="slide-no">16</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Operating Modes</p>
+    <h2 class="headline reveal d1">세 가지 작동 모드</h2>
+    <div class="modes">
+      <div class="mode-card reveal d1"><div class="mode-tag">INTERACTIVE</div><div class="mode-title">인터랙티브</div><div class="mode-desc">매 작업마다 "이렇게 할까요?" 계속 확인. 꼼꼼하지만 다소 번거로움.</div></div>
+      <div class="mode-card reveal d2"><div class="mode-tag">AUTO</div><div class="mode-title">오토 모드</div><div class="mode-desc">권한의 70~80%를 스킵. 단, 중요한 결정은 여전히 물어봄.</div></div>
+      <div class="mode-card hl reveal d3"><div class="mode-tag">PLAN · 매우 중요</div><div class="mode-title">플랜 모드</div><div class="mode-desc">"계획부터 세워서 보여줘 → 그다음 실행해". 에러가 줄고 결과가 좋아집니다.</div></div>
+    </div>
+    <p class="footer-text reveal d4">처음 시작은 <b style="color:var(--accent)">반드시 플랜 모드</b>로. 어떤 계획을 주는지 먼저 파악하기</p>
+  </div>
+</section>
+
+<!-- 17 PERMISSIONS + SLASH -->
+<section class="slide">
+  <div class="slide-no">17</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Power Tools</p>
+    <h2 class="headline reveal d1">강제 승인 · think 모드</h2>
+    <div class="compare">
+      <div class="compare-card old reveal d1">
+        <div class="cc-label">권한</div>
+        <div class="cc-head">Skip Permissions</div>
+        <div class="cc-item"><span class="cc-mark">·</span><span>권한 요청 없이 작업을 한 번에 완료</span></div>
+        <div class="cc-item"><span class="cc-mark">·</span><span>개인 작업에 적합 · 팀 작업은 주의</span></div>
+        <div class="cc-item"><span class="cc-mark">·</span><span>강사도 주로 사용하는 방식</span></div>
+      </div>
+      <div class="compare-card new reveal d2">
+        <div class="cc-label">슬래시 명령어</div>
+        <div class="cc-head">/help · think</div>
+        <div class="cc-item"><span class="cc-mark">✓</span><span><b>/help</b> — 명령어 목록 파악</span></div>
+        <div class="cc-item"><span class="cc-mark">✓</span><span><b>think</b> — 확장 사고로 정교한 결과</span></div>
+        <div class="cc-item"><span class="cc-mark">✓</span><span><b>ultrathink</b> — 어렵고 안 풀릴 때</span></div>
+      </div>
+    </div>
+    <p class="footer-text reveal d3">플랜 모드 + think 모드 — 이 둘이 진짜 무기입니다</p>
+  </div>
+</section>
+
+<!-- 18 PART4 DIVIDER -->
+<section class="divider">
+  <div class="slide-inner">
+    <p class="label">Part 4</p>
+    <h2>클로드 스킬</h2>
+    <span class="chip">반복 작업을 모듈로 — 네오가 쿵푸를 다운로드하듯</span>
+  </div>
+</section>
+
+<!-- 19 WHAT IS SKILL -->
+<section class="slide">
+  <div class="slide-no">19</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">What Is a Skill</p>
+    <h2 class="headline reveal d1">특정 능력을 더하는<br><em style="background:var(--grad-blue);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">작은 모듈</em></h2>
+    <p class="body-text reveal d2">PPT 스킬, PDF 제작 스킬, 디자인 스킬 — 워크플로의 1·2·3·4·5 단계가 문서화되어 반복 수행할 일에 씁니다. 필요할 때 꺼내 쓰는 능력.</p>
+    <div class="code reveal d3">
+<span class="c-cmt"># 스킬의 핵심 — 이 파일 하나면 완성</span>
+<span class="c-key">SKILL.md</span>
+  ├─ 디자인 가이드라인
+  ├─ 장표 순서 · 구성
+  └─ 개발 방식
+<span class="c-cmt"># 매번 정확히 내가 원하는 형태로 출력</span>
+    </div>
+  </div>
+</section>
+
+<!-- 20 SKILL HOW IT WORKS -->
+<section class="slide soft">
+  <div class="slide-no">20</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">How Skills Work</p>
+    <h2 class="headline reveal d1">스킬 작동 방식</h2>
+    <div class="flow">
+      <div class="flow-step reveal d1"><div class="flow-num">1</div><div><div class="flow-title">"PPT 만들어 줘"</div><div class="flow-sub">사용자가 자연어로 요청</div></div></div>
+      <div class="flow-step reveal d2"><div class="flow-num">2</div><div><div class="flow-title">스킬 자동 감지·탐색</div><div class="flow-sub">등록된 스킬 중 맞는 것을 스스로 탐색</div></div></div>
+      <div class="flow-step reveal d3"><div class="flow-num">3</div><div><div class="flow-title">스킬을 읽고 실행</div><div class="flow-sub">문서화된 순서대로 산출물 생성</div></div></div>
+      <div class="flow-step current reveal d4"><div class="flow-num">4</div><div><div class="flow-title">토큰 절약</div><div class="flow-sub">매번 에이전트를 새로 만들 필요 없음</div></div></div>
+    </div>
+    <p class="footer-text reveal d4">Anthropic이 공식 제공: PPTX · Word · Excel · PDF 스킬 (GitHub)</p>
+  </div>
+</section>
+
+<!-- 21 BUILD PPT SKILL -->
+<section class="slide">
+  <div class="slide-no">21</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Build Your Own</p>
+    <h2 class="headline reveal d1">PPT 스킬 만들기</h2>
+    <div class="flow">
+      <div class="flow-step reveal d1"><div class="flow-num">1</div><div><div class="flow-title">메타프롬프팅으로 시작</div><div class="flow-sub">"PPT 스킬 만들어 줘 — 계획부터 제시해" 되묻게 하기</div></div></div>
+      <div class="flow-step reveal d2"><div class="flow-num">2</div><div><div class="flow-title">레퍼런스를 잘 주기</div><div class="flow-sub">Pinterest 슬라이드 디자인 등 — 가장 중요한 단계</div></div></div>
+      <div class="flow-step reveal d3"><div class="flow-num">3</div><div><div class="flow-title">한국어·디자인 특화 요청</div><div class="flow-sub">간결하고 예쁜, 나만의 워크플로에 맞춰</div></div></div>
+      <div class="flow-step reveal d4"><div class="flow-num">4</div><div><div class="flow-title">SKILL.md 다운로드 → 사용</div><div class="flow-sub">HTML 슬라이드 생성 후 PPTX로 변환</div></div></div>
+    </div>
+    <p class="footer-text reveal d4">이 강의의 슬라이드도 — 직접 만든 커스텀 PPTX·디자인 스킬을 병렬 실행해 제작했습니다</p>
+  </div>
+</section>
+
+<!-- 22 PART5 DIVIDER -->
+<section class="divider">
+  <div class="slide-inner">
+    <p class="label">Part 5</p>
+    <h2>멀티에이전트</h2>
+    <span class="chip">슈퍼파워를 갖는 순간</span>
+  </div>
+</section>
+
+<!-- 23 SKILL VS SUBAGENT -->
+<section class="slide">
+  <div class="slide-no">23</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Skill vs Sub-Agent</p>
+    <h2 class="headline reveal d1">프리랜서 vs 정규직</h2>
+    <div class="twoup">
+      <div class="tu-card a reveal d1">
+        <div class="tu-role">Skill</div>
+        <div class="tu-name">프리랜서</div>
+        <div class="tu-sub">작은 단위, 반복 업무</div>
+        <ul class="tu-list">
+          <li>토큰을 적게 소모</li>
+          <li>가이드라인·스크립트대로 정확히 수행</li>
+          <li>디자이너·개발자처럼 정해진 일</li>
+          <li>필요할 때만 꺼내 씀</li>
+        </ul>
+      </div>
+      <div class="tu-card b reveal d2">
+        <div class="tu-role">Sub-Agent</div>
+        <div class="tu-name">정규직</div>
+        <div class="tu-sub">판단이 필요한 큰 일</div>
+        <ul class="tu-list">
+          <li>독립된 컨텍스트 · 토큰을 많이 먹음</li>
+          <li>병렬 실행 · 전문 역할 담당</li>
+          <li>유연하게 대응하는 T자형 인재</li>
+          <li>서로 소통하며 산출물 생성</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 24 ORG / TEAM -->
+<section class="slide soft">
+  <div class="slide-no">24</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Orchestration</p>
+    <h2 class="headline reveal d1">PPT 자동화 팀 구성</h2>
+    <div class="team">
+      <div class="team-main reveal d1">
+        <div class="tm-role">MAIN AGENT · 임원</div>
+        <div class="tm-name">메인 에이전트</div>
+        <div class="tm-sub">고급 의사결정 · 일을 잘 배분하는 오케스트레이터</div>
+      </div>
+      <div class="team-row">
+        <div class="team-node reveal d2"><span class="tn-type full">정규직</span><div class="tn-name">리서치 에이전트</div><div class="tn-sub">웹을 돌며 최신·양질 정보를 스스로 판단</div></div>
+        <div class="team-node reveal d3"><span class="tn-type free">프리랜서</span><div class="tn-name">디자인 스킬</div><div class="tn-sub">가이드라인대로 디자인만 정확히</div></div>
+        <div class="team-node reveal d4"><span class="tn-type free">프리랜서</span><div class="tn-name">PPTX 스킬</div><div class="tn-sub">HTML → PPT 변환·구성</div></div>
+      </div>
+    </div>
+    <p class="footer-text reveal d4">"2026년엔 이 설계를 가장 잘하는 사람이 최고의 일잘러가 된다"</p>
+  </div>
+</section>
+
+<!-- 25 ASSIGNMENT -->
+<section class="slide">
+  <div class="slide-no">25</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Assignment</p>
+    <h2 class="headline reveal d1">이번 주 과제</h2>
+    <div class="assign reveal d2">
+      <div class="assign-q">YOUR OWN SKILL</div>
+      <h4>나만의 클로드 스킬 가져오기</h4>
+      <ol>
+        <li><b>내 업무를 전부 나열</b>해 본다</li>
+        <li>시간이 많이 걸리고 <b>위임 가능한 반복 업무</b>를 고른다</li>
+        <li>플랜 모드부터 시작해 <b>SKILL.md</b>로 스킬화한다 (PPT·Docs·PDF 무엇이든)</li>
+      </ol>
+      <div class="submit">과제 게시판에 SKILL.md 제출 → 다음 주 조별 모임에서 함께 리뷰</div>
+    </div>
+    <p class="footer-text reveal d3">제일 중요한 건 나만의 워크플로를 분석하는 것 — 회의록 요약 스킬도 좋은 예시</p>
+  </div>
+</section>
+
+<!-- 26 CLOSING -->
+<section class="slide dark">
+  <div class="slide-no">26</div>
+  <div class="slide-inner">
+    <p class="eyebrow reveal">Next Up</p>
+    <h2 class="headline reveal d1">2주차 예고</h2>
+    <p class="hero-quote reveal d2">멀티에이전트로<br><em>마케팅 · 리드마그넷 팀</em>을 만든다</p>
+    <p class="body-text reveal d3" style="margin-top:32px">역할별 최적화 · 고품질 리드마그넷 리서치까지. 기술 질문은 매주 목요일 8시 빌더트랙 코치 세션에서.</p>
+    <p class="footer-text reveal d4">에이전트 트랙 1강 — 감사합니다 · davidlikessangria@gmail.com</p>
+  </div>
+</section>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Progress
+  const slides = document.querySelectorAll('.slide, .divider');
+  const total = slides.length;
+  const prog = document.getElementById('prog');
+  const bar = document.getElementById('bar');
+  const pad = n => String(n).padStart(2, '0');
+  function update() {
+    const sy = window.scrollY + window.innerHeight / 2;
+    let cur = 1;
+    slides.forEach((s, i) => { if (s.offsetTop <= sy) cur = i + 1; });
+    prog.textContent = pad(cur) + ' / ' + pad(total);
+    const max = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (window.scrollY / max * 100) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+
+  // Keyboard nav
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      const sy = window.scrollY + 10;
+      for (const s of slides) { if (s.offsetTop > sy + 5) { s.scrollIntoView({ behavior: 'smooth' }); break; } }
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      const sy = window.scrollY - 10;
+      let prev = slides[0];
+      for (const s of slides) { if (s.offsetTop < sy - 5) prev = s; else break; }
+      prev.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+</body>
+</html>
