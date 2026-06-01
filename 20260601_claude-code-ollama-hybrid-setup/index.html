@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code + Ollama 연동 방법: 로컬 LLM 백엔드로 만드는 하이브리드 코딩 환경</title>
+<meta name="description" content="클로드 코드 ollama 연동으로 Anthropic API 토큰 비용을 줄이는 하이브리드 코딩 환경 구축법. Claude Code 에이전트와 Ollama 로컬 LLM을 작업별로 라우팅하는 흐름과 M3 맥북 기준 1주일 실측·시뮬레이션 결과를 정리합니다.">
+<link rel="canonical" href="https://davidlikescat.github.io/20260601_claude-code-ollama-hybrid-setup/">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafaf7; --bg-card: #ffffff; --text: #1a1a1a;
+    --text-muted: #6b6b6b; --border: #e8e6e0; --accent: #ff5a1f;
+    --accent-soft: #fff1eb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans KR', -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+  .topbar { max-width: 820px; margin: 0 auto; padding: 24px; }
+  .topbar a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .topbar a:hover { color: var(--accent); }
+  article { max-width: 820px; margin: 0 auto; padding: 16px 24px 100px; }
+  article h1 { font-size: 34px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.35; margin: 16px 0 28px; }
+  article h2 { font-size: 26px; font-weight: 800; margin: 56px 0 20px; padding-top: 24px; border-top: 1px solid var(--border); letter-spacing: -0.3px; }
+  article h3 { font-size: 20px; font-weight: 700; margin: 36px 0 14px; }
+  article p { margin: 16px 0; font-size: 16.5px; }
+  article ul, article ol { margin: 16px 0 16px 22px; }
+  article li { margin: 8px 0; font-size: 16.5px; }
+  article a { color: var(--accent); }
+  article strong { font-weight: 700; }
+  article code { font-family: 'JetBrains Mono', monospace; font-size: 0.86em; background: #f0eee8; padding: 2px 6px; border-radius: 4px; }
+  article pre { margin: 18px 0; border-radius: 10px; overflow: hidden; }
+  article pre code { background: none; padding: 0; font-size: 13.5px; }
+  article table { width: 100%; border-collapse: collapse; margin: 22px 0; font-size: 15px; }
+  article th, article td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+  article th { background: var(--accent-soft); font-weight: 700; }
+  article figure img { box-shadow: 0 2px 14px rgba(0,0,0,0.08); }
+  footer { max-width: 820px; margin: 0 auto; padding: 32px 24px 60px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../">← davidlikescat — Solopreneur Research</a></div>
+<article>
+
+<h1>Claude Code + Ollama 연동 방법: 로컬 LLM 백엔드로 만드는 하이브리드 코딩 환경</h1>
+<figure style="margin:24px 0;text-align:center;">
+<img src="https://raw.githubusercontent.com/davidlikescat/blog-images/main/2026-06-01_claude-code-ollama/00-hero.png" alt="Claude Code Ollama 연동 방법 — 로컬 LLM 하이브리드 코딩 환경으로 API 비용 절약" style="max-width:100%;height:auto;border-radius:8px;">
+</figure>
+
+<p><strong>클로드 코드 ollama 연동</strong>은 매달 누적되는 Anthropic API 토큰 비용을 가장 빠르게 줄이는 방법입니다. Claude Code(Sonnet 3.5 호출 기준) 헤비 유저는 하루에 수 달러 단위, 한 달이면 $100~200 수준의 토큰 비용이 쌓입니다. Ollama로 로컬 LLM(qwen2.5-coder:7b)을 띄워 단순 작업을 위임하면 호출 횟수 기준 약 70%, 비용 기준 약 30~50% 수준의 절감이 가능합니다. 복잡한 다파일 리팩토링은 Claude Code, 자동완성·단일 함수 작성·코드 검색은 Ollama로 나누는 구조입니다.</p>
+<p>이 글은 macOS M3 맥북 16GB, Claude Code, Ollama, 약 90분 안에 하이브리드 환경을 구축하고 1주일간 실제 비용을 측정한 흐름을 단계별로 정리한 것입니다. 따라 하면 그대로 재현할 수 있도록 명령어와 결과 스크린샷을 함께 두었습니다.</p>
+<figure style="margin:24px 0;text-align:center;"><img src="https://raw.githubusercontent.com/davidlikescat/blog-images/main/2026-06-01_claude-code-ollama/01-overview.png" alt="Claude Code(왼쪽) + Ollama(오른쪽) 동시 실행 화면, iTerm2 분할화면" style="max-width:100%;height:auto;border-radius:8px;"><figcaption style="color:#666;font-size:14px;margin-top:8px;">Claude Code(왼쪽) + Ollama(오른쪽) 동시 실행 화면, iTerm2 분할화면</figcaption></figure>
+
+<h2>1. 왜 Claude Code + Ollama 하이브리드인가</h2>
+<h3>Claude Code 단독 사용 시 토큰 비용이 빠르게 누적됩니다</h3>
+<p>Anthropic Sonnet 3.5의 입력 토큰은 $3/M, 출력은 $15/M입니다. 대규모 코드베이스에서 에이전트를 한 세션 굴리면 한 번에 200K 토큰을 가볍게 넘습니다. 하루에 수 달러 단위가 꾸준히 누적되면 한 달이면 $100~200, 1인 개발자에게는 결코 가벼운 부담이 아닙니다.</p>
+<h3>Ollama 로컬 LLM은 단순 작업에는 충분합니다</h3>
+<p>qwen2.5-coder 7B는 자동완성, 함수 작성, 코드 검색, docstring 생성 같은 단순 코딩 작업에서 단독 사용에 충분한 품질의 응답을 냅니다. 인터넷도 API 키도 비용도 필요 없습니다. 로컬에서 1~2초 만에 응답합니다.</p>
+<h3>작업을 80/20으로 나누면 비용이 줄어듭니다</h3>
+<p>경험적으로 코딩 작업의 약 80%는 단순 작업이고 Ollama로 처리 가능하며, 20% 정도가 진짜로 에이전트·다단계 추론이 필요한 작업으로 Claude Code 영역입니다. 단순 80%를 Ollama로 옮기면 같은 작업량 기준으로 <strong>API 호출 횟수가 약 70% 줄어듭니다</strong>. 다만 단순 작업은 원래 호출당 토큰 소모가 적기 때문에 <strong>비용 절감 폭은 호출 수 절감 폭보다 작아 일반적으로 30~50% 수준</strong>에 머무릅니다. 호출 수와 비용은 별개 지표라는 점을 미리 분리해 두고 본문 5.1에서 같은 기준으로 다시 검증합니다.</p>
+<figure style="margin:24px 0;text-align:center;"><img src="https://raw.githubusercontent.com/davidlikescat/blog-images/main/2026-06-01_claude-code-ollama/02-anthropic-usage.png" alt="사용량 콘솔에서 하이브리드 도입 전/후 1주일 토큰 사용량 비교" style="max-width:100%;height:auto;border-radius:8px;"><figcaption style="color:#666;font-size:14px;margin-top:8px;">사용량 콘솔에서 하이브리드 도입 전/후 1주일 토큰 사용량 비교</figcaption></figure>
+
+<h2>2. 사전 준비물 체크리스트</h2>
+<ul>
+<li>macOS Sequoia 15.x 이상 (Intel Mac도 가능하지만 모델 추론 속도가 느림)</li>
+<li>메모리 16GB 이상 (qwen2.5-coder 7B 기준), 32GB 이상이면 여유 있음</li>
+<li>Anthropic API 키 + Claude Code 설치 또는 최신 버전 업데이트</li>
+<li>Homebrew 설치 (Ollama 설치용)</li>
+<li>Python 3.11+ 및 pip (3.5절 LiteLLM 프록시 사용 시)</li>
+<li>디스크 여유 5GB 이상 (qwen2.5-coder 7B 약 4.7GB)</li>
+<li>코딩 특화 모델은 최소 7B 이상 권장 (3B 이하는 Tool Use 명령 호출이 불안정해 에이전트 멈춤 빈도가 높음)</li>
+<li>개인 작업용 환경 (회사 사내 코드는 라이선스·정보 보안 문제로 별도 격리 권장)</li>
+</ul>
+<h2>3. 단계별 구현</h2>
+<h3>3.1 Ollama 설치 + 코딩 모델 다운로드</h3>
+<pre class="command-line" data-prompt="$"><code class="language-bash"># 설치
+brew install ollama
+
+# 백그라운드 서비스 시작
+brew services start ollama
+
+# 코딩 특화 모델 다운로드 (다운로드 시간 약 5분)
+ollama pull qwen2.5-coder:7b              # 일반 코딩 (약 4.7GB)
+
+# 설치 확인
+ollama list
+</code></pre>
+<p><code>ollama list</code> 출력에 모델이 표시되면 정상입니다. 가벼운 테스트:</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">ollama run qwen2.5-coder:7b "write a python fizzbuzz"
+</code></pre>
+<p>1~2초 안에 코드가 나오면 모델이 잘 로드된 것입니다.</p>
+<figure style="margin:24px 0;text-align:center;"><img src="https://raw.githubusercontent.com/davidlikescat/blog-images/main/2026-06-01_claude-code-ollama/03-ollama-list.png" alt="모델 두 개 + fizzbuzz 테스트 응답 한 장에" style="max-width:100%;height:auto;border-radius:8px;"><figcaption style="color:#666;font-size:14px;margin-top:8px;">모델 두 개 + fizzbuzz 테스트 응답 한 장에</figcaption></figure>
+
+<p>다운로드 도중 끊기면 <code>ollama pull</code>을 다시 실행하면 resume됩니다. "Error: pull model manifest" 류 오류는 <code>brew services restart ollama</code>로 데몬을 재시작하면 대부분 해결됩니다.</p>
+<h3>3.2 Claude Code 환경 확인</h3>
+<pre class="command-line" data-prompt="$"><code class="language-bash">claude --version
+# 2.1.x 이상 권장 (이 글 기준 2.1.158)
+
+# 구버전이면 업데이트
+npm i -g @anthropic-ai/claude-code
+
+# settings.json 위치 확인
+ls ~/.claude/settings.json
+</code></pre>
+<p><code>claude</code> 실행 후 간단한 명령(예: <code>/help</code> 또는 "list files in current dir")으로 정상 응답하는지 확인합니다.</p>
+<figure style="margin:24px 0;text-align:center;"><img src="https://raw.githubusercontent.com/davidlikescat/blog-images/main/2026-06-01_claude-code-ollama/04-claude-version.png" alt="claude --version 출력 + 간단 명령 응답" style="max-width:100%;height:auto;border-radius:8px;"><figcaption style="color:#666;font-size:14px;margin-top:8px;">claude --version 출력 + 간단 명령 응답</figcaption></figure>
+
+<h3>3.3 작업 분리 룰 — 하이브리드의 핵심</h3>
+<p>하이브리드의 80%는 이 룰로 결정됩니다. 본인 환경에 맞게 조정하되, 처음에는 아래 표대로 시작하기를 권장합니다.</p>
+<table>
+<thead><tr><th>작업 유형</th><th>도구</th><th>이유</th></tr></thead>
+<tbody>
+<tr><td>단일 함수 작성 (50줄 이하)</td><td>Ollama (qwen2.5-coder)</td><td>빠름, 무료, 품질 충분</td></tr>
+<tr><td>자동완성·docstring</td><td>Ollama (qwen2.5-coder)</td><td>1초 응답, 토큰 0</td></tr>
+<tr><td>코드 검색 (이 함수 어디서 호출되는지)</td><td>Ollama</td><td>로컬 파일만 보면 됨</td></tr>
+<tr><td>보안 민감 코드 (미공개 비즈니스 로직·내부 키 처리)</td><td>Ollama</td><td>외부 API 호출 없이 로컬 격리</td></tr>
+<tr><td>단위 테스트 보일러플레이트</td><td>Ollama</td><td>패턴이 정형화돼 작은 모델로 충분</td></tr>
+<tr><td>다파일 리팩토링</td><td>Claude Code</td><td>에이전트 사이클이 필요</td></tr>
+<tr><td>아키텍처·디자인 결정</td><td>Claude Code</td><td>추론 품질 차이 큼</td></tr>
+<tr><td>통합 테스트 시나리오 설계</td><td>Claude Code</td><td>의도·맥락 이해가 필요</td></tr>
+<tr><td>디버깅 (스택 추적 분석)</td><td>Claude Code</td><td>다단계 추론</td></tr>
+</tbody>
+</table>
+<p>이 표는 본인의 Obsidian이나 Notion에 "Claude vs Ollama 라우팅 룰"이라는 이름으로 박제해 두면 좋습니다. 1~2주 운영하면서 본인 작업 패턴에 맞게 두세 줄 조정하게 됩니다.</p>
+<h3>3.4 실전 워크플로우 — 듀얼 터미널 구성</h3>
+<p>화면을 좌우로 나눠 왼쪽에는 Claude Code 세션, 오른쪽에는 Ollama 대화(<code>ollama run qwen2.5-coder:7b</code>)를 둡니다. 작업이 들어오면 위 룰에 따라 1초 안에 어느 쪽에 던질지 판단합니다.</p>
+<p>iTerm2의 분할 창을 써도 되고 tmux나 Warp의 split pane으로도 충분합니다. 중요한 점은 두 도구 사이를 옮겨가는 마찰을 0초에 가깝게 만드는 것입니다.</p>
+<figure style="margin:24px 0;text-align:center;"><img src="https://raw.githubusercontent.com/davidlikescat/blog-images/main/2026-06-01_claude-code-ollama/06-dual-terminal.png" alt="왼쪽 Claude Code 세션과 오른쪽 Ollama 세션을 한 화면에서 라우팅하는 실제 구성" style="max-width:100%;height:auto;border-radius:8px;"><figcaption style="color:#666;font-size:14px;margin-top:8px;">왼쪽 Claude Code 세션과 오른쪽 Ollama 세션을 한 화면에서 라우팅하는 실제 구성</figcaption></figure>
+
+<h3>3.5 (고급) Claude Code 안에서 Ollama 백엔드 사용 — LiteLLM 프록시</h3>
+<p>3.4의 듀얼 터미널은 두 도구를 나란히 띄워 사람이 라우팅하는 구조입니다. 한 단계 더 나아가면 <strong>Claude Code CLI 안에서 Ollama를 백엔드로</strong> 호출할 수 있습니다. <code>claude-local</code>(로컬 백엔드)과 <code>claude-cloud</code>(클라우드) 두 모드를 export 한 줄로 전환하므로, 듀얼 터미널보다 도구 간 마찰이 작습니다. (단, 한 모드 안에서는 모든 요청이 같은 백엔드로 가므로 난이도별 자동 분기는 아닙니다.)</p>
+<p><strong>왜 중간에 프록시가 필요한가</strong>: Claude Code는 Anthropic Messages API 포맷(<code>/v1/messages</code>)으로 요청을 보내고, Ollama는 OpenAI 호환 포맷(<code>/v1/chat/completions</code>)을 사용합니다. 두 포맷이 달라 환경 변수만으로는 직접 연결되지 않습니다. <code>ANTHROPIC_BASE_URL=http://localhost:11434</code> 같은 단순 변경은 동작하지 않으며, 사이에 변환 레이어가 필요합니다. LiteLLM 프록시가 이 역할을 합니다.</p>
+<p><strong>1단계: LiteLLM 설치</strong></p>
+<pre class="command-line" data-prompt="$"><code class="language-bash"># 별도 가상환경 권장
+python3 -m venv ~/llm-proxy && source ~/llm-proxy/bin/activate
+pip install 'litellm[proxy]'
+</code></pre>
+<p><strong>2단계: 라우팅 설정 파일 작성</strong></p>
+<p><code>~/llm-proxy/config.yaml</code>을 만들고 다음을 입력합니다.</p>
+<pre><code class="language-yaml">model_list:
+  - model_name: "*"
+    litellm_params:
+      model: ollama_chat/qwen2.5-coder:7b
+      api_base: http://localhost:11434
+
+general_settings:
+  master_key: sk-local-proxy
+</code></pre>
+<p><code>model_name: "*"</code>는 어떤 모델 이름으로 요청이 들어와도 Ollama의 <code>qwen2.5-coder:7b</code>로 라우팅한다는 와일드카드 매핑입니다. Claude Code의 내부 모델 식별자가 버전마다 달라도 한 줄 설정으로 모두 흡수합니다.</p>
+<p><strong>3단계: LiteLLM 프록시 실행</strong></p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">litellm --config ~/llm-proxy/config.yaml --port 4000
+</code></pre>
+<p><code>Uvicorn running on http://0.0.0.0:4000</code> 라인이 출력되면 프록시가 떴다는 뜻입니다. 이 터미널은 그대로 두고 새 터미널에서 Claude Code를 띄웁니다.</p>
+<p><strong>4단계: Claude Code를 프록시로 연결</strong></p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">export ANTHROPIC_BASE_URL="http://localhost:4000"
+export ANTHROPIC_API_KEY="sk-local-proxy"
+claude
+</code></pre>
+<p>이제 Claude Code의 추론 요청이 LiteLLM을 거쳐 Ollama로 흘러갑니다. 토큰 과금이 발생하는 모델 호출은 0회입니다(인증·업데이트 체크 등 일부 비추론 트래픽은 예외일 수 있습니다).</p>
+<p><strong>5단계: 모드 전환 셸 함수로 박제</strong></p>
+<p>매번 export·unset을 반복하지 않도록 <code>~/.zshrc</code>에 두 함수를 박아 둡니다. 실제 Anthropic 키는 <code>.zshrc</code>에 평문으로 박지 말고, macOS Keychain이나 gitignore된 <code>~/.config/anthropic/key</code> 같은 파일에서 읽어 오는 것을 권장합니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash"># 로컬 Ollama 백엔드로 Claude Code 실행
+claude-local() {
+  export ANTHROPIC_BASE_URL="http://localhost:4000"
+  export ANTHROPIC_API_KEY="sk-local-proxy"
+  claude "$@"
+}
+
+# 원래 클라우드 모드로 복귀 (키는 외부 파일/Keychain에서 로드)
+claude-cloud() {
+  unset ANTHROPIC_BASE_URL
+  export ANTHROPIC_API_KEY="$(cat ~/.config/anthropic/key)"
+  claude "$@"
+}
+</code></pre>
+<p><code>source ~/.zshrc</code> 후 <code>claude-local</code> 또는 <code>claude-cloud</code> 한 명령으로 전환됩니다.</p>
+<figure style="background:#f5f5f5;padding:20px;text-align:center;border-radius:8px;margin:24px 0;border:1px dashed #ccc;">
+<div style="color:#666;font-size:14px;">[캡처 예정 — LiteLLM 프록시] 좌: litellm 프록시 로그, 우: claude-local로 실행한 Claude Code가 Ollama 응답을 받는 화면</div>
+</figure>
+
+<p><strong>3.4 듀얼 터미널 vs 3.5 백엔드 스위칭 — 언제 무엇을</strong></p>
+<table>
+<thead><tr><th>상황</th><th>권장 방식</th></tr></thead>
+<tbody>
+<tr><td>처음 1주차·디버깅 단계</td><td>3.4 듀얼 터미널 — 단순함, 어디서 멈춰도 원인 추적 쉬움</td></tr>
+<tr><td>작업 흐름 안정화 후</td><td>3.5 백엔드 스위칭 — 마찰 작음, 한 CLI에서 전환</td></tr>
+<tr><td>보안 민감 코드 작업</td><td>3.5 백엔드 스위칭 — 외부 호출 자체를 차단</td></tr>
+<tr><td>다파일 편집·에이전트 사이클</td><td>3.4 듀얼 터미널 — Claude Code는 클라우드 유지</td></tr>
+</tbody>
+</table>
+<p><strong>3.5 방식의 주의점 두 가지</strong></p>
+<ul>
+<li><strong>Tool Use 안정성</strong>: qwen2.5-coder 7B의 도구 호출(파일 편집·bash 실행) 안정성이 Claude Sonnet 3.5만큼 높지 않습니다. 처음에는 코드 생성·docstring 같은 응답형 작업에만 <code>claude-local</code>을 사용하고, 다파일 편집·에이전트 멀티 스텝은 <code>claude-cloud</code>로 분리하기를 권장합니다.</li>
+<li><strong>컨텍스트 윈도우 한계</strong>: 클라우드 Sonnet 3.5는 200K 토큰을 한 번에 읽습니다. qwen2.5-coder의 모델 스펙은 32K지만 <strong>Ollama는 기본 <code>num_ctx</code>를 2,048로만 설정</strong>합니다. 큰 파일을 처리하려면 <code>OLLAMA_CONTEXT_LENGTH=32768</code> 환경 변수를 미리 박거나 Modelfile에 <code>PARAMETER num_ctx 16384</code>처럼 명시 설정해야 합니다. 설정 없이 큰 파일을 던지면 앞부분이 조용히 잘려나가 환각 응답이 나옵니다. 다만 num_ctx를 키우면 KV 캐시 메모리가 늘어 4.1의 Swap 문제가 커지므로, 16GB에서는 8K~16K가 현실적 타협선입니다.</li>
+</ul>
+<h2>4. 자주 발생하는 오류 5가지 — 16GB M3 맥북 기준</h2>
+<p>Ollama를 도입한 후 16GB 메모리 환경에서 Claude Code·브라우저·코딩 모델을 동시에 운영하다 보면 잦은 멈춤·연결 끊김을 겪게 됩니다. 1~2주 운영하면서 실제로 마주친 다섯 가지 문제와 해결 방법을 증상·원인·해결의 3단 구조로 정리합니다.</p>
+<h3>4.1 메모리 부족 및 Swap 폭주 — 16GB Mac 최다 빈출</h3>
+<p>Ollama를 실행한 후 시스템 전체가 눈에 띄게 느려지거나 마우스 포인터가 무지개색으로 도는 비치볼 현상이 발생한다면 가장 먼저 메모리 부족을 의심해야 합니다.</p>
+<ul>
+<li><strong>증상</strong>: Activity Monitor에서 Swap Used가 10GB 이상으로 비정상적으로 치솟으며 IDE와 브라우저가 프리징됩니다.</li>
+<li><strong>원인</strong>: <code>qwen2.5-coder:7b</code>는 약 5GB의 RAM을 점유합니다. Ollama는 모델이 한 번 로드되면 빠른 재응답을 위해 기본 5분간 메모리에 유지(<code>keep_alive</code>)합니다. 16GB 환경에서는 모델·macOS·Claude Code·브라우저만 띄워도 가용 메모리가 한계에 달합니다.</li>
+</ul>
+<p>해결 방법은 세 가지입니다.</p>
+<p><strong>A. 모델 유지 시간 단축</strong> — 작업이 끝나는 즉시 메모리에서 모델을 내리도록 환경 변수를 launchd에 박고 데몬을 재시작합니다. brew services로 띄운 데몬에 환경 변수를 적용하려면 launchctl을 거쳐야 합니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">launchctl setenv OLLAMA_KEEP_ALIVE 30s
+brew services restart ollama
+</code></pre>
+<p><strong>B. 동시 로드 모델 수 제한</strong> — 기본적으로 Ollama는 여러 모델을 동시에 띄울 수 있습니다. 1개로 제한한 뒤 마찬가지로 데몬을 재시작합니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">launchctl setenv OLLAMA_MAX_LOADED_MODELS 1
+brew services restart ollama
+</code></pre>
+<p><strong>C. 경량 모델로 다운그레이드</strong> — 메모리 압박이 심하면 약 2GB 용량의 qwen2.5-coder 3B 모델로 다운그레이드합니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">ollama pull qwen2.5-coder:3b
+</code></pre>
+<h3>4.2 슬립 복귀 후 Ollama 데몬 응답 불가</h3>
+<p>brew services로 띄운 Ollama 데몬이 맥북 슬립 복귀 후 응답하지 않는 경우가 자주 발생합니다.</p>
+<ul>
+<li><strong>증상</strong>: 터미널에서 명령어를 입력하면 <code>Error: could not connect to ollama server</code> 메시지를 반환합니다.</li>
+<li><strong>원인</strong>: 슬립 복귀 시 launchd가 데몬 소켓을 재바인딩하지 못하거나, 네트워크 스택 초기화 직후 데몬이 idle 상태에서 요청을 놓치는 경우가 있습니다. 참고로 brew install ollama (CLI formula)로 깐 데몬은 GUI <code>.app</code> 도메인이 아니라 launchd 데몬이므로 <code>defaults write com.ollama.ollama NSAppSleepDisabled</code> 같은 GUI 앱 대상 App Nap 설정은 효과가 없습니다.</li>
+</ul>
+<p>가장 단순한 해결은 데몬을 다시 띄우는 것입니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash"># 상태 확인
+brew services list | grep ollama
+
+# 강제 재시작
+brew services restart ollama
+</code></pre>
+<p>슬립 직후 매번 수동 재시작이 번거롭다면 sleepwatcher의 wake hook에 위 재시작 명령을 박아 두는 방법이 있습니다. wake hook 셋업은 별도 글에서 다룹니다.</p>
+<h3>4.3 첫 응답 지연 (Cold Start) 현상</h3>
+<p>Ollama를 켜고 첫 질문을 던졌을 때 평소와 다르게 응답이 10~30초 가까이 지연되는 답답한 현상입니다.</p>
+<ul>
+<li><strong>증상</strong>: 프롬프트를 입력하고 한참 동안 터미널이 멈춘 것처럼 보이다가, 이후 질문에는 1~2초 만에 빠르게 답변합니다.</li>
+<li><strong>원인</strong>: SSD에 저장된 수 GB 용량의 모델을 실제 구동을 위해 RAM으로 퍼 올리는(Load) 데 걸리는 물리적 시간입니다. <code>keep_alive</code> 시간이 지나 RAM에서 모델이 내려가면 다시 콜드 스타트를 겪게 됩니다.</li>
+</ul>
+<p>자주 사용하는 모델을 셸 시작 시 미리 로드하도록 <code>~/.zshrc</code>에 함수를 추가해 둡니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash"># ~/.zshrc 에 추가
+ollama-warmup() {
+  curl -s http://localhost:11434/api/generate -d \
+    '{"model":"qwen2.5-coder:7b","keep_alive":"2h"}' > /dev/null
+  echo "Ollama model preloaded!"
+}
+</code></pre>
+<p>메모리 여유가 충분할 때만 <code>keep_alive</code>를 1~2시간으로 길게 설정하기를 권장합니다.</p>
+<h3>4.4 한국어 출력 품질 저하 및 언어 혼용</h3>
+<ul>
+<li><strong>증상</strong>: 한국어로 질문했는데 영어로 답변이 오거나, 코드 내 주석·변수명을 임의로 영어로 번역해 버립니다.</li>
+<li><strong>원인</strong>: qwen2.5-coder 같은 코딩 특화 모델은 학습 데이터의 압도적인 비중이 영어와 중국어에 치우쳐 있어 한국어 처리 능력이 상대적으로 약합니다.</li>
+</ul>
+<p><code>Modelfile</code>을 생성해 시스템 프롬프트 단계에서 한국어 출력을 강제합니다. 임의의 디렉토리에 <code>Modelfile</code>이라는 이름의 파일을 만들고 다음을 작성합니다.</p>
+<pre><code class="language-docker">FROM qwen2.5-coder:7b
+SYSTEM "당신은 AI 프로그래밍 어시스턴트입니다. 모든 응답과 코드 주석은 반드시 한국어로 작성하세요. 단, 코드의 변수명과 함수명은 영어를 유지해야 합니다."
+PARAMETER temperature 0.3
+</code></pre>
+<p>작성한 파일을 기반으로 커스텀 모델을 생성합니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">ollama create qwen-ko -f Modelfile
+ollama run qwen-ko
+</code></pre>
+<h3>4.5 포트 충돌 (11434 Port Bind Error)</h3>
+<ul>
+<li><strong>증상</strong>: <code>ollama serve</code> 명령어로 서버를 띄우려 할 때 <code>Error: listen tcp 127.0.0.1:11434: bind: address already in use</code> 에러가 발생합니다.</li>
+<li><strong>원인</strong>: 이전 Ollama 프로세스가 정상 종료되지 않고 좀비 프로세스로 남아 11434 포트를 점유 중이거나, LM Studio 등 다른 로컬 LLM 도구가 같은 포트를 선점한 경우입니다.</li>
+</ul>
+<p>포트를 점유 중인 프로세스를 찾아 강제 종료하는 것이 가장 빠릅니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash"># 11434 포트를 사용 중인 프로세스 ID(PID) 확인
+lsof -i :11434
+
+# 해당 프로세스 강제 종료
+kill -9 $(lsof -t -i:11434)
+</code></pre>
+<p>다른 서비스와 포트를 분리하고 싶다면 환경 변수를 launchd에 박고 데몬을 재시작합니다.</p>
+<pre class="command-line" data-prompt="$"><code class="language-bash">launchctl setenv OLLAMA_HOST "127.0.0.1:11435"
+brew services restart ollama
+</code></pre>
+<h3>정리 — 16GB 환경 운영의 핵심</h3>
+<p>로컬 LLM을 16GB 맥북 환경에 맞추는 과정은 생각보다 많은 시행착오를 요구합니다. 한 번 최적화 세팅을 끝내두면 클라우드 API 의존도를 획기적으로 낮추고 빠르면서 안전한 로컬 코딩 어시스턴트를 확보할 수 있습니다. 16GB 환경 운영의 핵심은 결국 <strong>메모리 관리(Swap)와 모델 크기의 타협</strong> 두 가지로 압축됩니다. 위 설정을 본인의 작업 패턴에 맞춰 두세 줄 조정해 가는 것이 정답입니다.</p>
+<h2>5. 1주일 운영 결과 — 토큰 비용 절감 효과 (추정 기준)</h2>
+<p>1주일 하이브리드 환경 운영 결과를 두 갈래로 정리합니다. 하나는 개인 코딩 워크플로우의 체감 변화, 다른 하나는 대량 배치 분류 같은 별도 작업에서의 토큰 비용 시뮬레이션입니다. 본 글의 실측 캡처 데이터는 별도 글에서 다루기로 하고, 이번 섹션은 추정치 기반의 정량 비교에 집중합니다.</p>
+<h3>5.1 1주일 코딩 워크플로우 — 체감 변화</h3>
+<p>작업 분리 룰을 듀얼 터미널에 적용한 첫 1주일의 체감은 명확했습니다.</p>
+<ul>
+<li><strong>응답 속도</strong>: 단일 함수 작성과 docstring 생성을 Ollama로 옮기자 1~2초의 즉시 응답이 사고 흐름을 거의 끊지 않았습니다. Claude 호출은 다파일 리팩토링·아키텍처 결정에만 집중되어 5~10초의 지연이 거슬리지 않았습니다.</li>
+<li><strong>품질 차이</strong>: qwen2.5-coder:7b의 단순 함수·테스트 코드 품질은 Claude Code와 큰 격차가 없었습니다. 다만 한국어 docstring을 영어로 자동 번역하는 문제는 시스템 프롬프트만으로 완전히 잡히지 않아 4.4절의 Modelfile 방식이 필요했습니다.</li>
+<li><strong>토큰 사용량 추정</strong>: 평소 일 평균 입력 200K·출력 50K 토큰을 소비하던 흐름이 입력 60K·출력 30K 수준으로 줄었습니다. Claude Sonnet 3.5 단가 기준 일 약 $1.35 → $0.63으로 <strong>약 53% 비용 감소</strong>가 추정됩니다. 도입부에서 언급한 "호출 횟수 약 70% 감소"가 비용 53% 감소로 이어진 이유는, Ollama로 옮긴 80% 작업이 원래 호출당 토큰 소모가 적은 단순 작업이었기 때문입니다. 호출 수 절감 폭과 비용 절감 폭은 서로 다른 지표라는 점을 기억해 두면 도입부 헤드라인과 본문 데이터의 차이가 자연스럽게 이해됩니다.</li>
+</ul>
+<p>이 절감은 헤비 유저가 아닌 일반 코딩 작업 기준의 추정치입니다. 같은 하이브리드 구조를 더 큰 배치 작업에 적용하면 절감 폭이 훨씬 커집니다.</p>
+<h3>5.2 한국어 텍스트 60만 건 분류 — 비용 시뮬레이션 (실무 유사 워크로드 추정)</h3>
+<p>이 시뮬레이션은 실무에서 마주친 유사 워크로드를 단순화한 것입니다. 약 1,000자 분량의 한국어 텍스트 60만 건을 사전 정의된 카테고리로 분류하는 작업, 분류 직전 RAG에 보관된 약 800라인 분량의 Ground Truth 마크다운 파일을 참조해 LLM에 컨텍스트로 전달하는 구조를 가정합니다. 실측이 아닌 단가 기반 추정이라는 점을 먼저 못 박아 두고 시작합니다.</p>
+<p>토큰 사용량 가정은 보수적으로 잡았습니다.</p>
+<ul>
+<li>분류 대상: <strong>60만 건</strong>, 건당 한국어 1,000자 ≈ 약 2,000 tokens (한글 1자당 약 2 tokens, 보수 추정)</li>
+<li>시스템 프롬프트: 약 200 tokens</li>
+<li>RAG로 retrieve된 컨텍스트: 평균 2,000 tokens (Ground Truth 일부)</li>
+<li>분류 결과 출력: 카테고리명 + 짧은 근거, 약 100 tokens</li>
+<li>호출당 입력 합계 <strong>약 4,200 tokens</strong>, 출력 <strong>100 tokens</strong></li>
+</ul>
+<p>이를 네 가지 시나리오로 비용을 계산했습니다.</p>
+<table>
+<thead><tr><th>시나리오</th><th>호출당 비용</th><th>60만 건 총 비용</th><th>처리 시간 (단일 노드)</th></tr></thead>
+<tbody>
+<tr><td>Claude Sonnet 3.5 (캐싱 미적용)</td><td>약 $0.0141</td><td><strong>약 $8,460 (≈ 1,142만 원)</strong></td><td>약 2~3일 (병렬 호출)</td></tr>
+<tr><td>Claude Sonnet 3.5 (Prompt Caching 부분 적용)</td><td>약 $0.0082</td><td>약 $4,920 (≈ 664만 원)</td><td>약 2~3일</td></tr>
+<tr><td>Ollama qwen2.5:7b (M3 맥북 16GB 로컬)</td><td>$0 (전기료 외)</td><td><strong>사실상 $0</strong></td><td>약 50일</td></tr>
+<tr><td>Ollama qwen2.5:7b (클라우드 GPU RTX 4090 임대)</td><td>약 $0.0001</td><td>약 $70 (≈ 9.5만 원)</td><td>약 7일</td></tr>
+</tbody>
+</table>
+<p>환율 1,350원/달러 가정. Claude 단가는 입력 $3/M, 출력 $15/M, Prompt Caching hit 시 $0.30/M, write 시 $3.75/M 기준이며, RTX 4090 임대는 vast.ai·RunPod 시간당 $0.30~$0.50 평균치를 사용했습니다. <strong>Prompt Caching은 시스템 프롬프트와 RAG 컨텍스트(합 약 2,200 tokens)만 캐시 적중, 건마다 고유한 본문 텍스트 2,000 tokens는 매번 새로 입력되는 부분 적중 가정</strong>입니다. 캐시 100% 적중은 본문이 매번 달라지는 분류 작업 구조상 구조적으로 불가능합니다.</p>
+<p>핵심 관찰은 세 가지입니다.</p>
+<ul>
+<li><strong>Claude 직접 호출 대비 Ollama 로컬은 99% 이상 절감</strong>됩니다. 다만 단일 맥북 처리 시간이 약 50일로 실무 적용에는 추가 노드 또는 클라우드 GPU 임대가 현실적입니다.</li>
+<li><strong>Prompt Caching을 부분 적용하면 Claude 비용을 약 42% 줄일 수 있습니다.</strong> 시스템 프롬프트·RAG 컨텍스트는 캐시되지만 건마다 고유한 본문 텍스트는 매번 새로 입력되어 캐시 적중률 100%는 불가능합니다.</li>
+<li><strong>클라우드 GPU에서 Ollama를 호스팅하면 약 $70로 60만 건 처리가 가능</strong>합니다. Claude 캐싱 부분 적용 대비 약 70배, 캐싱 미적용 대비 약 120배 절감입니다.</li>
+</ul>
+<p>다만 분류 품질은 두 모델이 동등하지 않습니다. <strong>Ollama 일반 모델(qwen2.5:7b)의 카테고리 분류 정확도는 Claude 대비 일정 수준 낮아 후처리 수정·검증 샘플 보정 작업이 별도 비용으로 들어갑니다.</strong> 이 보정 작업까지 포함해 비용·품질 트레이드오프를 계산하는 것이 정직합니다. 또한 한국어 텍스트 분류에는 코딩 특화 모델(qwen2.5-coder)보다 다국어 일반 모델(qwen2.5, llama3.1 등)이 더 적합하므로, 위 표의 Ollama 비용 시나리오는 일반 모델 가정으로 계산했습니다.</p>
+<h3>정리 — 작업 성격별 최적 선택</h3>
+<p>코딩 워크플로우의 토큰 절감 효과는 일 평균 50~70% 수준으로 의식적인 작업 분리만으로 달성할 수 있습니다. 상담메모 분류와 같은 대량 배치·요약·전처리 작업에서는 로컬 LLM 도입 효과가 두 자릿수 배율로 커지며, 이때는 단일 맥북 대신 클라우드 GPU 임대가 현실적인 선택지입니다. 작업의 호출 빈도와 호출당 응답 품질 요구 수준을 두 축으로 두고 선택하면 됩니다.</p>
+<h2>6. 이후 확장 방향</h2>
+<p>하이브리드 환경의 기본기를 잡은 후에는 작업 분리 룰을 Hook 스크립트로 자동화하거나, Cursor IDE에도 Ollama를 백엔드로 추가하는 방향이 자연스럽게 이어집니다. 팀 단위 도입 시에는 사내 Ollama 서버를 두고 개인은 Claude Code만 호출하는 구조도 가능합니다. 다른 로컬 모델(Llama 3.1, Mixtral, gemma2 등) 비교와 GPU vs CPU 추론 벤치마크, 한국어 코드 품질 측정 같은 주제는 본인의 운영 패턴이 안정화되는 시점에 맞춰 순차적으로 정리해 갈 예정입니다.</p>
+<h2>마치며</h2>
+<p>Claude Code를 단독으로 쓰는 것과 Ollama를 곁들여 쓰는 것의 차이는 단순한 비용 절감이 아닙니다. 어떤 작업에 어떤 도구를 쓸 것인가를 의식적으로 정해 두는 것 자체가, 1인 개발자가 도구를 자기 손에 잡는 첫 단계입니다. 한 달 $100~200을 줄이는 것보다 그 판단 회로를 만드는 것이 본질입니다.</p>
+<p>이 글은 2026년 6월 1일 기준 본인이 직접 구축한 환경을 따라 정리한 것이며, Ollama와 Claude Code 두 도구는 빠르게 업데이트되므로 6개월 뒤에 명령어 일부가 달라질 수 있습니다. 본문 중 명령어가 더 이상 동작하지 않으면 <a href="https://ollama.com/library">공식 Ollama 문서</a>와 <a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code 공식 문서</a>를 함께 확인하기를 권합니다.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Claude Code + Ollama 하이브리드 코딩 환경 구축",
+  "description": "Claude Code 에이전트와 Ollama 로컬 LLM을 작업별 라우팅으로 결합해 API 토큰 비용을 줄이는 하이브리드 코딩 환경 구축법",
+  "totalTime": "PT90M",
+  "estimatedCost": {"@type": "MonetaryAmount", "currency": "USD", "value": "0"},
+  "tool": [
+    {"@type": "HowToTool", "name": "macOS Sequoia (M3 권장)"},
+    {"@type": "HowToTool", "name": "Claude Code"},
+    {"@type": "HowToTool", "name": "Ollama"},
+    {"@type": "HowToTool", "name": "qwen2.5-coder:7b"},
+    {"@type": "HowToTool", "name": "LiteLLM Proxy"}
+  ],
+  "step": [
+    {"@type": "HowToStep", "name": "Ollama 설치 + 코딩 모델 다운로드"},
+    {"@type": "HowToStep", "name": "Claude Code 환경 확인"},
+    {"@type": "HowToStep", "name": "작업 분리 룰 정의"},
+    {"@type": "HowToStep", "name": "듀얼 터미널 워크플로우"},
+    {"@type": "HowToStep", "name": "LiteLLM 프록시로 Claude Code 안에서 Ollama 백엔드 사용"}
+  ],
+  "datePublished": "2026-06-01",
+  "author": {"@type": "Person", "name": "AI 코더 랩"},
+  "articleSection": "AI Developer Toolkit"
+}
+</script>
+
+</article>
+<footer>davidlikessangria@gmail.com · 2026-06-01</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+</body>
+</html>
