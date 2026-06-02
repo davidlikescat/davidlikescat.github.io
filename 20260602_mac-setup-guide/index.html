@@ -103,12 +103,14 @@
   .hero__meta { font-size: var(--caption-size); color: #6e6e73; }
   .hero__chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 38px; }
   .chip {
+    display: inline-flex; align-items: center; gap: 9px;
     font-size: 14px; font-weight: 500; color: var(--text-on-dark);
     border: 1px solid rgba(255,255,255,0.22);
-    padding: 8px 18px; border-radius: 980px;
+    padding: 7px 16px 7px 8px; border-radius: 980px;
     transition: background var(--d-fast) var(--ease), border-color var(--d-fast) var(--ease);
     text-decoration: none;
   }
+  .chip img { width: 22px; height: 22px; border-radius: 6px; flex: none; }
   .chip:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
 
   /* ===== SECTION SHELL ===== */
@@ -158,13 +160,20 @@
   }
 
   /* ===== TOOL SECTION ===== */
-  .tool-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-  .tool-index {
-    font-size: var(--headline-size); font-weight: 700;
-    letter-spacing: var(--ls-tight); line-height: 1;
-    color: var(--text-tertiary); opacity: 0.5;
+  .tool-head { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .tool-icon {
+    width: 76px; height: 76px; flex: none;
+    border-radius: 17px; object-fit: cover; background: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.14);
+    border: 0.5px solid rgba(0,0,0,0.06);
   }
-  .section--dark .tool-index { color: #6e6e73; }
+  .section--dark .tool-icon { box-shadow: 0 6px 26px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.08); }
+  .tool-headtext { display: flex; flex-direction: column; gap: 4px; }
+  .tool-eyebrow {
+    font-size: var(--caption-size); font-weight: 600;
+    letter-spacing: 0.06em; color: var(--text-tertiary);
+  }
+  .section--dark .tool-eyebrow { color: #86868b; }
   .tool-name {
     font-size: var(--headline-size); font-weight: 600;
     letter-spacing: var(--ls-tight); line-height: 1;
@@ -187,6 +196,31 @@
   .section--dark .tool-url { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color: var(--text-on-dark); }
   .tool-url:hover { border-color: var(--blue); }
   .tool-url__label { font-family: var(--font); color: var(--text-tertiary); font-size: 13px; }
+
+  /* Tool visual (screenshot / brand panel) */
+  .tool-visual { margin-top: 44px; }
+  .tool-visual__frame {
+    border-radius: var(--radius-img); overflow: hidden; line-height: 0;
+    box-shadow: 0 14px 44px rgba(0,0,0,0.13);
+    border: 0.5px solid rgba(0,0,0,0.07);
+  }
+  .section--dark .tool-visual__frame { box-shadow: 0 18px 54px rgba(0,0,0,0.55); border-color: rgba(255,255,255,0.08); }
+  .tool-visual__frame img { width: 100%; height: auto; display: block; }
+  .tool-visual figcaption {
+    margin-top: 14px; text-align: center;
+    font-size: var(--caption-size); color: var(--text-tertiary);
+  }
+  .section--dark .tool-visual figcaption { color: #86868b; }
+
+  /* Antigravity brand panel (no public screenshot) */
+  .ag-panel {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 22px; padding: clamp(56px, 9vw, 96px) 24px;
+    background: radial-gradient(120% 120% at 50% 22%, #34343a 0%, #16161a 55%, #0b0b0d 100%);
+  }
+  .ag-panel__logo { width: 112px; height: 112px; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4)); }
+  .ag-panel__text { color: #f5f5f7; font-size: var(--subtitle-size); font-weight: 500; letter-spacing: -0.01em; }
+  .ag-panel__sub { color: #a1a1a6; font-size: var(--caption-size); margin-top: -10px; }
 
   /* Steps */
   .steps { margin-top: 40px; display: grid; gap: 2px; border-radius: var(--radius-card); overflow: hidden; }
@@ -253,7 +287,9 @@
   @media (max-width: 734px) {
     .basics { grid-template-columns: 1fr; }
     .step { grid-template-columns: 44px 1fr; padding: 20px 20px; }
-    .tool-head { gap: 12px; }
+    .tool-head { gap: 14px; }
+    .tool-icon { width: 60px; height: 60px; border-radius: 14px; }
+    .ag-panel__logo { width: 92px; height: 92px; }
     .basic-card { padding: 26px; }
   }
 </style>
@@ -280,11 +316,11 @@
   <p class="hero__subtitle">Safari만 열 줄 알면 됩니다. 업무에 꼭 필요한 5가지 툴을<br />하나씩 따라서 설치해 봅시다.</p>
   <div class="hero__meta">예상 소요 시간 약 15분 · macOS 12 이상</div>
   <div class="hero__chips">
-    <a class="chip" href="#notion">1 &nbsp;Notion</a>
-    <a class="chip" href="#discord">2 &nbsp;Discord</a>
-    <a class="chip" href="#antigravity">3 &nbsp;Antigravity</a>
-    <a class="chip" href="#typeless">4 &nbsp;Typeless</a>
-    <a class="chip" href="#chrome">5 &nbsp;Chrome</a>
+    <a class="chip" href="#notion"><img src="assets/logo-notion.png" alt="" />Notion</a>
+    <a class="chip" href="#discord"><img src="assets/logo-discord.png" alt="" />Discord</a>
+    <a class="chip" href="#antigravity"><img src="assets/logo-antigravity.png" alt="" />Antigravity</a>
+    <a class="chip" href="#typeless"><img src="assets/logo-typeless.png" alt="" />Typeless</a>
+    <a class="chip" href="#chrome"><img src="assets/logo-chrome.png" alt="" />Chrome</a>
   </div>
 </header>
 
@@ -337,14 +373,22 @@
   <div class="wrap">
     <div class="reveal">
       <div class="tool-head">
-        <span class="tool-index">01</span>
-        <span class="tool-name">Notion</span>
+        <img class="tool-icon" src="assets/logo-notion.png" alt="Notion 앱 아이콘" width="76" height="76" loading="lazy" />
+        <div class="tool-headtext">
+          <span class="tool-eyebrow">01 / 05</span>
+          <span class="tool-name">Notion</span>
+        </div>
       </div>
       <p class="tool-tagline">메모, 문서, 위키, 할 일까지 한곳에. 우리 팀의 자료와 회의록이 모두 여기 모입니다. 가장 먼저 깔아두세요.</p>
       <a class="tool-url" href="https://www.notion.com/desktop" target="_blank" rel="noopener">
         <span class="tool-url__label">주소창에 입력</span> notion.com/desktop
       </a>
     </div>
+
+    <figure class="tool-visual reveal">
+      <div class="tool-visual__frame"><img src="assets/shot-notion.png" alt="Notion 대표 화면 — Your 24/7 AI team" loading="lazy" /></div>
+      <figcaption>Notion — 메모·문서·AI를 한 워크스페이스에서</figcaption>
+    </figure>
 
     <div class="steps reveal">
       <div class="step"><div class="step__num">1</div><div class="step__text">Safari 주소창에 <strong>notion.com/desktop</strong> 을 입력하고 <span class="kbd">return</span>.</div></div>
@@ -363,14 +407,22 @@
   <div class="wrap">
     <div class="reveal">
       <div class="tool-head">
-        <span class="tool-index">02</span>
-        <span class="tool-name">Discord</span>
+        <img class="tool-icon" src="assets/logo-discord.png" alt="Discord 앱 아이콘" width="76" height="76" loading="lazy" />
+        <div class="tool-headtext">
+          <span class="tool-eyebrow">02 / 05</span>
+          <span class="tool-name">Discord</span>
+        </div>
       </div>
       <p class="tool-tagline">실시간 소통과 음성 채널의 중심. 팀 채널, 알림, 화면 공유까지 — 슬랙처럼 쓰는 협업 메신저입니다.</p>
       <a class="tool-url" href="https://discord.com/download" target="_blank" rel="noopener">
         <span class="tool-url__label">주소창에 입력</span> discord.com/download
       </a>
     </div>
+
+    <figure class="tool-visual reveal">
+      <div class="tool-visual__frame"><img src="assets/shot-discord.jpg" alt="Discord 데스크톱과 모바일 화면" loading="lazy" /></div>
+      <figcaption>Discord — 데스크톱·모바일에서 채널과 음성으로 소통</figcaption>
+    </figure>
 
     <div class="steps reveal">
       <div class="step"><div class="step__num">1</div><div class="step__text">주소창에 <strong>discord.com/download</strong> 입력 → <strong>Download for Mac</strong> 클릭.</div></div>
@@ -389,14 +441,28 @@
   <div class="wrap">
     <div class="reveal">
       <div class="tool-head">
-        <span class="tool-index">03</span>
-        <span class="tool-name">Antigravity</span>
+        <img class="tool-icon" src="assets/logo-antigravity.png" alt="Antigravity 로고" width="76" height="76" loading="lazy" />
+        <div class="tool-headtext">
+          <span class="tool-eyebrow">03 / 05</span>
+          <span class="tool-name">Antigravity</span>
+        </div>
       </div>
       <p class="tool-tagline">구글이 만든 AI 에이전트 기반 코드 에디터(IDE). AI가 여러 단계의 작업을 알아서 처리해 줍니다. 현재 무료 프리뷰로 쓸 수 있어요.</p>
       <a class="tool-url" href="https://antigravity.google/download" target="_blank" rel="noopener">
         <span class="tool-url__label">주소창에 입력</span> antigravity.google/download
       </a>
     </div>
+
+    <figure class="tool-visual reveal">
+      <div class="tool-visual__frame">
+        <div class="ag-panel">
+          <img class="ag-panel__logo" src="assets/logo-antigravity.png" alt="Google Antigravity 로고" loading="lazy" />
+          <div class="ag-panel__text">Google Antigravity</div>
+          <div class="ag-panel__sub">AI 에이전트 코드 에디터 · 무료 퍼블릭 프리뷰</div>
+        </div>
+      </div>
+      <figcaption>antigravity.google 에서 Apple Silicon / Intel 버전을 받습니다</figcaption>
+    </figure>
 
     <div class="steps reveal">
       <div class="step"><div class="step__num">1</div><div class="step__text">주소창에 <strong>antigravity.google/download</strong> 입력.</div></div>
@@ -415,14 +481,22 @@
   <div class="wrap">
     <div class="reveal">
       <div class="tool-head">
-        <span class="tool-index">04</span>
-        <span class="tool-name">Typeless</span>
+        <img class="tool-icon" src="assets/logo-typeless.png" alt="Typeless 앱 아이콘" width="76" height="76" loading="lazy" />
+        <div class="tool-headtext">
+          <span class="tool-eyebrow">04 / 05</span>
+          <span class="tool-name">Typeless</span>
+        </div>
       </div>
       <p class="tool-tagline">말하면 글이 되는 AI 음성 받아쓰기. 단순 받아쓰기를 넘어, 다듬어진 문장으로 바꿔줍니다. 타이핑보다 최대 4배 빠르게.</p>
       <a class="tool-url" href="https://www.typeless.com/downloads" target="_blank" rel="noopener">
         <span class="tool-url__label">주소창에 입력</span> typeless.com/downloads
       </a>
     </div>
+
+    <figure class="tool-visual reveal">
+      <div class="tool-visual__frame"><img src="assets/shot-typeless.png" alt="Typeless — Your voice is the new keyboard" loading="lazy" /></div>
+      <figcaption>Typeless — 목소리가 곧 키보드</figcaption>
+    </figure>
 
     <div class="steps reveal">
       <div class="step"><div class="step__num">1</div><div class="step__text">주소창에 <strong>typeless.com/downloads</strong> 입력 → <strong>Download for Mac</strong> 클릭.</div></div>
@@ -441,14 +515,22 @@
   <div class="wrap">
     <div class="reveal">
       <div class="tool-head">
-        <span class="tool-index">05</span>
-        <span class="tool-name">Chrome</span>
+        <img class="tool-icon" src="assets/logo-chrome.png" alt="Google Chrome 앱 아이콘" width="76" height="76" loading="lazy" />
+        <div class="tool-headtext">
+          <span class="tool-eyebrow">05 / 05</span>
+          <span class="tool-name">Chrome</span>
+        </div>
       </div>
       <p class="tool-tagline">가장 널리 쓰는 웹 브라우저. 구글 계정 연동, 확장 프로그램, 개발자 도구까지 — 업무용 사이트가 Chrome에 최적화된 경우가 많습니다.</p>
       <a class="tool-url" href="https://www.google.com/chrome" target="_blank" rel="noopener">
         <span class="tool-url__label">주소창에 입력</span> google.com/chrome
       </a>
     </div>
+
+    <figure class="tool-visual reveal">
+      <div class="tool-visual__frame"><img src="assets/shot-chrome.png" alt="Chrome 브라우저 새 탭 화면" loading="lazy" /></div>
+      <figcaption>Chrome — 새 탭과 구글 검색이 통합된 브라우저</figcaption>
+    </figure>
 
     <div class="steps reveal">
       <div class="step"><div class="step__num">1</div><div class="step__text">Safari 주소창에 <strong>google.com/chrome</strong> 입력.</div></div>
