@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>맥북 첫 세팅 가이드 — 5가지 필수 툴 설치</title>
+<meta name="description" content="맥북을 처음 쓰는 분을 위한 Safari 다운로드 매뉴얼. Notion, Discord, Antigravity, Typeless, Chrome 단계별 설치 가이드." />
+<style>
+  :root {
+    --bg-white: #fbfbfd;
+    --bg-light: #f5f5f7;
+    --bg-dark: #1d1d1f;
+    --bg-black: #000000;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    --text-on-dark: #f5f5f7;
+    --link: #0066cc;
+    --link-hover: #0077ed;
+    --blue: #0071e3;
+    --blue-hover: #0077ed;
+    --hairline: #d2d2d7;
+
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    --hero-size: clamp(40px, 8vw, 88px);
+    --headline-size: clamp(30px, 5vw, 56px);
+    --title-size: clamp(22px, 3.2vw, 40px);
+    --subtitle-size: clamp(18px, 2vw, 27px);
+    --body-size: clamp(15px, 1.15vw, 19px);
+    --caption-size: clamp(12px, 1vw, 15px);
+
+    --lh-tight: 1.06;
+    --lh-snug: 1.16;
+    --lh-body: 1.55;
+    --ls-tight: -0.015em;
+
+    --max-width: 980px;
+    --gutter: 22px;
+    --radius-card: 18px;
+    --radius-img: 28px;
+    --radius-btn: 980px;
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --d-fast: 200ms;
+    --d-reveal: 1100ms;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--font);
+    background: var(--bg-white);
+    color: var(--text-primary);
+    font-size: var(--body-size);
+    line-height: var(--lh-body);
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== NAV ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 9999;
+    height: 48px;
+    background: rgba(251,251,253,0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid rgba(0,0,0,0.08);
+  }
+  .nav__inner {
+    max-width: var(--max-width); margin: 0 auto; height: 100%;
+    display: flex; align-items: center; gap: clamp(14px, 2.4vw, 30px);
+    padding: 0 var(--gutter);
+    font-size: 13px; letter-spacing: -0.01em;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .nav__inner::-webkit-scrollbar { display: none; }
+  .nav__brand { font-weight: 600; color: var(--text-primary); white-space: nowrap; margin-right: auto; }
+  .nav a { color: var(--text-secondary); text-decoration: none; white-space: nowrap; transition: color var(--d-fast) var(--ease); }
+  .nav a:hover { color: var(--text-primary); }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: var(--bg-black); color: var(--text-on-dark);
+    text-align: center; overflow: hidden;
+    padding: clamp(90px, 14vw, 180px) var(--gutter) clamp(70px, 10vw, 130px);
+  }
+  .hero__eyebrow {
+    font-size: var(--subtitle-size); font-weight: 600;
+    color: #2997ff; margin-bottom: 14px; letter-spacing: 0;
+  }
+  .hero__title {
+    font-size: var(--hero-size); font-weight: 700;
+    line-height: var(--lh-tight); letter-spacing: var(--ls-tight);
+    margin-bottom: 20px;
+  }
+  .hero__subtitle {
+    font-size: var(--subtitle-size); font-weight: 400;
+    color: #a1a1a6; max-width: 640px; margin: 0 auto 36px;
+    line-height: 1.4;
+  }
+  .hero__meta { font-size: var(--caption-size); color: #6e6e73; }
+  .hero__chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 38px; }
+  .chip {
+    font-size: 14px; font-weight: 500; color: var(--text-on-dark);
+    border: 1px solid rgba(255,255,255,0.22);
+    padding: 8px 18px; border-radius: 980px;
+    transition: background var(--d-fast) var(--ease), border-color var(--d-fast) var(--ease);
+    text-decoration: none;
+  }
+  .chip:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
+
+  /* ===== SECTION SHELL ===== */
+  .section { padding: clamp(60px, 9vw, 120px) var(--gutter); }
+  .section--light { background: var(--bg-light); }
+  .section--white { background: var(--bg-white); }
+  .section--dark { background: var(--bg-dark); color: var(--text-on-dark); }
+  .wrap { max-width: var(--max-width); margin: 0 auto; }
+
+  .section-eyebrow {
+    font-size: var(--caption-size); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-tertiary); margin-bottom: 12px;
+  }
+  .section--dark .section-eyebrow { color: #86868b; }
+  .section-title {
+    font-size: var(--headline-size); font-weight: 600;
+    line-height: var(--lh-snug); letter-spacing: var(--ls-tight);
+    margin-bottom: 18px;
+  }
+  .section-lead {
+    font-size: var(--subtitle-size); font-weight: 400;
+    color: var(--text-secondary); max-width: 700px; line-height: 1.4;
+  }
+  .section--dark .section-lead { color: #a1a1a6; }
+
+  /* ===== BASICS GRID (intro) ===== */
+  .basics { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gutter); margin-top: 52px; }
+  .basic-card {
+    background: var(--bg-white); border: 0.5px solid var(--hairline);
+    border-radius: var(--radius-card); padding: 32px;
+  }
+  .basic-card__num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--bg-dark); color: #fff;
+    font-size: 16px; font-weight: 600; margin-bottom: 16px;
+  }
+  .basic-card__title { font-size: 21px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .basic-card__body { font-size: 16px; color: var(--text-secondary); line-height: 1.5; }
+  .basic-card__body strong { color: var(--text-primary); font-weight: 600; }
+  .kbd {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.85em; background: var(--bg-light);
+    border: 0.5px solid var(--hairline); border-radius: 6px;
+    padding: 2px 7px; color: var(--text-primary); white-space: nowrap;
+  }
+
+  /* ===== TOOL SECTION ===== */
+  .tool-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .tool-index {
+    font-size: var(--headline-size); font-weight: 700;
+    letter-spacing: var(--ls-tight); line-height: 1;
+    color: var(--text-tertiary); opacity: 0.5;
+  }
+  .section--dark .tool-index { color: #6e6e73; }
+  .tool-name {
+    font-size: var(--headline-size); font-weight: 600;
+    letter-spacing: var(--ls-tight); line-height: 1;
+  }
+  .tool-tagline {
+    font-size: var(--subtitle-size); color: var(--text-secondary);
+    margin-top: 14px; max-width: 720px; line-height: 1.4;
+  }
+  .section--dark .tool-tagline { color: #a1a1a6; }
+
+  .tool-url {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 26px; padding: 13px 22px;
+    background: var(--bg-white); border: 0.5px solid var(--hairline);
+    border-radius: var(--radius-btn);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 15px; color: var(--text-primary);
+    text-decoration: none; transition: border-color var(--d-fast) var(--ease), background var(--d-fast) var(--ease);
+  }
+  .section--dark .tool-url { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color: var(--text-on-dark); }
+  .tool-url:hover { border-color: var(--blue); }
+  .tool-url__label { font-family: var(--font); color: var(--text-tertiary); font-size: 13px; }
+
+  /* Steps */
+  .steps { margin-top: 40px; display: grid; gap: 2px; border-radius: var(--radius-card); overflow: hidden; }
+  .step {
+    display: grid; grid-template-columns: 56px 1fr; gap: 4px;
+    background: var(--bg-white); padding: 24px 26px;
+  }
+  .section--dark .step { background: rgba(255,255,255,0.04); }
+  .step__num {
+    font-size: 20px; font-weight: 700; color: var(--blue);
+    letter-spacing: -0.01em; line-height: 1.3;
+  }
+  .step__text { font-size: 17px; line-height: 1.5; color: var(--text-primary); }
+  .section--dark .step__text { color: var(--text-on-dark); }
+  .step__text strong { font-weight: 600; }
+  .step__text .kbd { font-size: 0.82em; }
+  .section--dark .kbd { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.18); color: var(--text-on-dark); }
+
+  /* Note / Tip callout */
+  .note {
+    margin-top: 24px; padding: 18px 22px;
+    border-left: 3px solid var(--blue);
+    background: rgba(0,113,227,0.06);
+    border-radius: 10px;
+    font-size: 16px; line-height: 1.55; color: var(--text-primary);
+  }
+  .section--dark .note { background: rgba(41,151,255,0.1); color: var(--text-on-dark); }
+  .note__label { font-weight: 700; color: var(--blue); margin-right: 6px; }
+  .note--warn { border-left-color: #ff9f0a; background: rgba(255,159,10,0.08); }
+  .note--warn .note__label { color: #c77700; }
+  .section--dark .note--warn { background: rgba(255,159,10,0.12); }
+  .section--dark .note--warn .note__label { color: #ffb340; }
+
+  /* ===== CLOSING CTA ===== */
+  .cta { background: var(--bg-black); color: var(--text-on-dark); text-align: center; padding: clamp(80px, 12vw, 150px) var(--gutter); }
+  .cta__title { font-size: var(--headline-size); font-weight: 600; letter-spacing: var(--ls-tight); line-height: var(--lh-snug); margin-bottom: 18px; }
+  .cta__sub { font-size: var(--subtitle-size); color: #a1a1a6; max-width: 600px; margin: 0 auto 36px; line-height: 1.4; }
+  .cta__links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 150px; height: 50px; padding: 0 28px;
+    background: var(--blue); color: #fff; border-radius: var(--radius-btn);
+    font-size: 17px; font-weight: 400; text-decoration: none;
+    transition: background var(--d-fast) var(--ease);
+  }
+  .btn:hover { background: var(--blue-hover); }
+  .btn--ghost { background: transparent; border: 1px solid rgba(255,255,255,0.3); }
+  .btn--ghost:hover { background: rgba(255,255,255,0.1); }
+
+  /* ===== FOOTER ===== */
+  .footer { background: var(--bg-light); color: var(--text-tertiary); font-size: var(--caption-size); padding: 40px var(--gutter); text-align: center; line-height: 1.6; }
+  .footer a { color: var(--text-secondary); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ===== REVEAL ===== */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity var(--d-reveal) var(--ease-out), transform var(--d-reveal) var(--ease-out); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 734px) {
+    .basics { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 44px 1fr; padding: 20px 20px; }
+    .tool-head { gap: 12px; }
+    .basic-card { padding: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <span class="nav__brand">맥북 첫 세팅 가이드</span>
+    <a href="#basics">시작 전</a>
+    <a href="#notion">Notion</a>
+    <a href="#discord">Discord</a>
+    <a href="#antigravity">Antigravity</a>
+    <a href="#typeless">Typeless</a>
+    <a href="#chrome">Chrome</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero__eyebrow">맥북, 처음이지?</div>
+  <h1 class="hero__title">5분이면<br />준비 끝.</h1>
+  <p class="hero__subtitle">Safari만 열 줄 알면 됩니다. 업무에 꼭 필요한 5가지 툴을<br />하나씩 따라서 설치해 봅시다.</p>
+  <div class="hero__meta">예상 소요 시간 약 15분 · macOS 12 이상</div>
+  <div class="hero__chips">
+    <a class="chip" href="#notion">1 &nbsp;Notion</a>
+    <a class="chip" href="#discord">2 &nbsp;Discord</a>
+    <a class="chip" href="#antigravity">3 &nbsp;Antigravity</a>
+    <a class="chip" href="#typeless">4 &nbsp;Typeless</a>
+    <a class="chip" href="#chrome">5 &nbsp;Chrome</a>
+  </div>
+</header>
+
+<!-- BASICS -->
+<section class="section section--white" id="basics">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-eyebrow">시작 전에 — 5가지만 알아두기</div>
+      <h2 class="section-title">맥은 처음이라도<br />어렵지 않습니다.</h2>
+      <p class="section-lead">아래 5가지만 익히면 어떤 프로그램이든 똑같은 방식으로 설치할 수 있어요. 이 페이지의 모든 설치 과정이 이 원리를 그대로 따릅니다.</p>
+    </div>
+
+    <div class="basics">
+      <div class="basic-card reveal">
+        <span class="basic-card__num">1</span>
+        <h3 class="basic-card__title">Safari 여는 법</h3>
+        <p class="basic-card__body">화면 맨 아래 <strong>Dock</strong>에서 파란색 <strong>나침반 아이콘</strong>을 클릭하면 Safari가 열립니다. 맨 위 주소창에 사이트 주소를 입력하고 <span class="kbd">return</span> 을 누르세요.</p>
+      </div>
+      <div class="basic-card reveal">
+        <span class="basic-card__num">2</span>
+        <h3 class="basic-card__title">내 맥 종류 확인 (중요)</h3>
+        <p class="basic-card__body">왼쪽 위 <strong>사과 메뉴</strong> → <strong>이 Mac에 관하여</strong>를 클릭. <strong>칩(Chip)</strong> 항목에 <strong>Apple M1/M2/M3</strong> 등이 보이면 <strong>Apple Silicon</strong>, <strong>Intel</strong>이라고 적혀 있으면 Intel 맥입니다. 일부 프로그램은 둘 중 맞는 버전을 받아야 해요.</p>
+      </div>
+      <div class="basic-card reveal">
+        <span class="basic-card__num">3</span>
+        <h3 class="basic-card__title">다운로드 파일 찾기</h3>
+        <p class="basic-card__body">다운로드가 끝나면 Safari 오른쪽 위 <strong>아래 화살표</strong> 아이콘에 표시됩니다. 또는 Dock의 <strong>다운로드 폴더</strong>(로켓 옆 폴더)에서 방금 받은 파일을 볼 수 있어요.</p>
+      </div>
+      <div class="basic-card reveal">
+        <span class="basic-card__num">4</span>
+        <h3 class="basic-card__title">.dmg 설치하는 법</h3>
+        <p class="basic-card__body">받은 <span class="kbd">.dmg</span> 파일을 <strong>더블클릭</strong>하면 창이 하나 뜹니다. 그 안의 <strong>앱 아이콘</strong>을 옆에 있는 <strong>Applications 폴더</strong>로 <strong>드래그</strong>하면 설치 완료. (이게 맥에서 프로그램 설치의 기본 방식이에요.)</p>
+      </div>
+      <div class="basic-card reveal">
+        <span class="basic-card__num">5</span>
+        <h3 class="basic-card__title">"확인되지 않은 개발자" 경고</h3>
+        <p class="basic-card__body">처음 실행할 때 경고가 뜨면 당황하지 마세요. 앱 아이콘을 <strong>우클릭(또는 control+클릭) → 열기</strong>를 선택하면 됩니다. 그래도 막히면 <strong>시스템 설정 → 개인정보 보호 및 보안</strong> 맨 아래 <strong>"확인 없이 열기"</strong>를 누르세요.</p>
+      </div>
+      <div class="basic-card reveal">
+        <span class="basic-card__num">+</span>
+        <h3 class="basic-card__title">설치한 앱 실행하기</h3>
+        <p class="basic-card__body">설치가 끝난 앱은 Dock의 <strong>Launchpad</strong>(로켓 아이콘)나 <strong>Applications 폴더</strong>에서 클릭해 실행합니다. 자주 쓰는 앱은 Dock으로 드래그해 고정해두면 편해요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 1. NOTION -->
+<section class="section section--light" id="notion">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="tool-head">
+        <span class="tool-index">01</span>
+        <span class="tool-name">Notion</span>
+      </div>
+      <p class="tool-tagline">메모, 문서, 위키, 할 일까지 한곳에. 우리 팀의 자료와 회의록이 모두 여기 모입니다. 가장 먼저 깔아두세요.</p>
+      <a class="tool-url" href="https://www.notion.com/desktop" target="_blank" rel="noopener">
+        <span class="tool-url__label">주소창에 입력</span> notion.com/desktop
+      </a>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><div class="step__num">1</div><div class="step__text">Safari 주소창에 <strong>notion.com/desktop</strong> 을 입력하고 <span class="kbd">return</span>.</div></div>
+      <div class="step"><div class="step__num">2</div><div class="step__text"><strong>Download for Mac</strong> 버튼을 클릭합니다. (Apple Silicon / Intel을 자동으로 인식해 줘요.)</div></div>
+      <div class="step"><div class="step__num">3</div><div class="step__text">받은 <span class="kbd">Notion.dmg</span> 를 더블클릭 → <strong>Notion 아이콘을 Applications 폴더로 드래그</strong>.</div></div>
+      <div class="step"><div class="step__num">4</div><div class="step__text">Launchpad에서 <strong>Notion</strong>을 실행하고, <strong>회사 이메일</strong>로 로그인합니다.</div></div>
+      <div class="step"><div class="step__num">5</div><div class="step__text">로그인 후 팀에서 받은 <strong>워크스페이스 초대</strong>를 수락하면 자료가 모두 보입니다.</div></div>
+    </div>
+
+    <div class="note reveal"><span class="note__label">Tip</span>App Store 버전보다 <strong>공식 사이트 데스크톱 앱</strong>이 기능이 더 완전합니다. 위 경로로 받으세요.</div>
+  </div>
+</section>
+
+<!-- 2. DISCORD -->
+<section class="section section--dark" id="discord">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="tool-head">
+        <span class="tool-index">02</span>
+        <span class="tool-name">Discord</span>
+      </div>
+      <p class="tool-tagline">실시간 소통과 음성 채널의 중심. 팀 채널, 알림, 화면 공유까지 — 슬랙처럼 쓰는 협업 메신저입니다.</p>
+      <a class="tool-url" href="https://discord.com/download" target="_blank" rel="noopener">
+        <span class="tool-url__label">주소창에 입력</span> discord.com/download
+      </a>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><div class="step__num">1</div><div class="step__text">주소창에 <strong>discord.com/download</strong> 입력 → <strong>Download for Mac</strong> 클릭.</div></div>
+      <div class="step"><div class="step__num">2</div><div class="step__text">받은 <span class="kbd">Discord.dmg</span> 더블클릭 → <strong>Discord를 Applications 폴더로 드래그</strong>.</div></div>
+      <div class="step"><div class="step__num">3</div><div class="step__text">실행 후 <strong>계정 만들기</strong> 또는 기존 계정으로 로그인. 회사 이메일을 쓰면 동료 찾기가 편합니다.</div></div>
+      <div class="step"><div class="step__num">4</div><div class="step__text">팀에서 받은 <strong>초대 링크</strong>를 클릭하면 우리 서버에 바로 입장됩니다.</div></div>
+      <div class="step"><div class="step__num">5</div><div class="step__text">처음 음성 채널에 들어가면 <strong>마이크 권한</strong>을 묻습니다. <strong>허용</strong>을 눌러주세요.</div></div>
+    </div>
+
+    <div class="note note--warn reveal"><span class="note__label">주의</span>음성·화면 공유를 쓰려면 <strong>시스템 설정 → 개인정보 보호 및 보안 → 마이크 / 화면 기록</strong>에서 Discord를 켜둬야 합니다.</div>
+  </div>
+</section>
+
+<!-- 3. ANTIGRAVITY -->
+<section class="section section--white" id="antigravity">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="tool-head">
+        <span class="tool-index">03</span>
+        <span class="tool-name">Antigravity</span>
+      </div>
+      <p class="tool-tagline">구글이 만든 AI 에이전트 기반 코드 에디터(IDE). AI가 여러 단계의 작업을 알아서 처리해 줍니다. 현재 무료 프리뷰로 쓸 수 있어요.</p>
+      <a class="tool-url" href="https://antigravity.google/download" target="_blank" rel="noopener">
+        <span class="tool-url__label">주소창에 입력</span> antigravity.google/download
+      </a>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><div class="step__num">1</div><div class="step__text">주소창에 <strong>antigravity.google/download</strong> 입력.</div></div>
+      <div class="step"><div class="step__num">2</div><div class="step__text">내 맥에 맞는 버튼을 선택합니다. M1·M2·M3 맥이면 <strong>Download for Apple Silicon</strong>, Intel 맥이면 <strong>Download for Intel</strong>. (확인법은 위 "시작 전" 2번 참고)</div></div>
+      <div class="step"><div class="step__num">3</div><div class="step__text">받은 <span class="kbd">.dmg</span> 더블클릭 → <strong>Antigravity를 Applications 폴더로 드래그</strong>.</div></div>
+      <div class="step"><div class="step__num">4</div><div class="step__text">실행 시 보안 경고가 뜨면 <strong>우클릭 → 열기</strong>. 그다음 <strong>Google 계정</strong>으로 로그인합니다.</div></div>
+      <div class="step"><div class="step__num">5</div><div class="step__text">첫 실행 때 작업 공간과 필요한 구성 요소를 자동으로 내려받습니다. 잠시 기다리면 준비 완료.</div></div>
+    </div>
+
+    <div class="note reveal"><span class="note__label">참고</span>macOS <strong>12(Monterey) 이상</strong>에서 동작합니다. 무료 프리뷰라 사용량 제한이 있을 수 있어요. Gemini 3 Pro, Claude 등 여러 모델을 지원합니다.</div>
+  </div>
+</section>
+
+<!-- 4. TYPELESS -->
+<section class="section section--dark" id="typeless">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="tool-head">
+        <span class="tool-index">04</span>
+        <span class="tool-name">Typeless</span>
+      </div>
+      <p class="tool-tagline">말하면 글이 되는 AI 음성 받아쓰기. 단순 받아쓰기를 넘어, 다듬어진 문장으로 바꿔줍니다. 타이핑보다 최대 4배 빠르게.</p>
+      <a class="tool-url" href="https://www.typeless.com/downloads" target="_blank" rel="noopener">
+        <span class="tool-url__label">주소창에 입력</span> typeless.com/downloads
+      </a>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><div class="step__num">1</div><div class="step__text">주소창에 <strong>typeless.com/downloads</strong> 입력 → <strong>Download for Mac</strong> 클릭.</div></div>
+      <div class="step"><div class="step__num">2</div><div class="step__text">받은 <span class="kbd">.dmg</span> 더블클릭 → <strong>Typeless를 Applications 폴더로 드래그</strong>.</div></div>
+      <div class="step"><div class="step__num">3</div><div class="step__text">실행 후 <strong>마이크 권한</strong>과 <strong>손쉬운 사용(Accessibility)</strong> 권한을 요청합니다. 둘 다 <strong>허용</strong> 해주세요. (다른 앱에 글을 입력하려면 필요해요.)</div></div>
+      <div class="step"><div class="step__num">4</div><div class="step__text">설정에서 <strong>단축키</strong>를 확인합니다. 그 키를 누른 채 말하면 어떤 앱에서든 받아쓰기가 됩니다.</div></div>
+      <div class="step"><div class="step__num">5</div><div class="step__text">메모장이나 메신저를 열고 단축키를 눌러 한 문장 말해보세요. 바로 깔끔한 문장이 입력됩니다.</div></div>
+    </div>
+
+    <div class="note reveal"><span class="note__label">Tip</span>아이폰에서도 쓰려면 App Store에서 <strong>"Typeless: AI Voice Keyboard"</strong>를 검색해 설치하면 됩니다.</div>
+  </div>
+</section>
+
+<!-- 5. CHROME -->
+<section class="section section--white" id="chrome">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="tool-head">
+        <span class="tool-index">05</span>
+        <span class="tool-name">Chrome</span>
+      </div>
+      <p class="tool-tagline">가장 널리 쓰는 웹 브라우저. 구글 계정 연동, 확장 프로그램, 개발자 도구까지 — 업무용 사이트가 Chrome에 최적화된 경우가 많습니다.</p>
+      <a class="tool-url" href="https://www.google.com/chrome" target="_blank" rel="noopener">
+        <span class="tool-url__label">주소창에 입력</span> google.com/chrome
+      </a>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><div class="step__num">1</div><div class="step__text">Safari 주소창에 <strong>google.com/chrome</strong> 입력.</div></div>
+      <div class="step"><div class="step__num">2</div><div class="step__text"><strong>Chrome 다운로드</strong> 클릭. 맥 종류(Apple Silicon / Intel)를 묻는 화면이 나오면 내 칩에 맞게 선택하세요.</div></div>
+      <div class="step"><div class="step__num">3</div><div class="step__text">받은 <span class="kbd">googlechrome.dmg</span> 더블클릭 → <strong>Chrome 아이콘을 Applications 폴더로 드래그</strong>.</div></div>
+      <div class="step"><div class="step__num">4</div><div class="step__text">Launchpad에서 <strong>Chrome</strong> 실행. <strong>Google 계정</strong>으로 로그인하면 북마크·비밀번호가 동기화됩니다.</div></div>
+      <div class="step"><div class="step__num">5</div><div class="step__text">기본 브라우저로 쓰고 싶다면 <strong>시스템 설정 → 데스크탑 및 Dock → 기본 웹 브라우저</strong>에서 Chrome으로 바꿀 수 있어요.</div></div>
+    </div>
+
+    <div class="note reveal"><span class="note__label">Tip</span>설치 후 <span class="kbd">.dmg</span> 창의 디스크 이미지는 데스크톱에서 <strong>"추출(eject)"</strong> 해 정리해 주면 깔끔합니다. (Notion·Discord 등 모든 .dmg에 동일)</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2 class="cta__title">다섯 개, 모두 끝났습니다.</h2>
+  <p class="cta__sub">이제 Dock에 다섯 개의 앱이 보이나요? 자주 쓰는 앱은 아이콘을 Dock으로 드래그해 고정해두면 매번 찾을 필요가 없어요.</p>
+  <div class="cta__links">
+    <a class="btn" href="#basics">처음으로</a>
+    <a class="btn btn--ghost" href="#notion">툴 다시 보기</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  맥북 첫 세팅 가이드 · 2026.06.02<br />
+  각 다운로드는 반드시 위에 표기된 <strong>공식 도메인</strong>에서만 받으세요. 검색 결과의 광고나 비공식 미러 사이트는 피하는 것이 안전합니다.
+</footer>
+
+<script>
+  (function () {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  })();
+</script>
+</body>
+</html>
