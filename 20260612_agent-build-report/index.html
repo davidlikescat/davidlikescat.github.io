@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 에이전트 빌드 교육 · 만족도 분석 리포트</title>
+<style>
+:root{
+  --ink:#0f1a14;--ink2:#33433a;--mute:#7b8c82;--line:#e3eae5;--line2:#cfdbd4;
+  --bg:#f5f7f5;--card:#ffffff;--soft:#f0f5f1;
+  --green:#0a8f43;--green-d:#076b32;--green-l:#e6f4ec;--green-bar:#16a34a;
+  --amber:#b8860b;--amber-l:#fbf3e0;--red:#c0392b;
+  --mono:"SF Mono","Cascadia Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Pretendard","Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+  -webkit-font-smoothing:antialiased;font-size:15px}
+.wrap{max-width:920px;margin:0 auto;padding:0 24px}
+
+/* 헤더 */
+.report-head{background:linear-gradient(135deg,#0f1a14 0%,#11352099 60%,#0a8f4322 100%),#0f1a14;
+  color:#fff;padding:54px 0 46px;margin-bottom:34px}
+.report-head .wrap{display:block}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:#5fe08f;margin-bottom:16px}
+.report-head h1{font-size:2rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.report-head h1 .pt{color:#5fe08f}
+.report-head .sub{color:#a9c2b3;margin-top:12px;font-size:1.02rem}
+.facts{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px 28px;
+  font-family:var(--mono);font-size:.78rem;color:#86a394;letter-spacing:.03em}
+.facts b{color:#dfeee5;font-weight:500}
+
+/* 섹션 */
+section{margin-bottom:34px}
+.sec-title{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+.sec-title .bar{width:4px;height:19px;background:var(--green);border-radius:3px}
+.sec-title h2{font-size:1.18rem;font-weight:680;letter-spacing:-.01em}
+.sec-title .note{margin-left:auto;font-family:var(--mono);font-size:.72rem;color:var(--mute)}
+
+/* KPI 카드 */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 18px;
+  position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
+.kpi .k-label{font-size:.8rem;color:var(--mute);font-weight:600;margin-bottom:10px}
+.kpi .k-val{font-size:2.1rem;font-weight:760;letter-spacing:-.02em;line-height:1;color:var(--ink)}
+.kpi .k-val .u{font-size:.92rem;color:var(--mute);font-weight:600;margin-left:3px}
+.kpi .k-sub{font-size:.76rem;color:var(--green-d);margin-top:9px;font-weight:600}
+.kpi.amber::before{background:var(--amber)}
+.kpi.amber .k-sub{color:var(--amber)}
+
+/* 카드 일반 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* 막대 (세션/지표 평균) */
+.score-row{display:flex;align-items:center;gap:14px;margin-bottom:15px}
+.score-row:last-child{margin-bottom:0}
+.score-row .nm{width:200px;flex-shrink:0;font-size:.9rem;font-weight:560}
+.score-row .nm small{display:block;color:var(--mute);font-weight:400;font-size:.74rem}
+.track{flex:1;height:11px;background:var(--soft);border-radius:99px;overflow:hidden;position:relative}
+.fill{height:100%;background:linear-gradient(90deg,var(--green-bar),var(--green));border-radius:99px}
+.scval{width:58px;text-align:right;font-family:var(--mono);font-size:.86rem;font-weight:600;color:var(--green-d)}
+
+/* 분포 막대 */
+.dist{margin-bottom:22px}
+.dist:last-child{margin-bottom:0}
+.dist .d-h{font-size:.92rem;font-weight:620;margin-bottom:12px;display:flex;justify-content:space-between}
+.dist .d-h .tot{font-family:var(--mono);font-size:.72rem;color:var(--mute);font-weight:400}
+.drow{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:.84rem}
+.drow:last-child{margin-bottom:0}
+.drow .dl{width:140px;flex-shrink:0;color:var(--ink2)}
+.dtrack{flex:1;height:22px;background:var(--soft);border-radius:7px;overflow:hidden}
+.dbar{height:100%;background:var(--green-l);border-right:3px solid var(--green);
+  display:flex;align-items:center;padding-left:9px;font-size:.74rem;font-weight:600;color:var(--green-d);
+  min-width:fit-content;white-space:nowrap;border-radius:7px 0 0 7px}
+.dbar.am{background:var(--amber-l);border-color:var(--amber);color:var(--amber)}
+.dn{width:54px;text-align:right;font-family:var(--mono);font-size:.76rem;color:var(--mute)}
+
+/* NPS 게이지 */
+.nps-box{display:flex;align-items:center;gap:26px}
+.gauge{width:128px;height:128px;border-radius:50%;flex-shrink:0;
+  background:conic-gradient(var(--green) 0% 100%, var(--soft) 100%);
+  display:flex;align-items:center;justify-content:center;position:relative}
+.gauge::after{content:"";position:absolute;width:96px;height:96px;background:var(--card);border-radius:50%}
+.gauge .gv{position:relative;z-index:1;text-align:center}
+.gauge .gv b{font-size:1.9rem;font-weight:780;color:var(--green-d);display:block;line-height:1}
+.gauge .gv span{font-size:.66rem;color:var(--mute);font-family:var(--mono);letter-spacing:.1em}
+.nps-legend{font-size:.86rem;line-height:1.9}
+.nps-legend .lg{display:flex;align-items:center;gap:9px}
+.dotc{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* 정성 피드백 */
+.quotes{display:flex;flex-direction:column;gap:11px}
+.quote{background:var(--soft);border-left:3px solid var(--green);border-radius:0 9px 9px 0;
+  padding:12px 16px;font-size:.9rem;color:var(--ink2)}
+.quote.warn{border-color:var(--amber);background:var(--amber-l)}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{background:var(--green-l);color:var(--green-d);font-size:.82rem;font-weight:600;
+  padding:7px 13px;border-radius:99px;border:1px solid #c5e6d3}
+.tag .c{font-family:var(--mono);opacity:.7;margin-left:5px}
+
+/* 시사점 */
+.insights{display:flex;flex-direction:column;gap:13px}
+.ins{display:flex;gap:15px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.ins .num{font-family:var(--mono);font-size:.82rem;font-weight:700;color:#fff;background:var(--green);
+  width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ins .ic{flex:1}
+.ins .it{font-weight:660;font-size:.96rem;margin-bottom:4px}
+.ins .id{font-size:.87rem;color:var(--ink2)}
+.ins.flag .num{background:var(--amber)}
+
+/* 푸터 */
+.foot{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 50px;
+  font-size:.78rem;color:var(--mute);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.foot .mono{font-family:var(--mono)}
+
+@media(max-width:760px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+  .score-row .nm{width:130px}
+  .drow .dl{width:96px}
+}
+@media print{
+  body{background:#fff}
+  .report-head{background:#0f1a14 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header class="report-head">
+  <div class="wrap">
+    <div class="eyebrow">Training Satisfaction Report</div>
+    <h1>AI 에이전트 빌드 교육<br>만족도 분석 리포트<span class="pt">.</span></h1>
+    <div class="sub">Claude Code로 직접 에이전트 만들기 · Session 1–3 종합 결과</div>
+    <div class="facts">
+      <span><b>과정</b> AI 에이전트 빌드 핸즈온 (S1–3)</span>
+      <span><b>일자</b> 2026. 06. 12</span>
+      <span><b>참석</b> 13명 · <b>강사</b> 2명</span>
+      <span><b>응답</b> 9명 (응답률 69%)</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- KPI -->
+  <section>
+    <div class="sec-title"><span class="bar"></span><h2>핵심 지표 요약</h2>
+      <span class="note">5점 척도 · NPS 0–10</span></div>
+    <div class="kpis">
+      <div class="kpi">
+        <div class="k-label">전반 만족도</div>
+        <div class="k-val">5.0<span class="u">/5</span></div>
+        <div class="k-sub">응답자 전원 만점</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">추천 의향 (NPS)</div>
+        <div class="k-val">+100</div>
+        <div class="k-sub">추천자 9 · 비추천 0</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">세션 평균 평점</div>
+        <div class="k-val">4.89<span class="u">/5</span></div>
+        <div class="k-sub">S1·S2·S3 균등 고평가</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">실습 완주율</div>
+        <div class="k-val">89<span class="u">%</span></div>
+        <div class="k-sub">완성·거의완성 8/9명</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.8rem;color:var(--mute)">
+      참석 13명 중 9명 응답(응답률 69%) · 강사 2명 진행. 표본 규모상 1차 파일럿 반응으로 해석.
+    </div>
+  </section>
+
+  <!-- 세션별 + 핵심 역량 평점 -->
+  <section>
+    <div class="sec-title"><span class="bar"></span><h2>세션별 · 항목별 평점</h2>
+      <span class="note">평균 / 5점</span></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="score-row"><div class="nm">Session 1<small>Why AI Coding</small></div>
+          <div class="track"><div class="fill" style="width:97.8%"></div></div><div class="scval">4.89</div></div>
+        <div class="score-row"><div class="nm">Session 2<small>Claude Code Guide</small></div>
+          <div class="track"><div class="fill" style="width:97.8%"></div></div><div class="scval">4.89</div></div>
+        <div class="score-row"><div class="nm">Session 3<small>에이전트 빌드 실습</small></div>
+          <div class="track"><div class="fill" style="width:97.8%"></div></div><div class="scval">4.89</div></div>
+      </div>
+      <div class="card">
+        <div class="score-row"><div class="nm">강사 전달력<small>설명 이해도 · 강사 2명</small></div>
+          <div class="track"><div class="fill" style="width:97.8%"></div></div><div class="scval">4.89</div></div>
+        <div class="score-row"><div class="nm">교육 자료<small>슬라이드·가이드</small></div>
+          <div class="track"><div class="fill" style="width:97.8%"></div></div><div class="scval">4.89</div></div>
+        <div class="score-row"><div class="nm">실습 후 자신감<small>스스로 제작 가능성</small></div>
+          <div class="track"><div class="fill" style="width:93.3%"></div></div><div class="scval">4.67</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NPS + 응답자 -->
+  <section>
+    <div class="sec-title"><span class="bar"></span><h2>추천 의향 (NPS) 분포</h2></div>
+    <div class="card">
+      <div class="nps-box">
+        <div class="gauge"><div class="gv"><b>+100</b><span>NPS</span></div></div>
+        <div class="nps-legend">
+          <div class="lg"><span class="dotc" style="background:var(--green)"></span>추천자 (9–10점) &nbsp;<b>9명 · 100%</b></div>
+          <div class="lg"><span class="dotc" style="background:#cbd5d0"></span>중립 (7–8점) &nbsp;<b>0명</b></div>
+          <div class="lg"><span class="dotc" style="background:#e3a3a3"></span>비추천 (0–6점) &nbsp;<b>0명</b></div>
+          <div style="margin-top:8px;font-size:.82rem;color:var(--mute)">평균 추천 점수 <b style="color:var(--green-d)">9.8 / 10</b> — 9점 2명, 10점 7명</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 구성 진단 분포 -->
+  <section>
+    <div class="sec-title"><span class="bar"></span><h2>교육 구성 진단</h2>
+      <span class="note">N=9</span></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="dist">
+          <div class="d-h">난이도 <span class="tot">적정 비율 78%</span></div>
+          <div class="drow"><div class="dl">딱 적절</div><div class="dtrack"><div class="dbar" style="width:78%">7명</div></div><div class="dn">77.8%</div></div>
+          <div class="drow"><div class="dl">조금 어려움</div><div class="dtrack"><div class="dbar am" style="width:22%">2명</div></div><div class="dn">22.2%</div></div>
+        </div>
+        <div class="dist">
+          <div class="d-h">실습 분량(시간)</div>
+          <div class="drow"><div class="dl">적절</div><div class="dtrack"><div class="dbar" style="width:67%">6명</div></div><div class="dn">66.7%</div></div>
+          <div class="drow"><div class="dl">조금 길었다</div><div class="dtrack"><div class="dbar am" style="width:11%">1</div></div><div class="dn">11.1%</div></div>
+          <div class="drow"><div class="dl">짧았다(약간·매우)</div><div class="dtrack"><div class="dbar am" style="width:22%">2명</div></div><div class="dn">22.2%</div></div>
+        </div>
+        <div class="dist">
+          <div class="d-h">이론 ↔ 실습 비중</div>
+          <div class="drow"><div class="dl">지금이 적절</div><div class="dtrack"><div class="dbar" style="width:89%">8명</div></div><div class="dn">88.9%</div></div>
+          <div class="drow"><div class="dl">실습 더 확대</div><div class="dtrack"><div class="dbar" style="width:11%">1</div></div><div class="dn">11.1%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="dist">
+          <div class="d-h">실습 완주도</div>
+          <div class="drow"><div class="dl">완성</div><div class="dtrack"><div class="dbar" style="width:78%">7명</div></div><div class="dn">77.8%</div></div>
+          <div class="drow"><div class="dl">거의 완성</div><div class="dtrack"><div class="dbar" style="width:11%">1</div></div><div class="dn">11.1%</div></div>
+          <div class="drow"><div class="dl">절반 정도</div><div class="dtrack"><div class="dbar am" style="width:11%">1</div></div><div class="dn">11.1%</div></div>
+        </div>
+        <div class="dist">
+          <div class="d-h">환경 설치 경험</div>
+          <div class="drow"><div class="dl">문제없이</div><div class="dtrack"><div class="dbar" style="width:22%">2명</div></div><div class="dn">22.2%</div></div>
+          <div class="drow"><div class="dl">일부 막혔으나 해결</div><div class="dtrack"><div class="dbar am" style="width:78%">7명</div></div><div class="dn">77.8%</div></div>
+        </div>
+        <div class="dist">
+          <div class="d-h">진행 속도 · 업무 적용 의향</div>
+          <div class="drow"><div class="dl">페이스 적절</div><div class="dtrack"><div class="dbar" style="width:100%">9명 (100%)</div></div><div class="dn">100%</div></div>
+          <div class="drow"><div class="dl">적용 의향 있음</div><div class="dtrack"><div class="dbar" style="width:100%">9명 (100%)</div></div><div class="dn">100%</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 정성 피드백 -->
+  <section>
+    <div class="sec-title"><span class="bar"></span><h2>정성 피드백</h2></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="d-h" style="font-size:.92rem;font-weight:620;margin-bottom:13px">가장 좋았던 점</div>
+        <div class="quotes">
+          <div class="quote">"오랜만에 매우 유용한 교육이었습니다."</div>
+          <div class="quote">"실습 위주의 교육이 좋았다."</div>
+          <div class="quote">"여러 가지 실습 도구를 연결해 본 점."</div>
+        </div>
+        <div class="d-h" style="font-size:.92rem;font-weight:620;margin:22px 0 13px">실제 업무 적용 아이디어</div>
+        <div class="quotes">
+          <div class="quote">AICC 전환 컨설팅 업무 자동화</div>
+          <div class="quote">장애 처리 · 매일 반복되는 단순 업무 자동화</div>
+          <div class="quote">개인 일정 · 라이선스 관리</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="d-h" style="font-size:.92rem;font-weight:620;margin-bottom:13px">다음에 더 배우고 싶은 주제</div>
+        <div class="tags">
+          <span class="tag">멀티 에이전트<span class="c">×3</span></span>
+          <span class="tag">Agent 간 연동·오케스트레이션<span class="c">×2</span></span>
+          <span class="tag">데이터 수집·정제</span>
+          <span class="tag">심화 활용 (self-develop)</span>
+        </div>
+        <div class="d-h" style="font-size:.92rem;font-weight:620;margin:22px 0 13px">아쉬운 점 · 제약</div>
+        <div class="quotes">
+          <div class="quote warn">"업무에 적용해보고 싶지만 <b>내부망에서 안 된다</b>고 해서 고민이 됨" — 실제 적용의 핵심 제약</div>
+          <div class="quote">환경 설치 단계에서 다수가 일부 막힘(78%) → 사전 셋업 가이드 보강 여지</div>
+          <div class="quote">개선 의견 "없음·좋았습니다" 다수 — 전반적 불만 요소는 미발견</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 시사점 및 제언 -->
+  <section>
+    <div class="sec-title"><span class="bar"></span><h2>시사점 및 제언</h2></div>
+    <div class="insights">
+      <div class="ins">
+        <div class="num">1</div>
+        <div class="ic">
+          <div class="it">교육 만족도·추천도 최상위 — 정규 과정화 검토 가치</div>
+          <div class="id">전반 만족 5.0/5, NPS +100으로 표본 전원이 적극 추천. 비개발 직군 대상에도 "실습 위주" 구성이 주효. 사내 정규 커리큘럼 또는 타 팀 확산 교육으로 편성을 제안.</div>
+        </div>
+      </div>
+      <div class="ins">
+        <div class="num">2</div>
+        <div class="ic">
+          <div class="it">후속 심화 과정 수요 명확 — '멀티 에이전트·연동'</div>
+          <div class="id">자유 응답에서 멀티 에이전트(3건), Agent 간 연동·오케스트레이션(2건)이 반복 등장. 단발성 에이전트를 넘어선 Session 4(심화) 편성으로 학습 동기를 이어갈 것을 권고.</div>
+        </div>
+      </div>
+      <div class="ins flag">
+        <div class="num">3</div>
+        <div class="ic">
+          <div class="it">[검토 필요] 내부망 적용 제약 — 실효성의 관건</div>
+          <div class="id">적용 의향은 100%이나 "내부망에서 사용 불가" 우려가 제기됨. 사내 보안망 내 사용 가능한 환경(승인 도구·온프레미스 대안) 가이드라인을 병행해야 교육 효과가 실제 업무 성과로 전환됨.</div>
+        </div>
+      </div>
+      <div class="ins">
+        <div class="num">4</div>
+        <div class="ic">
+          <div class="it">진입 마찰 완화 — 사전 환경 셋업 지원</div>
+          <div class="id">응답자 78%가 설치 단계에서 일부 막힘을 경험(모두 해결). 사전 설치 체크리스트·사전 점검 세션을 운영하면 실습 완주율(현 89%)과 자신감 지표(4.67)를 추가 개선 가능.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <span>AI 에이전트 빌드 교육 만족도 분석 · 참석 13명 / 응답 9건 (응답률 69%, 테스트 데이터 제외)</span>
+    <span class="mono">2026-06-12 집계</span>
+  </div>
+
+</div>
+</body>
+</html>
