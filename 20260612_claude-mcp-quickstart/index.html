@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connect to MCP servers — Claude Code</title>
-<meta name="description" content="Add an MCP server to Claude Code, verify the connection, and find the configuration on disk. A Claude-styled mirror of the Claude Code MCP quickstart.">
+<title>Claude Code에 MCP 서버 연결하기 — 왕초보 친절 가이드</title>
+<meta name="description" content="MCP가 뭔지부터 서버 추가·연결 확인·설정 파일 위치·문제 해결까지. 초보자도 따라 할 수 있게 한국어로 아주 쉽게 정리한 Claude Code MCP 가이드.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #faf9f5;
@@ -24,14 +24,17 @@
     --code-text: #ece7df;
     --code-line: #3a372f;
     --ok: #3f8f5b;
+    --ok-soft: #e9f3ec;
     --warn: #c2873a;
+    --warn-soft: #f7efe1;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; scroll-padding-top: 24px; }
   body {
-    font-family: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg); color: var(--text);
-    line-height: 1.7; -webkit-font-smoothing: antialiased;
+    line-height: 1.8; -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
   }
   ::selection { background: var(--clay); color: #fff; }
 
@@ -44,20 +47,18 @@
   .hero-inner { max-width: 1100px; margin: 0 auto; }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
     color: var(--clay-dark); background: var(--clay-soft);
     border: 1px solid #ecd9cf; padding: 6px 14px; border-radius: 999px;
-    text-transform: uppercase;
   }
   .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--clay); }
   header.hero h1 {
-    font-family: 'Newsreader', Georgia, serif;
-    font-weight: 500; font-size: clamp(38px, 6vw, 60px);
-    letter-spacing: -0.5px; line-height: 1.05;
-    margin: 22px 0 18px; max-width: 16ch;
+    font-weight: 900; font-size: clamp(30px, 5.4vw, 50px);
+    letter-spacing: -1px; line-height: 1.2;
+    margin: 22px 0 18px; max-width: 22ch;
   }
   header.hero p.lead {
-    font-size: 19px; color: var(--muted); max-width: 60ch; font-weight: 400;
+    font-size: 18px; color: var(--muted); max-width: 56ch; font-weight: 400;
   }
   .hero-meta {
     margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
@@ -76,29 +77,63 @@
 
   article { min-width: 0; }
   article h2 {
-    font-family: 'Newsreader', Georgia, serif;
-    font-weight: 600; font-size: 30px; letter-spacing: -0.3px;
-    margin: 56px 0 18px; padding-top: 8px; scroll-margin-top: 24px;
+    font-weight: 800; font-size: 27px; letter-spacing: -0.6px;
+    margin: 60px 0 16px; padding-top: 8px; scroll-margin-top: 24px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  article h2 .num {
+    font-family: 'Newsreader', Georgia, serif; font-weight: 600;
+    font-size: 20px; color: var(--clay); flex-shrink: 0;
   }
   article h2:first-child { margin-top: 0; }
-  article h3 { font-size: 19px; font-weight: 700; margin: 36px 0 12px; letter-spacing: -0.2px; scroll-margin-top: 24px; }
+  article h3 { font-size: 19px; font-weight: 700; margin: 34px 0 12px; letter-spacing: -0.3px; scroll-margin-top: 24px; }
   article p { margin: 14px 0; color: #36342f; }
   article p, article li { font-size: 16px; }
   article a { color: var(--clay-dark); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: #e3c4b6; }
   article a:hover { text-decoration-color: var(--clay); }
-  article ul, article ol { margin: 14px 0 14px 22px; }
-  article li { margin: 8px 0; color: #36342f; }
+  article ul, article ol { margin: 14px 0 14px 20px; }
+  article li { margin: 8px 0; color: #36342f; padding-left: 4px; }
+  strong { font-weight: 700; }
   code.inline {
-    font-family: 'JetBrains Mono', monospace; font-size: 0.86em;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85em;
     background: var(--bg-soft); border: 1px solid var(--border);
-    padding: 1.5px 6px; border-radius: 5px; color: var(--clay-dark); white-space: nowrap;
+    padding: 1.5px 6px; border-radius: 5px; color: var(--clay-dark);
   }
 
+  .lead-box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px 26px; margin: 4px 0 8px;
+  }
+  .lead-box p { margin: 10px 0; }
+  .lead-box p:first-child { margin-top: 0; }
+  .lead-box p:last-child { margin-bottom: 0; }
+
+  /* ---- analogy / highlight ---- */
+  .analogy {
+    background: linear-gradient(180deg, #fbf3ee, #faf9f5);
+    border: 1px solid #eed9ce; border-left: 4px solid var(--clay);
+    border-radius: 12px; padding: 18px 22px; margin: 20px 0;
+  }
+  .analogy .tag { font-size: 12px; font-weight: 800; color: var(--clay-dark); letter-spacing: 1px; }
+  .analogy p { margin: 8px 0 0; }
+
+  /* ---- goal cards ---- */
+  .goals { list-style: none; margin: 16px 0; padding: 0; display: grid; gap: 10px; }
+  .goals li { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px 14px 48px; margin: 0; }
+  .goals li::before { content: '✓'; position: absolute; left: 16px; top: 13px; width: 22px; height: 22px; background: var(--ok); color: #fff; border-radius: 50%; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+  /* ---- term cards ---- */
+  .terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 18px 0; }
+  .term { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .term .t { font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+  .term .t code { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--clay-dark); }
+  .term .d { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
   /* ---- Code blocks ---- */
-  .code { position: relative; margin: 18px 0; border-radius: 12px; overflow: hidden; background: var(--code-bg); border: 1px solid #322f29; }
+  .code { position: relative; margin: 16px 0; border-radius: 12px; overflow: hidden; background: var(--code-bg); border: 1px solid #322f29; }
   .code .bar { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: #211f1b; border-bottom: 1px solid var(--code-line); }
   .code .lang { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 1px; color: #8a857a; text-transform: uppercase; }
-  .code .copy { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: #c9c3b6; background: transparent; border: 1px solid #423f37; border-radius: 6px; padding: 4px 10px; cursor: pointer; transition: all .15s; }
+  .code .copy { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 500; color: #c9c3b6; background: transparent; border: 1px solid #423f37; border-radius: 6px; padding: 4px 12px; cursor: pointer; transition: all .15s; }
   .code .copy:hover { background: #322f29; color: #fff; border-color: var(--clay); }
   .code .copy.copied { color: #fff; background: var(--clay); border-color: var(--clay); }
   .code pre { margin: 0; padding: 16px 18px; overflow-x: auto; }
@@ -108,36 +143,44 @@
   .code .c-str { color: #a9cf8e; }
   .code .c-cmt { color: #6f6a5f; }
   .code .c-key { color: #d9b06a; }
+  .code-cap { font-size: 13px; color: var(--soft); margin: 6px 2px 0; }
 
   /* ---- Steps ---- */
-  ol.steps { list-style: none; margin: 24px 0; counter-reset: step; }
-  ol.steps > li { position: relative; padding: 0 0 8px 56px; margin-bottom: 8px; counter-increment: step; }
+  ol.steps { list-style: none; margin: 24px 0; counter-reset: step; padding: 0; }
+  ol.steps > li { position: relative; padding: 0 0 10px 56px; margin-bottom: 10px; counter-increment: step; }
   ol.steps > li::before {
-    content: counter(step); position: absolute; left: 0; top: 0;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--clay); color: #fff; font-weight: 700; font-size: 15px;
+    content: counter(step); position: absolute; left: 0; top: -2px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--clay); color: #fff; font-weight: 800; font-size: 16px;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 0 0 4px var(--clay-soft);
   }
   ol.steps > li::after {
-    content: ''; position: absolute; left: 16px; top: 40px; bottom: -4px; width: 2px; background: var(--border);
+    content: ''; position: absolute; left: 17px; top: 40px; bottom: -6px; width: 2px; background: var(--border);
   }
   ol.steps > li:last-child::after { display: none; }
-  ol.steps .step-title { font-weight: 700; font-size: 17px; margin: 4px 0 6px; }
+  ol.steps .step-title { font-weight: 800; font-size: 18px; margin: 5px 0 8px; letter-spacing: -0.3px; }
 
   /* ---- Callouts ---- */
-  .callout { display: flex; gap: 14px; padding: 16px 18px; border-radius: 12px; margin: 20px 0; border: 1px solid; font-size: 15px; }
-  .callout .ic { flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; margin-top: 1px; }
-  .callout p { margin: 0; }
+  .callout { display: flex; gap: 14px; padding: 15px 18px; border-radius: 12px; margin: 18px 0; border: 1px solid; font-size: 15px; }
+  .callout .ic { flex-shrink: 0; font-size: 11px; font-weight: 800; color: #fff; padding: 3px 8px; border-radius: 6px; height: fit-content; margin-top: 2px; letter-spacing: 0.5px; }
+  .callout p { margin: 0; line-height: 1.7; }
   .callout.note { background: #f3f1ea; border-color: var(--border); }
   .callout.note .ic { background: #8a857a; }
   .callout.info { background: #eef4f6; border-color: #d6e4e9; }
   .callout.info .ic { background: #5b8aa0; }
+  .callout.tip { background: var(--ok-soft); border-color: #cfe6d6; }
+  .callout.tip .ic { background: var(--ok); }
+  .callout.warn { background: var(--warn-soft); border-color: #ecddc2; }
+  .callout.warn .ic { background: var(--warn); }
+
+  .summary-line { display: flex; gap: 12px; align-items: flex-start; background: var(--clay-soft); border: 1px solid #eed9ce; border-radius: 10px; padding: 12px 16px; margin: 14px 0; font-size: 15px; }
+  .summary-line .lbl { font-weight: 800; color: var(--clay-dark); flex-shrink: 0; }
 
   /* ---- Tables ---- */
-  .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--border); border-radius: 12px; }
+  .table-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border); border-radius: 12px; }
   table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-  th { text-align: left; background: var(--bg-soft); font-weight: 600; color: var(--text); padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { text-align: left; background: var(--bg-soft); font-weight: 700; color: var(--text); padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: #36342f; vertical-align: top; }
   tr:last-child td { border-bottom: none; }
   .st { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 500; white-space: nowrap; }
@@ -149,13 +192,13 @@
   .accordion { margin: 20px 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); }
   details { border-bottom: 1px solid var(--border); }
   details:last-child { border-bottom: none; }
-  summary { cursor: pointer; padding: 16px 20px; font-weight: 600; font-size: 15.5px; list-style: none; display: flex; align-items: center; justify-content: space-between; transition: background .15s; }
+  summary { cursor: pointer; padding: 16px 20px; font-weight: 700; font-size: 15.5px; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; transition: background .15s; }
   summary:hover { background: var(--bg-soft); }
   summary::-webkit-details-marker { display: none; }
-  summary .chev { color: var(--clay); transition: transform .2s; font-size: 14px; }
+  summary .chev { color: var(--clay); transition: transform .2s; font-size: 13px; flex-shrink: 0; }
   details[open] summary .chev { transform: rotate(90deg); }
   details[open] summary { background: var(--bg-soft); }
-  .acc-body { padding: 4px 20px 20px; }
+  .acc-body { padding: 6px 20px 20px; }
   .acc-body p:first-child { margin-top: 4px; }
 
   /* ---- Footer ---- */
@@ -176,13 +219,13 @@
 
 <header class="hero">
   <div class="hero-inner">
-    <span class="eyebrow"><span class="dot"></span> Claude Code · MCP Quickstart</span>
-    <h1>Connect to MCP&nbsp;servers</h1>
-    <p class="lead">Add an MCP server to Claude Code, verify the connection, and find the configuration on disk.</p>
+    <span class="eyebrow"><span class="dot"></span> Claude Code · MCP 왕초보 가이드</span>
+    <h1>Claude Code에 MCP 서버 연결하기</h1>
+    <p class="lead">MCP가 뭔지부터 서버 추가·연결 확인·설정 파일 위치·문제 해결까지. 터미널이 처음이어도 그대로 따라 하면 됩니다.</p>
     <div class="hero-meta">
-      <span class="pill">Model Context Protocol</span>
-      <span class="pill">Claude Code CLI</span>
-      <span>Source: <a href="https://code.claude.com/docs/en/mcp-quickstart" target="_blank" rel="noopener">code.claude.com/docs</a></span>
+      <span class="pill">난이도: 입문</span>
+      <span class="pill">소요: 약 10분</span>
+      <span>원문: <a href="https://code.claude.com/docs/en/mcp-quickstart" target="_blank" rel="noopener">code.claude.com/docs</a></span>
     </div>
   </div>
 </header>
@@ -190,225 +233,266 @@
 <div class="layout">
 
   <nav class="toc">
-    <div class="toc-label">ON THIS PAGE</div>
-    <a href="#before">Before you begin</a>
-    <a href="#add-verify">Add and verify a server</a>
-    <a href="#where-saved">Where servers are saved</a>
-    <a href="#change-scope">Change server scope</a>
-    <a href="#more-examples">Additional examples</a>
-    <a href="#edit-json">Edit .mcp.json directly</a>
-    <a href="#other-surfaces">Other surfaces</a>
-    <a href="#troubleshooting">Troubleshooting</a>
-    <a href="#next">Next steps</a>
+    <div class="toc-label">목차</div>
+    <a href="#what">MCP가 뭐예요?</a>
+    <a href="#goal">이 글을 끝내면</a>
+    <a href="#ready">준비물</a>
+    <a href="#terms">핵심 용어 3개</a>
+    <a href="#add-verify">1. 서버 추가·확인</a>
+    <a href="#where-saved">2. 설정 저장 위치</a>
+    <a href="#change-scope">3. 적용 범위 바꾸기</a>
+    <a href="#more-examples">4. 다른 서버 예시</a>
+    <a href="#edit-json">5. 직접 작성하기</a>
+    <a href="#other-surfaces">6. 다른 환경</a>
+    <a href="#troubleshooting">문제 해결</a>
+    <a href="#next">다음 단계</a>
   </nav>
 
   <article>
 
-    <p>The <a href="https://modelcontextprotocol.io/introduction" target="_blank" rel="noopener">Model Context Protocol (MCP)</a> lets Claude Code use tools beyond its built-in set, such as searching an issue tracker, querying a database, or controlling a web browser. These tools come from MCP servers, which run on your machine or as hosted services.</p>
+    <h2 id="what"><span class="num">00</span>MCP가 뭐예요?</h2>
+    <p><strong>MCP(Model Context Protocol, 모델 컨텍스트 프로토콜)</strong>는 Claude Code에게 <strong>원래 없던 새 능력(도구)을 끼워주는 표준 규격</strong>입니다. 예를 들면 이슈 트래커 검색하기, 데이터베이스 조회하기, 웹 브라우저 조종하기 같은 일들이죠.</p>
+    <p>이런 도구들은 <strong>MCP 서버</strong>라는 작은 프로그램에서 제공됩니다. 서버는 <strong>내 컴퓨터에서 직접 실행</strong>되거나, <strong>인터넷에 올라가 있는 서비스</strong> 형태로 동작합니다.</p>
 
-    <p>This guide walks you through connecting one MCP server end to end with the Claude Code CLI. By the end, you'll have a server connected and responding, know where its configuration lives on disk, and know how to fix the most common connection errors.</p>
-
-    <div class="callout note">
-      <div class="ic">i</div>
-      <p>You can also add MCP servers from other surfaces, including the desktop app, VS Code, and the web. See <a href="#other-surfaces">Connect from other surfaces</a>.</p>
+    <div class="analogy">
+      <span class="tag">쉽게 말하면</span>
+      <p>MCP는 노트북의 <strong>USB 포트</strong>와 같습니다. Claude Code는 본체, MCP 서버는 거기에 꽂는 <strong>외부 기기(키보드·웹캠·외장하드)</strong>예요. 포트 규격(MCP)이 정해져 있으니, 규격만 맞으면 어떤 도구든 꽂아서 바로 쓸 수 있습니다.</p>
     </div>
 
-    <h2 id="before">Before you begin</h2>
-    <p>Make sure you have:</p>
-    <ul>
-      <li><strong>Claude Code installed</strong> and authenticated.</li>
-      <li>A terminal open in a project directory. Any directory works, including an empty one.</li>
+    <p>이 가이드는 <strong>MCP 서버 하나를 처음부터 끝까지 연결하는 과정</strong>을 보여줍니다. 다 읽고 나면 서버를 연결해 응답을 받아보고, 설정이 컴퓨터 어디에 저장되는지 알고, 자주 나는 연결 오류를 직접 고칠 수 있게 됩니다.</p>
+
+    <h2 id="goal"><span class="num">01</span>이 글을 끝내면 할 수 있는 것</h2>
+    <ul class="goals">
+      <li>MCP 서버를 Claude Code에 추가하고, 연결됐는지 직접 확인할 수 있어요.</li>
+      <li>설정 파일이 컴퓨터 어디에 저장되는지 알고, 적용 범위를 바꿀 수 있어요.</li>
+      <li>"연결 실패" 같은 오류가 나도 원인을 찾아 스스로 고칠 수 있어요.</li>
     </ul>
 
-    <h2 id="add-verify">Add and verify a server</h2>
-    <p>The example below connects to the <strong>Claude Code documentation MCP server</strong>, a hosted server with full-text search over the Claude Code docs. It doesn't require authentication or any special configuration, so it works well as a first server to test the setup flow with.</p>
-    <p>The steps are the same for any server: add it, check the connection status, then use it in a session, with an optional cleanup step at the end.</p>
+    <h2 id="ready"><span class="num">02</span>시작하기 전에 (준비물)</h2>
+    <div class="lead-box">
+      <p>딱 두 가지만 있으면 됩니다.</p>
+      <p><strong>1. Claude Code 설치 + 로그인</strong> — 아직이라면 공식 빠른 시작 가이드를 먼저 따라 하세요.</p>
+      <p><strong>2. 터미널 열기</strong> — 아무 폴더에서나 열면 됩니다. 빈 폴더여도 괜찮아요.</p>
+    </div>
+    <div class="callout info">
+      <span class="ic">참고</span>
+      <p><strong>터미널(Terminal)</strong>은 명령어를 글자로 입력해 컴퓨터를 다루는 검은 창입니다. macOS는 "터미널" 앱, Windows는 "PowerShell" 또는 "명령 프롬프트"를 쓰면 됩니다.</p>
+    </div>
+
+    <h2 id="terms"><span class="num">03</span>먼저 알아둘 핵심 용어 3개</h2>
+    <p>아래 세 단어만 알아두면 이 글이 훨씬 쉬워집니다. 외우지 말고 눈에만 익혀두세요.</p>
+    <div class="terms">
+      <div class="term">
+        <div class="t">호스팅형 서버 <code>http</code></div>
+        <div class="d">인터넷 주소(URL)에 올라가 있는 서버. 내 컴퓨터에 설치할 필요 없이 주소만 등록하면 됩니다.</div>
+      </div>
+      <div class="term">
+        <div class="t">로컬형 서버 <code>stdio</code></div>
+        <div class="d">내 컴퓨터에서 프로그램으로 직접 실행되는 서버. 브라우저·파일처럼 내 컴퓨터 자원이 필요할 때 씁니다.</div>
+      </div>
+      <div class="term">
+        <div class="t">스코프 <code>scope</code></div>
+        <div class="d">이 서버를 "어디까지" 쓸지 정하는 범위. 이 프로젝트만(local) / 내 모든 프로젝트(user) / 팀 전체(project).</div>
+      </div>
+    </div>
+
+    <h2 id="add-verify"><span class="num">04</span>서버 추가하고 연결 확인하기</h2>
+    <p>첫 연습 상대는 <strong>Claude Code 공식 문서 검색 서버(claude-code-docs)</strong>입니다. 로그인이나 특별한 설정이 필요 없어서, 처음 연습용으로 딱 좋아요.</p>
+    <p>모든 서버는 <strong>추가 → 상태 확인 → 사용</strong> 순서가 똑같습니다. 마지막에 정리(삭제)는 선택이고요. 천천히 하나씩 따라 해봅시다.</p>
 
     <ol class="steps">
       <li>
-        <div class="step-title">Add the MCP server</div>
-        <p>Register the server with Claude Code. Run this in your terminal, <strong>not</strong> inside a <code class="inline">claude</code> session: you're configuring the server before starting a conversation.</p>
+        <div class="step-title">서버 추가하기</div>
+        <p>아래 명령을 <strong>터미널에</strong> 입력하세요. <code class="inline">claude</code> 대화 세션 <strong>안이 아니라</strong>, 일반 터미널에서 실행해야 합니다. (대화를 시작하기 전에 미리 설정하는 단계라서 그래요.)</p>
         <div class="code" data-copy="claude mcp add --transport http claude-code-docs https://code.claude.com/docs/mcp">
-          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
           <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--transport</span> http claude-code-docs <span class="c-str">https://code.claude.com/docs/mcp</span></code></pre>
         </div>
-        <p>The parts of the command:</p>
+        <p>이 명령을 한 조각씩 읽어보면:</p>
         <ul>
-          <li><code class="inline">claude mcp add</code> — registers a server with Claude Code.</li>
-          <li><code class="inline">--transport http</code> — the server is hosted at a URL rather than run as a local process.</li>
-          <li><code class="inline">claude-code-docs</code> — a name you make up. Claude Code uses it to label the server's tools and to refer to the server in commands like <code class="inline">claude mcp remove</code>.</li>
-          <li><code class="inline">https://code.claude.com/docs/mcp</code> — the URL where the server is hosted.</li>
+          <li><code class="inline">claude mcp add</code> — "MCP 서버를 등록해줘"라는 뜻이에요.</li>
+          <li><code class="inline">--transport http</code> — 이 서버는 <strong>인터넷 주소형(호스팅형)</strong>이라는 표시.</li>
+          <li><code class="inline">claude-code-docs</code> — 내가 붙이는 <strong>별명</strong>. <code class="inline">docs</code>처럼 아무 이름이나 OK. 나중에 이 이름으로 서버를 부릅니다.</li>
+          <li><code class="inline">https://code.claude.com/docs/mcp</code> — 서버가 올라가 있는 <strong>실제 주소</strong>.</li>
         </ul>
-        <p>The command prints a confirmation like <code class="inline">Added HTTP MCP server claude-code-docs ... to local config</code>. The <em>local config</em> part means the server is registered to you, in this project only. To register it once for all projects, add it at user scope.</p>
+        <div class="summary-line"><span class="lbl">결과</span><span><code class="inline">Added HTTP MCP server claude-code-docs ... to local config</code> 같은 문구가 뜨면 성공입니다. "local config"는 <strong>이 프로젝트에서, 나에게만</strong> 등록됐다는 뜻이에요.</span></div>
       </li>
       <li>
-        <div class="step-title">Check the connection status</div>
-        <p>Confirm the server appears in your server list and check its status:</p>
+        <div class="step-title">연결 상태 확인하기</div>
+        <p>방금 추가한 서버가 목록에 잘 들어갔는지, 그리고 연결됐는지 확인합니다.</p>
         <div class="code" data-copy="claude mcp list">
-          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
           <pre><code><span class="c-cmd">claude mcp list</span></code></pre>
         </div>
-        <p>The server appears with a status indicator:</p>
+        <p>서버 이름 옆에 아래와 같은 <strong>상태 표시</strong>가 함께 나옵니다.</p>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+            <thead><tr><th>상태</th><th>의미</th></tr></thead>
             <tbody>
-              <tr><td><span class="st ok">&#10003; Connected</span></td><td>Ready to use. This is what you should see for <code class="inline">claude-code-docs</code>.</td></tr>
-              <tr><td><span class="st warn">! Needs authentication</span></td><td>Reachable but needs a browser sign-in, or a token passed with <code class="inline">--header</code>.</td></tr>
-              <tr><td><span class="st err">&#10007; Failed to connect</span></td><td>Server didn't respond. See <a href="#troubleshooting">Troubleshooting</a>.</td></tr>
-              <tr><td><span class="st err">&#10007; Connection error</span></td><td>The connection attempt threw an error. See <a href="#troubleshooting">Troubleshooting</a>.</td></tr>
-              <tr><td><span class="st warn">&#9208; Pending approval</span></td><td>A project-scoped server you haven't approved yet.</td></tr>
+              <tr><td><span class="st ok">&#10003; Connected</span></td><td>연결 성공, 바로 사용 가능. <code class="inline">claude-code-docs</code>는 이게 나와야 정상이에요.</td></tr>
+              <tr><td><span class="st warn">! Needs authentication</span></td><td>서버는 닿았지만 <strong>로그인이 필요</strong>합니다. (아래 4번 Sentry 예시 참고)</td></tr>
+              <tr><td><span class="st err">&#10007; Failed to connect</span></td><td>서버가 응답하지 않음. <a href="#troubleshooting">문제 해결</a>을 보세요.</td></tr>
+              <tr><td><span class="st err">&#10007; Connection error</span></td><td>연결 시도 중 오류 발생. <a href="#troubleshooting">문제 해결</a>을 보세요.</td></tr>
+              <tr><td><span class="st warn">&#9208; Pending approval</span></td><td>아직 <strong>승인하지 않은</strong> 프로젝트 공용 서버입니다.</td></tr>
             </tbody>
           </table>
         </div>
       </li>
       <li>
-        <div class="step-title">Use the server</div>
-        <p>Start a session and ask Claude to use the new server by name:</p>
+        <div class="step-title">실제로 써보기</div>
+        <p>이제 대화 세션을 시작합니다. (이번엔 <code class="inline">claude</code>를 그냥 입력해서 들어가요.)</p>
         <div class="code" data-copy="claude">
-          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
           <pre><code><span class="c-cmd">claude</span></code></pre>
         </div>
-        <div class="code" data-copy="Use the claude-code-docs server to look up what MCP_TIMEOUT does">
-          <div class="bar"><span class="lang">prompt</span><button class="copy">Copy</button></div>
-          <pre><code>Use the claude-code-docs server to look up what MCP_TIMEOUT does</code></pre>
+        <p>그리고 Claude에게 <strong>서버 이름을 콕 집어서</strong> 부탁해봅니다.</p>
+        <div class="code" data-copy="claude-code-docs 서버를 사용해서 MCP_TIMEOUT이 무슨 일을 하는지 찾아줘">
+          <div class="bar"><span class="lang">Claude에게 입력</span><button class="copy">복사</button></div>
+          <pre><code>claude-code-docs 서버를 사용해서 MCP_TIMEOUT이 무슨 일을 하는지 찾아줘</code></pre>
         </div>
         <div class="callout info">
-          <div class="ic">i</div>
-          <p>You don't normally need to name a server in your prompt, since Claude chooses relevant tools on its own. Naming it here guarantees the demonstration goes through the new server rather than another tool, such as web fetch.</p>
+          <span class="ic">참고</span>
+          <p>원래는 서버 이름을 굳이 말 안 해도 Claude가 알아서 적절한 도구를 고릅니다. 여기서 이름을 콕 집은 건, 다른 도구가 아니라 <strong>방금 만든 서버를 확실히 거치게</strong> 하려는 연습용이에요.</p>
         </div>
-        <p>The first time Claude calls the server, it asks for permission to use the new tool. Approve it to continue. The tool call in Claude's output is labeled with the server name.</p>
+        <p>Claude가 그 서버를 처음 쓸 때 <strong>도구 사용 권한을 물어봅니다</strong>. 승인하면 계속 진행돼요. Claude의 답변에 표시되는 도구 호출에 서버 이름이 붙어 있으면, 답이 그 서버를 거쳐 나온 거라는 증거입니다.</p>
       </li>
       <li>
-        <div class="step-title">Remove the server</div>
-        <p>This step is optional. When you're done experimenting, you can remove the server:</p>
+        <div class="step-title">(선택) 서버 삭제하기</div>
+        <p>연습이 끝나 더 안 쓸 거라면 지워도 됩니다. 안 지워도 무방해요.</p>
         <div class="code" data-copy="claude mcp remove claude-code-docs">
-          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
           <pre><code><span class="c-cmd">claude mcp remove</span> claude-code-docs</code></pre>
         </div>
-        <div class="callout note">
-          <div class="ic">i</div>
-          <p>Each connected server takes some space in Claude's context window because its tool names and server instructions load into every session. Removing servers you no longer use keeps that space free.</p>
+        <div class="callout tip">
+          <span class="ic">팁</span>
+          <p>연결된 서버는 매번 대화 시작 때마다 도구 정보가 불려와서 <strong>대화 공간(컨텍스트)을 조금씩 차지</strong>합니다. 안 쓰는 서버를 정리하면 그 공간이 비워져요.</p>
         </div>
       </li>
     </ol>
 
-    <h2 id="where-saved">Where servers are saved</h2>
-    <p>The <code class="inline">claude mcp add</code> command writes the server's details to a configuration file. By default it registers the server at <code class="inline">local</code> scope: private to you, active only in the current project. Pass <code class="inline">--scope user</code> to register it once for all your projects, or <code class="inline">--scope project</code> to share it with teammates.</p>
+    <h2 id="where-saved"><span class="num">05</span>설정은 어디에 저장되나요?</h2>
+    <p><code class="inline">claude mcp add</code> 명령은 서버 정보를 <strong>설정 파일</strong>에 적어둡니다. 기본값은 <code class="inline">local</code> 스코프 — 즉 <strong>나에게만, 지금 이 프로젝트에서만</strong> 적용됩니다.</p>
+    <p>더 넓게 쓰고 싶으면 옵션을 붙이면 돼요. <code class="inline">--scope user</code>는 내 모든 프로젝트, <code class="inline">--scope project</code>는 팀 전체와 공유.</p>
+
     <div class="callout note">
-      <div class="ic">i</div>
-      <p><code class="inline">claude mcp add</code> works the same in every shell, including PowerShell and Command Prompt. Inside a <code class="inline">claude</code> session, use the <code class="inline">/mcp</code> command to check and manage servers you've already added.</p>
+      <span class="ic">참고</span>
+      <p><code class="inline">claude mcp add</code>는 어떤 터미널에서든(PowerShell·명령 프롬프트 포함) 똑같이 동작합니다. 이미 <code class="inline">claude</code> 대화 세션에 들어와 있다면, 세션 안에서는 <code class="inline">/mcp</code> 명령으로 서버를 확인·관리하세요.</p>
     </div>
 
-    <h3 id="find-config">Find your configuration on disk</h3>
-    <p>The command writes the server to one of three scopes, stored across two files, depending on the <code class="inline">--scope</code> flag. You don't need to edit these files directly, but knowing where they are helps with debugging and version control.</p>
+    <h3 id="find-config">설정 파일 위치 (스코프별)</h3>
+    <p>직접 편집할 일은 거의 없지만, 어디 있는지 알아두면 디버깅과 버전 관리에 도움이 됩니다.</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Scope</th><th>File</th><th>Available to</th></tr></thead>
+        <thead><tr><th>스코프</th><th>저장 파일</th><th>적용 대상</th></tr></thead>
         <tbody>
-          <tr><td><code class="inline">local</code></td><td><code class="inline">~/.claude.json</code>, under the entry for this project</td><td>Only you, only this project. The default.</td></tr>
-          <tr><td><code class="inline">project</code></td><td><code class="inline">.mcp.json</code> in your project root</td><td>Everyone who clones the project.</td></tr>
-          <tr><td><code class="inline">user</code></td><td><code class="inline">~/.claude.json</code>, under the top-level <code class="inline">mcpServers</code> key</td><td>Only you, all projects.</td></tr>
+          <tr><td><code class="inline">local</code></td><td><code class="inline">~/.claude.json</code> 안의 이 프로젝트 항목</td><td>나만, 이 프로젝트만 (기본값)</td></tr>
+          <tr><td><code class="inline">project</code></td><td>프로젝트 폴더의 <code class="inline">.mcp.json</code></td><td>이 프로젝트를 받은 모든 사람</td></tr>
+          <tr><td><code class="inline">user</code></td><td><code class="inline">~/.claude.json</code> 맨 위 <code class="inline">mcpServers</code> 항목</td><td>나만, 내 모든 프로젝트</td></tr>
         </tbody>
       </table>
     </div>
-    <p>On Windows, <code class="inline">~/.claude.json</code> resolves to <code class="inline">%USERPROFILE%\.claude.json</code>. Run <code class="inline">claude mcp get claude-code-docs</code> to see which scope holds a server's definition.</p>
+    <p>Windows에서 <code class="inline">~/.claude.json</code>은 <code class="inline">%USERPROFILE%\.claude.json</code>을 가리킵니다. 어느 스코프에 저장됐는지 보려면 <code class="inline">claude mcp get claude-code-docs</code>를 실행하세요.</p>
 
-    <h2 id="change-scope">Change server scope</h2>
-    <p>A server's scope is fixed when you add it, so changing scope means removing the entry and re-adding it at the new one. Start by removing the local entry so the server has only one definition:</p>
+    <h2 id="change-scope"><span class="num">06</span>적용 범위(스코프) 바꾸기</h2>
+    <p>스코프는 추가할 때 정해지면 <strong>나중에 바로 못 바꿉니다</strong>. 바꾸려면 <strong>지웠다가 새 스코프로 다시 추가</strong>해야 해요. 먼저 기존 local 항목을 지웁니다. (4번 마지막에서 이미 지웠다면 건너뛰세요.)</p>
     <div class="code" data-copy="claude mcp remove claude-code-docs --scope local">
-      <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+      <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
       <pre><code><span class="c-cmd">claude mcp remove</span> claude-code-docs <span class="c-flag">--scope</span> local</code></pre>
     </div>
 
-    <h3>Use a server in all your projects</h3>
-    <p>Re-add the server at <code class="inline">user</code> scope to make it active in every project you open, still private to you:</p>
+    <h3>내 모든 프로젝트에서 쓰기 (user)</h3>
+    <p>어느 프로젝트를 열든 항상 켜져 있게, 단 나에게만:</p>
     <div class="code" data-copy="claude mcp add --scope user --transport http claude-code-docs https://code.claude.com/docs/mcp">
-      <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+      <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
       <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--scope</span> user <span class="c-flag">--transport</span> http claude-code-docs <span class="c-str">https://code.claude.com/docs/mcp</span></code></pre>
     </div>
 
-    <h3>Share a server with your team</h3>
-    <p>Re-add the server at <code class="inline">project</code> scope, which writes to <code class="inline">.mcp.json</code> in the project root:</p>
+    <h3>팀과 공유하기 (project)</h3>
+    <p><code class="inline">project</code> 스코프로 추가하면 프로젝트 폴더에 <code class="inline">.mcp.json</code> 파일이 만들어집니다.</p>
     <div class="code" data-copy="claude mcp add --scope project --transport http claude-code-docs https://code.claude.com/docs/mcp">
-      <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+      <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
       <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--scope</span> project <span class="c-flag">--transport</span> http claude-code-docs <span class="c-str">https://code.claude.com/docs/mcp</span></code></pre>
     </div>
-    <p>Commit <code class="inline">.mcp.json</code> to version control. Teammates who clone the repository and start Claude Code see a prompt to approve the server, then it connects for them too.</p>
+    <p>이 <code class="inline">.mcp.json</code>을 Git에 커밋해두면, 동료가 저장소를 받아 Claude Code를 켤 때 "이 서버 승인할래요?" 안내가 뜨고, 승인하면 그쪽에서도 연결됩니다.</p>
 
-    <h2 id="more-examples">Additional MCP server examples</h2>
-    <p>The first walkthrough used a hosted server that connects without any sign-in. The examples below cover the other two common shapes, with the same add, check, use flow.</p>
+    <h2 id="more-examples"><span class="num">07</span>다른 종류의 서버 예시</h2>
+    <p>지금까지는 로그인 없는 호스팅형 서버였어요. 이제 나머지 두 가지 흔한 형태를 봅니다. 흐름은 똑같이 <strong>추가 → 확인 → 사용</strong>입니다.</p>
 
-    <h3 id="local-server">Add a local server</h3>
-    <p>A local stdio server is a program Claude Code starts as a subprocess on your machine, rather than a service it reaches over a URL. Use one for tools that need access to local resources like a browser, your filesystem, or a database socket.</p>
-    <p>The <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener">Playwright MCP server</a> is a good one to try: it gives Claude a browser it can navigate, click, and read, and it needs no account. It runs through <code class="inline">npx</code>, so it requires Node.js 18 or later.</p>
+    <h3 id="local-server">예시 1. 로컬형 서버 (Playwright 브라우저)</h3>
+    <p><strong>로컬형(stdio) 서버</strong>는 내 컴퓨터에서 프로그램으로 켜지는 서버입니다. 브라우저·파일·DB처럼 <strong>내 컴퓨터 자원</strong>이 필요할 때 써요.</p>
+    <p><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener">Playwright MCP 서버</a>는 Claude에게 직접 조종할 수 있는 브라우저를 줍니다. 계정도 필요 없어요. 단, <code class="inline">npx</code>로 실행되므로 <strong>Node.js 18 이상</strong>이 깔려 있어야 합니다.</p>
 
     <ol class="steps">
       <li>
-        <div class="step-title">Add the Playwright server</div>
-        <p>Register the server with the command Claude Code should run to start it:</p>
+        <div class="step-title">Playwright 서버 추가</div>
         <div class="code" data-copy="claude mcp add playwright -- npx -y @playwright/mcp@latest">
-          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
           <pre><code><span class="c-cmd">claude mcp add</span> playwright -- npx <span class="c-flag">-y</span> @playwright/mcp@latest</code></pre>
         </div>
+        <p>호스팅형과 다른 점 세 가지:</p>
         <ul>
-          <li>There's no <code class="inline">--transport</code> flag, because local servers use the default <code class="inline">stdio</code> transport.</li>
-          <li>Everything after the <code class="inline">--</code> separator is the command Claude Code runs to start the server.</li>
-          <li><code class="inline">-y</code> tells <code class="inline">npx</code> to install the package without prompting.</li>
+          <li><code class="inline">--transport</code> 옵션이 <strong>없습니다</strong>. 로컬형은 기본 방식(<code class="inline">stdio</code>)을 쓰거든요.</li>
+          <li><code class="inline">--</code> 뒤에 오는 건 전부 <strong>서버를 켜기 위해 실행할 명령</strong>입니다.</li>
+          <li><code class="inline">-y</code>는 npx에게 "묻지 말고 바로 설치해"라는 뜻이에요.</li>
         </ul>
       </li>
       <li>
-        <div class="step-title">Check the connection</div>
-        <p>The <code class="inline">Added</code> confirmation means the entry was saved, not that the command runs. Check the connection:</p>
+        <div class="step-title">연결 확인</div>
+        <p>"Added" 문구는 <strong>등록됐다</strong>는 뜻이지 <strong>실행됐다</strong>는 뜻이 아니에요. 상태를 확인합니다.</p>
         <div class="code" data-copy="claude mcp list">
-          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
           <pre><code><span class="c-cmd">claude mcp list</span></code></pre>
         </div>
-        <p>The first check can show <span class="st err">&#10007; Failed to connect</span> while <code class="inline">npx</code> downloads the package, so wait a moment and run it again.</p>
+        <div class="callout warn">
+          <span class="ic">주의</span>
+          <p>처음엔 npx가 패키지를 내려받는 동안 <span class="st err">&#10007; Failed to connect</span>로 보일 수 있어요. <strong>잠깐 기다렸다 다시 실행</strong>하면 연결됩니다.</p>
+        </div>
       </li>
       <li>
-        <div class="step-title">Use the browser</div>
-        <p>Give Claude a task that needs the browser:</p>
-        <div class="code" data-copy="Use playwright to open https://example.com and tell me the page title">
-          <div class="bar"><span class="lang">prompt</span><button class="copy">Copy</button></div>
-          <pre><code>Use playwright to open https://example.com and tell me the page title</code></pre>
+        <div class="step-title">브라우저로 시켜보기</div>
+        <div class="code" data-copy="playwright로 https://example.com 을 열고 페이지 제목을 알려줘">
+          <div class="bar"><span class="lang">Claude에게 입력</span><button class="copy">복사</button></div>
+          <pre><code>playwright로 https://example.com 을 열고 페이지 제목을 알려줘</code></pre>
         </div>
-        <p>A browser window opens so you can watch it work, and the tool calls in Claude's output are labeled with the <code class="inline">playwright</code> server name and the action, like <code class="inline">browser_navigate</code>.</p>
+        <p>브라우저 창이 떠서 직접 움직이는 걸 볼 수 있어요. Claude 답변의 도구 호출에는 <code class="inline">playwright</code>라는 서버 이름과 <code class="inline">browser_navigate</code> 같은 동작이 함께 표시됩니다.</p>
       </li>
     </ol>
 
-    <h3 id="signin-server">Connect a server that requires sign-in</h3>
-    <p>Hosted services like Sentry, Linear, and Notion run their MCP servers behind OAuth: you add the server's URL, then sign in through your browser. The steps below use Sentry as the example.</p>
+    <h3 id="signin-server">예시 2. 로그인이 필요한 서버 (Sentry)</h3>
+    <p>Sentry·Linear·Notion 같은 서비스는 MCP 서버가 <strong>OAuth 로그인</strong> 뒤에 있습니다. 주소를 추가한 뒤, 브라우저에서 로그인하는 과정이 한 단계 더 있어요. 아래는 Sentry 예시입니다.</p>
 
     <ol class="steps">
       <li>
-        <div class="step-title">Add the server</div>
-        <p>The <code class="inline">add</code> command is the same as for the docs server, with Sentry's URL:</p>
+        <div class="step-title">서버 추가</div>
+        <p>추가 명령은 문서 서버와 똑같고, 주소만 Sentry 것으로 바꿉니다.</p>
         <div class="code" data-copy="claude mcp add --transport http sentry https://mcp.sentry.dev/mcp">
-          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
           <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--transport</span> http sentry <span class="c-str">https://mcp.sentry.dev/mcp</span></code></pre>
         </div>
-        <p>After adding, <code class="inline">claude mcp list</code> shows the server with <span class="st warn">! Needs authentication</span>. That's expected.</p>
+        <p>추가 후 <code class="inline">claude mcp list</code>를 보면 <span class="st warn">! Needs authentication</span>이 뜹니다. <strong>정상이에요</strong> — 다음 단계에서 로그인하면 됩니다.</p>
       </li>
       <li>
-        <div class="step-title">Authenticate in your browser</div>
-        <p>Start a Claude Code session and open the MCP panel:</p>
+        <div class="step-title">브라우저에서 로그인</div>
+        <p>대화 세션을 시작하고 MCP 패널을 엽니다.</p>
         <div class="code" data-copy="/mcp">
-          <div class="bar"><span class="lang">session</span><button class="copy">Copy</button></div>
+          <div class="bar"><span class="lang">Claude 세션 안</span><button class="copy">복사</button></div>
           <pre><code>/mcp</code></pre>
         </div>
-        <p>Select <code class="inline">sentry</code> from the list, press Enter, and choose <code class="inline">Authenticate</code>. Your browser opens to Sentry's sign-in page. Approve the connection there. Back in Claude Code, the server's status changes to connected.</p>
+        <p>목록에서 <code class="inline">sentry</code>를 고르고 Enter → <code class="inline">Authenticate</code>를 선택하면 브라우저에 Sentry 로그인 화면이 열립니다. 거기서 승인하면, Claude Code로 돌아왔을 때 상태가 <strong>연결됨</strong>으로 바뀝니다.</p>
       </li>
       <li>
-        <div class="step-title">Use the server</div>
-        <p>Ask Claude something that needs the service, like <code class="inline">What Sentry projects do I have access to?</code>, and look for tool calls labeled with the <code class="inline">sentry</code> server name.</p>
+        <div class="step-title">사용하기</div>
+        <p><code class="inline">내가 접근할 수 있는 Sentry 프로젝트가 뭐가 있어?</code>처럼 그 서비스가 필요한 질문을 해보고, 답변에 <code class="inline">sentry</code> 서버 이름이 붙은 도구 호출이 있는지 확인하세요.</p>
       </li>
     </ol>
-    <p>Servers that authenticate with a static token instead of OAuth take the token at add time with <code class="inline">--header "Authorization: Bearer &lt;token&gt;"</code>.</p>
+    <div class="callout note">
+      <span class="ic">참고</span>
+      <p>OAuth 대신 <strong>고정 토큰</strong>으로 인증하는 서버는 추가할 때 <code class="inline">--header "Authorization: Bearer &lt;토큰&gt;"</code>을 붙여서 토큰을 전달합니다. (예: GitHub)</p>
+    </div>
 
-    <h2 id="edit-json">Edit .mcp.json directly</h2>
-    <p>Every scope uses the same JSON format for server entries. This section edits <code class="inline">.mcp.json</code>, the project-scope file. It's the one most worth writing by hand because it's checked into the repository, where it doubles as configuration-as-code for your team.</p>
-    <p>Create <code class="inline">.mcp.json</code> in your project root. The example below defines both servers from this guide:</p>
+    <h2 id="edit-json"><span class="num">08</span>설정 파일 직접 작성하기 (.mcp.json)</h2>
+    <p>모든 스코프는 <strong>같은 JSON 형식</strong>을 씁니다. 그중 <code class="inline">.mcp.json</code>(프로젝트 스코프)은 저장소에 함께 들어가서 <strong>"코드처럼 관리되는 설정"</strong> 역할을 하므로, 손으로 직접 써볼 만합니다.</p>
+    <p>프로젝트 폴더 맨 위에 <code class="inline">.mcp.json</code> 파일을 만들고 아래처럼 작성하세요. 이 글에 나온 두 서버를 한꺼번에 정의한 예시입니다.</p>
     <div class="code" data-copy='{
   "mcpServers": {
     "claude-code-docs": {
@@ -422,7 +506,7 @@
     }
   }
 }'>
-      <div class="bar"><span class="lang">json · .mcp.json</span><button class="copy">Copy</button></div>
+      <div class="bar"><span class="lang">json · .mcp.json</span><button class="copy">복사</button></div>
       <pre><code>{
   <span class="c-key">"mcpServers"</span>: {
     <span class="c-key">"claude-code-docs"</span>: {
@@ -438,112 +522,114 @@
 }</code></pre>
     </div>
     <ul>
-      <li>For HTTP servers, <code class="inline">url</code> is the endpoint Claude Code connects to.</li>
-      <li>For stdio servers, <code class="inline">command</code> and <code class="inline">args</code> are the program it runs.</li>
+      <li><strong>호스팅형(http)</strong> 서버는 <code class="inline">url</code>에 접속할 주소를 적습니다.</li>
+      <li><strong>로컬형(stdio)</strong> 서버는 <code class="inline">command</code>와 <code class="inline">args</code>에 실행할 프로그램을 적습니다.</li>
     </ul>
-    <p>After saving the file, start a new Claude Code session in the project. Claude Code reads <code class="inline">.mcp.json</code> at startup and asks you to approve the project-scoped server the first time it sees it. Approve the prompt, or run <code class="inline">/mcp</code> to approve later.</p>
+    <p>저장한 뒤 그 프로젝트에서 Claude Code를 <strong>새로 시작</strong>하세요. 시작할 때 <code class="inline">.mcp.json</code>을 읽고, 프로젝트 공용 서버는 처음 한 번 <strong>승인</strong>을 물어봅니다. (낯선 저장소가 내 컴퓨터에서 멋대로 프로그램을 켜지 못하게 하는 안전장치예요.) 승인하거나, 놓쳤다면 <code class="inline">/mcp</code>로 나중에 승인하면 됩니다.</p>
 
-    <h2 id="other-surfaces">Connect from other surfaces</h2>
-    <p>This guide uses the <code class="inline">claude mcp</code> CLI commands, but every Claude Code surface can connect to MCP servers:</p>
+    <h2 id="other-surfaces"><span class="num">09</span>다른 환경에서 연결하기</h2>
+    <p>이 가이드는 <code class="inline">claude mcp</code> 명령어(CLI)를 썼지만, Claude Code의 모든 환경에서 MCP 서버를 연결할 수 있어요.</p>
     <ul>
-      <li><strong>Claude Code desktop app</strong> — add servers through the Connectors UI.</li>
-      <li><strong>Claude Desktop chat app</strong> — run <code class="inline">claude mcp add-from-claude-desktop</code> on macOS or WSL to import from <code class="inline">claude_desktop_config.json</code>.</li>
-      <li><strong>VS Code</strong> — see "Connect to external tools with MCP".</li>
-      <li><strong>Claude Code on the web</strong> — reads <code class="inline">.mcp.json</code> from your repository.</li>
-      <li><strong>Claude.ai</strong> — connectors you add at <a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">claude.ai/customize/connectors</a> load automatically in the CLI when you sign in with that account.</li>
+      <li><strong>Claude Code 데스크톱 앱</strong> — Connectors(커넥터) 화면에서 추가.</li>
+      <li><strong>Claude Desktop 채팅 앱</strong> — macOS/WSL에서 <code class="inline">claude mcp add-from-claude-desktop</code>으로 기존 설정을 가져오기.</li>
+      <li><strong>VS Code</strong> — "MCP로 외부 도구 연결하기" 문서 참고.</li>
+      <li><strong>Claude Code 웹</strong> — 저장소의 <code class="inline">.mcp.json</code>을 읽어옵니다.</li>
+      <li><strong>Claude.ai</strong> — <a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">claude.ai/customize/connectors</a>에서 추가한 커넥터가, 같은 계정으로 로그인하면 CLI에서도 자동으로 불러와집니다.</li>
     </ul>
 
-    <h2 id="troubleshooting">Troubleshooting</h2>
-    <p>If a server doesn't connect, check its status with <code class="inline">/mcp</code> inside a session or <code class="inline">claude mcp list</code> from your shell, then match the symptom below.</p>
+    <h2 id="troubleshooting"><span class="num">10</span>문제 해결 (잘 안 될 때)</h2>
+    <p>연결이 안 되면 먼저 상태부터 확인하세요. 세션 안이면 <code class="inline">/mcp</code>, 터미널이면 <code class="inline">claude mcp list</code>. 그다음 아래에서 내 증상을 찾아보세요. (제목을 누르면 펼쳐집니다.)</p>
     <div class="accordion">
       <details>
-        <summary><span>/mcp shows "No MCP servers configured"</span><span class="chev">&#9654;</span></summary>
+        <summary><span>"No MCP servers configured"가 떠요</span><span class="chev">&#9654;</span></summary>
         <div class="acc-body">
-          <p>Claude Code didn't find any servers for the current directory. Common causes:</p>
+          <p>지금 폴더에서 서버를 못 찾았다는 뜻입니다. 흔한 원인:</p>
           <ul>
-            <li>You ran <code class="inline">claude mcp add</code> from a different project. Local-scoped servers are tied to the project where you added them. Re-add it from the current project, or add it with <code class="inline">--scope user</code>.</li>
-            <li>You edited a configuration file at the wrong path. The correct files are <code class="inline">~/.claude.json</code> and <code class="inline">&lt;project&gt;/.mcp.json</code>.</li>
+            <li><strong>다른 프로젝트에서 추가</strong>했어요. local 스코프 서버는 추가한 그 폴더에만 묶입니다. 지금 폴더에서 다시 추가하거나, <code class="inline">--scope user</code>로 추가해 폴더에 안 묶이게 하세요.</li>
+            <li><strong>설정 파일을 엉뚱한 경로</strong>에 만들었어요. 올바른 위치는 <code class="inline">~/.claude.json</code>과 <code class="inline">&lt;프로젝트&gt;/.mcp.json</code>뿐입니다.</li>
           </ul>
         </div>
       </details>
       <details>
-        <summary><span>Status shows "Failed to connect" or "Connection error"</span><span class="chev">&#9654;</span></summary>
+        <summary><span>"Failed to connect" 또는 "Connection error"</span><span class="chev">&#9654;</span></summary>
         <div class="acc-body">
-          <p>Both statuses mean the server didn't start or the URL didn't respond. For HTTP servers, confirm the URL is reachable:</p>
+          <p>서버가 안 켜졌거나 주소가 응답하지 않는다는 뜻입니다. 호스팅형이라면 먼저 주소가 내 컴퓨터에서 닿는지 확인하세요.</p>
           <div class="code" data-copy="curl -I https://mcp.sentry.dev/mcp">
-            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
             <pre><code><span class="c-cmd">curl</span> <span class="c-flag">-I</span> <span class="c-str">https://mcp.sentry.dev/mcp</span></code></pre>
           </div>
           <ul>
-            <li>A <code class="inline">404</code> or <code class="inline">405</code> — the server is up (many MCP endpoints answer only POST).</li>
-            <li>A <code class="inline">401</code> or <code class="inline">403</code> — the server is up and you need to authenticate.</li>
-            <li>No response — check the URL and your network.</li>
+            <li><code class="inline">404</code> / <code class="inline">405</code> — 서버는 살아있어요. (많은 MCP 주소가 POST만 받아서 그래요. 닿는다는 증거입니다.)</li>
+            <li><code class="inline">401</code> / <code class="inline">403</code> — 서버는 살아있고 <strong>로그인이 필요</strong>합니다. (예시 2 참고)</li>
+            <li>아무 응답 없음 — 주소와 네트워크를 다시 확인하세요.</li>
           </ul>
-          <p>For stdio servers, run the configured command directly to see the underlying error, e.g. <code class="inline">npx -y @playwright/mcp@latest</code>.</p>
+          <p>로컬형 서버라면, 설정된 명령을 터미널에서 <strong>직접</strong> 실행해 오류 메시지를 보세요. 예: <code class="inline">npx -y @playwright/mcp@latest</code></p>
         </div>
       </details>
       <details>
-        <summary><span>Connection timed out at startup</span><span class="chev">&#9654;</span></summary>
+        <summary><span>시작할 때 시간 초과(timed out)가 나요</span><span class="chev">&#9654;</span></summary>
         <div class="acc-body">
-          <p>The server took longer than the default 30-second startup timeout. A stdio server's first run can be slow while <code class="inline">npx</code> downloads the package. Increase the limit with <code class="inline">MCP_TIMEOUT</code> (milliseconds):</p>
+          <p>기본 30초 안에 서버가 안 켜진 경우입니다. 로컬형은 npx가 패키지를 처음 받느라 느릴 수 있어요. 제한 시간을 <code class="inline">MCP_TIMEOUT</code>(밀리초)으로 늘리세요.</p>
           <div class="code" data-copy="MCP_TIMEOUT=60000 claude">
-            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
             <pre><code><span class="c-key">MCP_TIMEOUT</span>=60000 <span class="c-cmd">claude</span></code></pre>
           </div>
         </div>
       </details>
       <details>
-        <summary><span>Server already exists</span><span class="chev">&#9654;</span></summary>
+        <summary><span>"Server already exists"가 떠요</span><span class="chev">&#9654;</span></summary>
         <div class="acc-body">
-          <p>You've already added a server with that name at the same scope. Either remove the existing entry first or choose a different name:</p>
+          <p>같은 스코프에 같은 이름의 서버가 이미 있다는 뜻입니다. 기존 걸 지우거나, 다른 이름으로 추가하세요.</p>
           <div class="code" data-copy="claude mcp remove claude-code-docs">
-            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
             <pre><code><span class="c-cmd">claude mcp remove</span> claude-code-docs</code></pre>
           </div>
-          <p>If the name exists at more than one scope, pass <code class="inline">--scope</code> to choose which copy to delete.</p>
+          <p>여러 스코프에 같은 이름이 있으면 <code class="inline">--scope</code>로 어느 걸 지울지 정하면 됩니다.</p>
         </div>
       </details>
       <details>
-        <summary><span>Server connects but no tools appear</span><span class="chev">&#9654;</span></summary>
+        <summary><span>연결은 됐는데 도구가 안 보여요</span><span class="chev">&#9654;</span></summary>
         <div class="acc-body">
-          <p>Run <code class="inline">/mcp</code> and select the server to see its tool list. If empty, the server usually is missing a required environment variable such as an API key. Pass it with <code class="inline">--env KEY=value</code> on <code class="inline">claude mcp add</code>, or in the <code class="inline">env</code> field of the server's <code class="inline">.mcp.json</code> entry.</p>
+          <p><code class="inline">/mcp</code>에서 서버를 골라 도구 목록을 보세요. 비어 있다면 보통 <strong>필수 환경변수(API 키 등)가 빠진</strong> 경우입니다. <code class="inline">claude mcp add</code>에 <code class="inline">--env KEY=값</code>을 붙이거나, <code class="inline">.mcp.json</code>의 <code class="inline">env</code> 항목에 적어주세요.</p>
         </div>
       </details>
       <details>
-        <summary><span>Changes to .mcp.json don't take effect</span><span class="chev">&#9654;</span></summary>
+        <summary><span>.mcp.json을 고쳤는데 반영이 안 돼요</span><span class="chev">&#9654;</span></summary>
         <div class="acc-body">
-          <p>Claude Code reads <code class="inline">.mcp.json</code> at session start. Exit and restart the session after editing. If you previously rejected the server, reset project approvals:</p>
+          <p><code class="inline">.mcp.json</code>은 <strong>세션 시작 때</strong> 읽힙니다. 파일을 고쳤으면 세션을 끄고 다시 켜세요. 예전에 서버 승인을 거절했다면, 프로젝트 승인 기록을 초기화하세요.</p>
           <div class="code" data-copy="claude mcp reset-project-choices">
-            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <div class="bar"><span class="lang">터미널 · bash</span><button class="copy">복사</button></div>
             <pre><code><span class="c-cmd">claude mcp reset-project-choices</span></code></pre>
           </div>
         </div>
       </details>
       <details>
-        <summary><span>OAuth sign-in fails or browser doesn't open</span><span class="chev">&#9654;</span></summary>
+        <summary><span>OAuth 로그인이 실패하거나 브라우저가 안 열려요</span><span class="chev">&#9654;</span></summary>
         <div class="acc-body">
-          <p>Run <code class="inline">/mcp</code>, select the server, and choose <code class="inline">Authenticate</code> again. If the browser doesn't open automatically, copy the URL shown in the terminal and open it manually.</p>
+          <p><code class="inline">/mcp</code>에서 서버를 고르고 <code class="inline">Authenticate</code>를 다시 시도하세요. 브라우저가 자동으로 안 열리면, 터미널에 표시된 주소를 복사해 직접 여세요.</p>
         </div>
       </details>
     </div>
 
-    <h2 id="next">Next steps</h2>
-    <p>With one server connected, explore the rest of what MCP enables:</p>
+    <h2 id="next"><span class="num">11</span>다음 단계</h2>
+    <p>서버 하나를 연결했다면, MCP로 할 수 있는 나머지도 둘러보세요.</p>
     <ul>
-      <li>Find more MCP servers in the Anthropic Directory.</li>
-      <li>Share servers with your team using installation scopes.</li>
-      <li>Manage MCP access for an organization with managed settings and policy controls.</li>
-      <li>Reference MCP resources in prompts with @ mentions.</li>
-      <li>Run MCP prompts as commands from the <code class="inline">/</code> menu.</li>
-      <li><a href="https://modelcontextprotocol.io/quickstart/server" target="_blank" rel="noopener">Build your own server</a> with the MCP SDK.</li>
+      <li>Anthropic 디렉터리에서 <strong>더 많은 MCP 서버</strong> 찾기.</li>
+      <li>설치 스코프로 <strong>팀과 서버 공유</strong>하기.</li>
+      <li>관리 설정·정책으로 <strong>조직의 MCP 접근 관리</strong>하기.</li>
+      <li>프롬프트에서 <strong>@ 멘션으로 MCP 리소스 참조</strong>하기.</li>
+      <li><code class="inline">/</code> 메뉴에서 <strong>MCP 프롬프트를 명령처럼 실행</strong>하기.</li>
+      <li><a href="https://modelcontextprotocol.io/quickstart/server" target="_blank" rel="noopener"><strong>나만의 서버 직접 만들기</strong></a> (MCP SDK).</li>
     </ul>
+
+    <div class="summary-line" style="margin-top:28px;"><span class="lbl">한 줄 정리</span><span>MCP = Claude에 도구를 꽂는 USB 포트. <strong>추가(add) → 확인(list) → 사용</strong> 3단계만 기억하면, 어떤 서버든 똑같이 연결할 수 있습니다.</span></div>
 
   </article>
 </div>
 
 <footer>
   <div class="foot-inner">
-    <span>Styled mirror of the <a href="https://code.claude.com/docs/en/mcp-quickstart" target="_blank" rel="noopener">Claude Code MCP quickstart</a>. Content &copy; Anthropic.</span>
+    <span>Claude Code 공식 <a href="https://code.claude.com/docs/en/mcp-quickstart" target="_blank" rel="noopener">MCP 퀵스타트</a>를 한국어로 재구성. 본문 내용 &copy; Anthropic.</span>
     <a class="back" href="../">&larr; davidlikescat</a>
   </div>
 </footer>
@@ -553,9 +639,9 @@
     btn.addEventListener('click', function () {
       var text = btn.closest('.code').getAttribute('data-copy') || '';
       navigator.clipboard.writeText(text).then(function () {
-        btn.textContent = 'Copied';
+        btn.textContent = '복사됨';
         btn.classList.add('copied');
-        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600);
+        setTimeout(function () { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1600);
       });
     });
   });
