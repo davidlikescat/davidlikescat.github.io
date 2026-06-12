@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect to MCP servers — Claude Code</title>
+<meta name="description" content="Add an MCP server to Claude Code, verify the connection, and find the configuration on disk. A Claude-styled mirror of the Claude Code MCP quickstart.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf9f5;
+    --bg-soft: #f0eee6;
+    --card: #ffffff;
+    --text: #1f1e1c;
+    --muted: #6f6b62;
+    --soft: #97928a;
+    --border: #e7e3d9;
+    --clay: #cc785c;
+    --clay-dark: #b3522f;
+    --clay-soft: #f5e9e2;
+    --code-bg: #262420;
+    --code-text: #ece7df;
+    --code-line: #3a372f;
+    --ok: #3f8f5b;
+    --warn: #c2873a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    font-family: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--clay); color: #fff; }
+
+  /* ---- Header ---- */
+  header.hero {
+    background: linear-gradient(180deg, #f6efe8 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 72px 24px 56px;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--clay-dark); background: var(--clay-soft);
+    border: 1px solid #ecd9cf; padding: 6px 14px; border-radius: 999px;
+    text-transform: uppercase;
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--clay); }
+  header.hero h1 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 500; font-size: clamp(38px, 6vw, 60px);
+    letter-spacing: -0.5px; line-height: 1.05;
+    margin: 22px 0 18px; max-width: 16ch;
+  }
+  header.hero p.lead {
+    font-size: 19px; color: var(--muted); max-width: 60ch; font-weight: 400;
+  }
+  .hero-meta {
+    margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    font-size: 13px; color: var(--soft);
+  }
+  .hero-meta a { color: var(--clay-dark); text-decoration: none; font-weight: 500; }
+  .hero-meta a:hover { text-decoration: underline; }
+  .pill { background: var(--card); border: 1px solid var(--border); padding: 5px 12px; border-radius: 999px; }
+
+  /* ---- Layout ---- */
+  .layout { max-width: 1100px; margin: 0 auto; padding: 56px 24px 96px; display: grid; grid-template-columns: 220px 1fr; gap: 56px; align-items: start; }
+  nav.toc { position: sticky; top: 24px; font-size: 13.5px; }
+  nav.toc .toc-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--soft); margin-bottom: 14px; }
+  nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 6px 0 6px 14px; border-left: 2px solid var(--border); transition: all .15s; }
+  nav.toc a:hover { color: var(--clay-dark); border-left-color: var(--clay); }
+
+  article { min-width: 0; }
+  article h2 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 600; font-size: 30px; letter-spacing: -0.3px;
+    margin: 56px 0 18px; padding-top: 8px; scroll-margin-top: 24px;
+  }
+  article h2:first-child { margin-top: 0; }
+  article h3 { font-size: 19px; font-weight: 700; margin: 36px 0 12px; letter-spacing: -0.2px; scroll-margin-top: 24px; }
+  article p { margin: 14px 0; color: #36342f; }
+  article p, article li { font-size: 16px; }
+  article a { color: var(--clay-dark); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: #e3c4b6; }
+  article a:hover { text-decoration-color: var(--clay); }
+  article ul, article ol { margin: 14px 0 14px 22px; }
+  article li { margin: 8px 0; color: #36342f; }
+  code.inline {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.86em;
+    background: var(--bg-soft); border: 1px solid var(--border);
+    padding: 1.5px 6px; border-radius: 5px; color: var(--clay-dark); white-space: nowrap;
+  }
+
+  /* ---- Code blocks ---- */
+  .code { position: relative; margin: 18px 0; border-radius: 12px; overflow: hidden; background: var(--code-bg); border: 1px solid #322f29; }
+  .code .bar { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: #211f1b; border-bottom: 1px solid var(--code-line); }
+  .code .lang { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 1px; color: #8a857a; text-transform: uppercase; }
+  .code .copy { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; color: #c9c3b6; background: transparent; border: 1px solid #423f37; border-radius: 6px; padding: 4px 10px; cursor: pointer; transition: all .15s; }
+  .code .copy:hover { background: #322f29; color: #fff; border-color: var(--clay); }
+  .code .copy.copied { color: #fff; background: var(--clay); border-color: var(--clay); }
+  .code pre { margin: 0; padding: 16px 18px; overflow-x: auto; }
+  .code code { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; line-height: 1.65; color: var(--code-text); white-space: pre; }
+  .code .c-cmd { color: #e6a07a; }
+  .code .c-flag { color: #9ec7e8; }
+  .code .c-str { color: #a9cf8e; }
+  .code .c-cmt { color: #6f6a5f; }
+  .code .c-key { color: #d9b06a; }
+
+  /* ---- Steps ---- */
+  ol.steps { list-style: none; margin: 24px 0; counter-reset: step; }
+  ol.steps > li { position: relative; padding: 0 0 8px 56px; margin-bottom: 8px; counter-increment: step; }
+  ol.steps > li::before {
+    content: counter(step); position: absolute; left: 0; top: 0;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--clay); color: #fff; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 4px var(--clay-soft);
+  }
+  ol.steps > li::after {
+    content: ''; position: absolute; left: 16px; top: 40px; bottom: -4px; width: 2px; background: var(--border);
+  }
+  ol.steps > li:last-child::after { display: none; }
+  ol.steps .step-title { font-weight: 700; font-size: 17px; margin: 4px 0 6px; }
+
+  /* ---- Callouts ---- */
+  .callout { display: flex; gap: 14px; padding: 16px 18px; border-radius: 12px; margin: 20px 0; border: 1px solid; font-size: 15px; }
+  .callout .ic { flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; margin-top: 1px; }
+  .callout p { margin: 0; }
+  .callout.note { background: #f3f1ea; border-color: var(--border); }
+  .callout.note .ic { background: #8a857a; }
+  .callout.info { background: #eef4f6; border-color: #d6e4e9; }
+  .callout.info .ic { background: #5b8aa0; }
+
+  /* ---- Tables ---- */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--border); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th { text-align: left; background: var(--bg-soft); font-weight: 600; color: var(--text); padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: #36342f; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .st { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+  .st.ok { color: var(--ok); }
+  .st.warn { color: var(--warn); }
+  .st.err { color: var(--clay-dark); }
+
+  /* ---- Accordion ---- */
+  .accordion { margin: 20px 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); }
+  details { border-bottom: 1px solid var(--border); }
+  details:last-child { border-bottom: none; }
+  summary { cursor: pointer; padding: 16px 20px; font-weight: 600; font-size: 15.5px; list-style: none; display: flex; align-items: center; justify-content: space-between; transition: background .15s; }
+  summary:hover { background: var(--bg-soft); }
+  summary::-webkit-details-marker { display: none; }
+  summary .chev { color: var(--clay); transition: transform .2s; font-size: 14px; }
+  details[open] summary .chev { transform: rotate(90deg); }
+  details[open] summary { background: var(--bg-soft); }
+  .acc-body { padding: 4px 20px 20px; }
+  .acc-body p:first-child { margin-top: 4px; }
+
+  /* ---- Footer ---- */
+  footer { border-top: 1px solid var(--border); background: var(--bg-soft); padding: 40px 24px; }
+  .foot-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; font-size: 13.5px; color: var(--muted); }
+  .foot-inner a { color: var(--clay-dark); text-decoration: none; font-weight: 500; }
+  .foot-inner a:hover { text-decoration: underline; }
+  .back { color: var(--muted); text-decoration: none; }
+
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 40px 20px 72px; }
+    nav.toc { display: none; }
+    header.hero { padding: 56px 20px 44px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow"><span class="dot"></span> Claude Code · MCP Quickstart</span>
+    <h1>Connect to MCP&nbsp;servers</h1>
+    <p class="lead">Add an MCP server to Claude Code, verify the connection, and find the configuration on disk.</p>
+    <div class="hero-meta">
+      <span class="pill">Model Context Protocol</span>
+      <span class="pill">Claude Code CLI</span>
+      <span>Source: <a href="https://code.claude.com/docs/en/mcp-quickstart" target="_blank" rel="noopener">code.claude.com/docs</a></span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <nav class="toc">
+    <div class="toc-label">ON THIS PAGE</div>
+    <a href="#before">Before you begin</a>
+    <a href="#add-verify">Add and verify a server</a>
+    <a href="#where-saved">Where servers are saved</a>
+    <a href="#change-scope">Change server scope</a>
+    <a href="#more-examples">Additional examples</a>
+    <a href="#edit-json">Edit .mcp.json directly</a>
+    <a href="#other-surfaces">Other surfaces</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+    <a href="#next">Next steps</a>
+  </nav>
+
+  <article>
+
+    <p>The <a href="https://modelcontextprotocol.io/introduction" target="_blank" rel="noopener">Model Context Protocol (MCP)</a> lets Claude Code use tools beyond its built-in set, such as searching an issue tracker, querying a database, or controlling a web browser. These tools come from MCP servers, which run on your machine or as hosted services.</p>
+
+    <p>This guide walks you through connecting one MCP server end to end with the Claude Code CLI. By the end, you'll have a server connected and responding, know where its configuration lives on disk, and know how to fix the most common connection errors.</p>
+
+    <div class="callout note">
+      <div class="ic">i</div>
+      <p>You can also add MCP servers from other surfaces, including the desktop app, VS Code, and the web. See <a href="#other-surfaces">Connect from other surfaces</a>.</p>
+    </div>
+
+    <h2 id="before">Before you begin</h2>
+    <p>Make sure you have:</p>
+    <ul>
+      <li><strong>Claude Code installed</strong> and authenticated.</li>
+      <li>A terminal open in a project directory. Any directory works, including an empty one.</li>
+    </ul>
+
+    <h2 id="add-verify">Add and verify a server</h2>
+    <p>The example below connects to the <strong>Claude Code documentation MCP server</strong>, a hosted server with full-text search over the Claude Code docs. It doesn't require authentication or any special configuration, so it works well as a first server to test the setup flow with.</p>
+    <p>The steps are the same for any server: add it, check the connection status, then use it in a session, with an optional cleanup step at the end.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-title">Add the MCP server</div>
+        <p>Register the server with Claude Code. Run this in your terminal, <strong>not</strong> inside a <code class="inline">claude</code> session: you're configuring the server before starting a conversation.</p>
+        <div class="code" data-copy="claude mcp add --transport http claude-code-docs https://code.claude.com/docs/mcp">
+          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--transport</span> http claude-code-docs <span class="c-str">https://code.claude.com/docs/mcp</span></code></pre>
+        </div>
+        <p>The parts of the command:</p>
+        <ul>
+          <li><code class="inline">claude mcp add</code> — registers a server with Claude Code.</li>
+          <li><code class="inline">--transport http</code> — the server is hosted at a URL rather than run as a local process.</li>
+          <li><code class="inline">claude-code-docs</code> — a name you make up. Claude Code uses it to label the server's tools and to refer to the server in commands like <code class="inline">claude mcp remove</code>.</li>
+          <li><code class="inline">https://code.claude.com/docs/mcp</code> — the URL where the server is hosted.</li>
+        </ul>
+        <p>The command prints a confirmation like <code class="inline">Added HTTP MCP server claude-code-docs ... to local config</code>. The <em>local config</em> part means the server is registered to you, in this project only. To register it once for all projects, add it at user scope.</p>
+      </li>
+      <li>
+        <div class="step-title">Check the connection status</div>
+        <p>Confirm the server appears in your server list and check its status:</p>
+        <div class="code" data-copy="claude mcp list">
+          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <pre><code><span class="c-cmd">claude mcp list</span></code></pre>
+        </div>
+        <p>The server appears with a status indicator:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><span class="st ok">&#10003; Connected</span></td><td>Ready to use. This is what you should see for <code class="inline">claude-code-docs</code>.</td></tr>
+              <tr><td><span class="st warn">! Needs authentication</span></td><td>Reachable but needs a browser sign-in, or a token passed with <code class="inline">--header</code>.</td></tr>
+              <tr><td><span class="st err">&#10007; Failed to connect</span></td><td>Server didn't respond. See <a href="#troubleshooting">Troubleshooting</a>.</td></tr>
+              <tr><td><span class="st err">&#10007; Connection error</span></td><td>The connection attempt threw an error. See <a href="#troubleshooting">Troubleshooting</a>.</td></tr>
+              <tr><td><span class="st warn">&#9208; Pending approval</span></td><td>A project-scoped server you haven't approved yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </li>
+      <li>
+        <div class="step-title">Use the server</div>
+        <p>Start a session and ask Claude to use the new server by name:</p>
+        <div class="code" data-copy="claude">
+          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <pre><code><span class="c-cmd">claude</span></code></pre>
+        </div>
+        <div class="code" data-copy="Use the claude-code-docs server to look up what MCP_TIMEOUT does">
+          <div class="bar"><span class="lang">prompt</span><button class="copy">Copy</button></div>
+          <pre><code>Use the claude-code-docs server to look up what MCP_TIMEOUT does</code></pre>
+        </div>
+        <div class="callout info">
+          <div class="ic">i</div>
+          <p>You don't normally need to name a server in your prompt, since Claude chooses relevant tools on its own. Naming it here guarantees the demonstration goes through the new server rather than another tool, such as web fetch.</p>
+        </div>
+        <p>The first time Claude calls the server, it asks for permission to use the new tool. Approve it to continue. The tool call in Claude's output is labeled with the server name.</p>
+      </li>
+      <li>
+        <div class="step-title">Remove the server</div>
+        <p>This step is optional. When you're done experimenting, you can remove the server:</p>
+        <div class="code" data-copy="claude mcp remove claude-code-docs">
+          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <pre><code><span class="c-cmd">claude mcp remove</span> claude-code-docs</code></pre>
+        </div>
+        <div class="callout note">
+          <div class="ic">i</div>
+          <p>Each connected server takes some space in Claude's context window because its tool names and server instructions load into every session. Removing servers you no longer use keeps that space free.</p>
+        </div>
+      </li>
+    </ol>
+
+    <h2 id="where-saved">Where servers are saved</h2>
+    <p>The <code class="inline">claude mcp add</code> command writes the server's details to a configuration file. By default it registers the server at <code class="inline">local</code> scope: private to you, active only in the current project. Pass <code class="inline">--scope user</code> to register it once for all your projects, or <code class="inline">--scope project</code> to share it with teammates.</p>
+    <div class="callout note">
+      <div class="ic">i</div>
+      <p><code class="inline">claude mcp add</code> works the same in every shell, including PowerShell and Command Prompt. Inside a <code class="inline">claude</code> session, use the <code class="inline">/mcp</code> command to check and manage servers you've already added.</p>
+    </div>
+
+    <h3 id="find-config">Find your configuration on disk</h3>
+    <p>The command writes the server to one of three scopes, stored across two files, depending on the <code class="inline">--scope</code> flag. You don't need to edit these files directly, but knowing where they are helps with debugging and version control.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Scope</th><th>File</th><th>Available to</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">local</code></td><td><code class="inline">~/.claude.json</code>, under the entry for this project</td><td>Only you, only this project. The default.</td></tr>
+          <tr><td><code class="inline">project</code></td><td><code class="inline">.mcp.json</code> in your project root</td><td>Everyone who clones the project.</td></tr>
+          <tr><td><code class="inline">user</code></td><td><code class="inline">~/.claude.json</code>, under the top-level <code class="inline">mcpServers</code> key</td><td>Only you, all projects.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>On Windows, <code class="inline">~/.claude.json</code> resolves to <code class="inline">%USERPROFILE%\.claude.json</code>. Run <code class="inline">claude mcp get claude-code-docs</code> to see which scope holds a server's definition.</p>
+
+    <h2 id="change-scope">Change server scope</h2>
+    <p>A server's scope is fixed when you add it, so changing scope means removing the entry and re-adding it at the new one. Start by removing the local entry so the server has only one definition:</p>
+    <div class="code" data-copy="claude mcp remove claude-code-docs --scope local">
+      <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+      <pre><code><span class="c-cmd">claude mcp remove</span> claude-code-docs <span class="c-flag">--scope</span> local</code></pre>
+    </div>
+
+    <h3>Use a server in all your projects</h3>
+    <p>Re-add the server at <code class="inline">user</code> scope to make it active in every project you open, still private to you:</p>
+    <div class="code" data-copy="claude mcp add --scope user --transport http claude-code-docs https://code.claude.com/docs/mcp">
+      <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+      <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--scope</span> user <span class="c-flag">--transport</span> http claude-code-docs <span class="c-str">https://code.claude.com/docs/mcp</span></code></pre>
+    </div>
+
+    <h3>Share a server with your team</h3>
+    <p>Re-add the server at <code class="inline">project</code> scope, which writes to <code class="inline">.mcp.json</code> in the project root:</p>
+    <div class="code" data-copy="claude mcp add --scope project --transport http claude-code-docs https://code.claude.com/docs/mcp">
+      <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+      <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--scope</span> project <span class="c-flag">--transport</span> http claude-code-docs <span class="c-str">https://code.claude.com/docs/mcp</span></code></pre>
+    </div>
+    <p>Commit <code class="inline">.mcp.json</code> to version control. Teammates who clone the repository and start Claude Code see a prompt to approve the server, then it connects for them too.</p>
+
+    <h2 id="more-examples">Additional MCP server examples</h2>
+    <p>The first walkthrough used a hosted server that connects without any sign-in. The examples below cover the other two common shapes, with the same add, check, use flow.</p>
+
+    <h3 id="local-server">Add a local server</h3>
+    <p>A local stdio server is a program Claude Code starts as a subprocess on your machine, rather than a service it reaches over a URL. Use one for tools that need access to local resources like a browser, your filesystem, or a database socket.</p>
+    <p>The <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener">Playwright MCP server</a> is a good one to try: it gives Claude a browser it can navigate, click, and read, and it needs no account. It runs through <code class="inline">npx</code>, so it requires Node.js 18 or later.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-title">Add the Playwright server</div>
+        <p>Register the server with the command Claude Code should run to start it:</p>
+        <div class="code" data-copy="claude mcp add playwright -- npx -y @playwright/mcp@latest">
+          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <pre><code><span class="c-cmd">claude mcp add</span> playwright -- npx <span class="c-flag">-y</span> @playwright/mcp@latest</code></pre>
+        </div>
+        <ul>
+          <li>There's no <code class="inline">--transport</code> flag, because local servers use the default <code class="inline">stdio</code> transport.</li>
+          <li>Everything after the <code class="inline">--</code> separator is the command Claude Code runs to start the server.</li>
+          <li><code class="inline">-y</code> tells <code class="inline">npx</code> to install the package without prompting.</li>
+        </ul>
+      </li>
+      <li>
+        <div class="step-title">Check the connection</div>
+        <p>The <code class="inline">Added</code> confirmation means the entry was saved, not that the command runs. Check the connection:</p>
+        <div class="code" data-copy="claude mcp list">
+          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <pre><code><span class="c-cmd">claude mcp list</span></code></pre>
+        </div>
+        <p>The first check can show <span class="st err">&#10007; Failed to connect</span> while <code class="inline">npx</code> downloads the package, so wait a moment and run it again.</p>
+      </li>
+      <li>
+        <div class="step-title">Use the browser</div>
+        <p>Give Claude a task that needs the browser:</p>
+        <div class="code" data-copy="Use playwright to open https://example.com and tell me the page title">
+          <div class="bar"><span class="lang">prompt</span><button class="copy">Copy</button></div>
+          <pre><code>Use playwright to open https://example.com and tell me the page title</code></pre>
+        </div>
+        <p>A browser window opens so you can watch it work, and the tool calls in Claude's output are labeled with the <code class="inline">playwright</code> server name and the action, like <code class="inline">browser_navigate</code>.</p>
+      </li>
+    </ol>
+
+    <h3 id="signin-server">Connect a server that requires sign-in</h3>
+    <p>Hosted services like Sentry, Linear, and Notion run their MCP servers behind OAuth: you add the server's URL, then sign in through your browser. The steps below use Sentry as the example.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-title">Add the server</div>
+        <p>The <code class="inline">add</code> command is the same as for the docs server, with Sentry's URL:</p>
+        <div class="code" data-copy="claude mcp add --transport http sentry https://mcp.sentry.dev/mcp">
+          <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+          <pre><code><span class="c-cmd">claude mcp add</span> <span class="c-flag">--transport</span> http sentry <span class="c-str">https://mcp.sentry.dev/mcp</span></code></pre>
+        </div>
+        <p>After adding, <code class="inline">claude mcp list</code> shows the server with <span class="st warn">! Needs authentication</span>. That's expected.</p>
+      </li>
+      <li>
+        <div class="step-title">Authenticate in your browser</div>
+        <p>Start a Claude Code session and open the MCP panel:</p>
+        <div class="code" data-copy="/mcp">
+          <div class="bar"><span class="lang">session</span><button class="copy">Copy</button></div>
+          <pre><code>/mcp</code></pre>
+        </div>
+        <p>Select <code class="inline">sentry</code> from the list, press Enter, and choose <code class="inline">Authenticate</code>. Your browser opens to Sentry's sign-in page. Approve the connection there. Back in Claude Code, the server's status changes to connected.</p>
+      </li>
+      <li>
+        <div class="step-title">Use the server</div>
+        <p>Ask Claude something that needs the service, like <code class="inline">What Sentry projects do I have access to?</code>, and look for tool calls labeled with the <code class="inline">sentry</code> server name.</p>
+      </li>
+    </ol>
+    <p>Servers that authenticate with a static token instead of OAuth take the token at add time with <code class="inline">--header "Authorization: Bearer &lt;token&gt;"</code>.</p>
+
+    <h2 id="edit-json">Edit .mcp.json directly</h2>
+    <p>Every scope uses the same JSON format for server entries. This section edits <code class="inline">.mcp.json</code>, the project-scope file. It's the one most worth writing by hand because it's checked into the repository, where it doubles as configuration-as-code for your team.</p>
+    <p>Create <code class="inline">.mcp.json</code> in your project root. The example below defines both servers from this guide:</p>
+    <div class="code" data-copy='{
+  "mcpServers": {
+    "claude-code-docs": {
+      "type": "http",
+      "url": "https://code.claude.com/docs/mcp"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    }
+  }
+}'>
+      <div class="bar"><span class="lang">json · .mcp.json</span><button class="copy">Copy</button></div>
+      <pre><code>{
+  <span class="c-key">"mcpServers"</span>: {
+    <span class="c-key">"claude-code-docs"</span>: {
+      <span class="c-key">"type"</span>: <span class="c-str">"http"</span>,
+      <span class="c-key">"url"</span>: <span class="c-str">"https://code.claude.com/docs/mcp"</span>
+    },
+    <span class="c-key">"playwright"</span>: {
+      <span class="c-key">"type"</span>: <span class="c-str">"stdio"</span>,
+      <span class="c-key">"command"</span>: <span class="c-str">"npx"</span>,
+      <span class="c-key">"args"</span>: [<span class="c-str">"-y"</span>, <span class="c-str">"@playwright/mcp@latest"</span>]
+    }
+  }
+}</code></pre>
+    </div>
+    <ul>
+      <li>For HTTP servers, <code class="inline">url</code> is the endpoint Claude Code connects to.</li>
+      <li>For stdio servers, <code class="inline">command</code> and <code class="inline">args</code> are the program it runs.</li>
+    </ul>
+    <p>After saving the file, start a new Claude Code session in the project. Claude Code reads <code class="inline">.mcp.json</code> at startup and asks you to approve the project-scoped server the first time it sees it. Approve the prompt, or run <code class="inline">/mcp</code> to approve later.</p>
+
+    <h2 id="other-surfaces">Connect from other surfaces</h2>
+    <p>This guide uses the <code class="inline">claude mcp</code> CLI commands, but every Claude Code surface can connect to MCP servers:</p>
+    <ul>
+      <li><strong>Claude Code desktop app</strong> — add servers through the Connectors UI.</li>
+      <li><strong>Claude Desktop chat app</strong> — run <code class="inline">claude mcp add-from-claude-desktop</code> on macOS or WSL to import from <code class="inline">claude_desktop_config.json</code>.</li>
+      <li><strong>VS Code</strong> — see "Connect to external tools with MCP".</li>
+      <li><strong>Claude Code on the web</strong> — reads <code class="inline">.mcp.json</code> from your repository.</li>
+      <li><strong>Claude.ai</strong> — connectors you add at <a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">claude.ai/customize/connectors</a> load automatically in the CLI when you sign in with that account.</li>
+    </ul>
+
+    <h2 id="troubleshooting">Troubleshooting</h2>
+    <p>If a server doesn't connect, check its status with <code class="inline">/mcp</code> inside a session or <code class="inline">claude mcp list</code> from your shell, then match the symptom below.</p>
+    <div class="accordion">
+      <details>
+        <summary><span>/mcp shows "No MCP servers configured"</span><span class="chev">&#9654;</span></summary>
+        <div class="acc-body">
+          <p>Claude Code didn't find any servers for the current directory. Common causes:</p>
+          <ul>
+            <li>You ran <code class="inline">claude mcp add</code> from a different project. Local-scoped servers are tied to the project where you added them. Re-add it from the current project, or add it with <code class="inline">--scope user</code>.</li>
+            <li>You edited a configuration file at the wrong path. The correct files are <code class="inline">~/.claude.json</code> and <code class="inline">&lt;project&gt;/.mcp.json</code>.</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary><span>Status shows "Failed to connect" or "Connection error"</span><span class="chev">&#9654;</span></summary>
+        <div class="acc-body">
+          <p>Both statuses mean the server didn't start or the URL didn't respond. For HTTP servers, confirm the URL is reachable:</p>
+          <div class="code" data-copy="curl -I https://mcp.sentry.dev/mcp">
+            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <pre><code><span class="c-cmd">curl</span> <span class="c-flag">-I</span> <span class="c-str">https://mcp.sentry.dev/mcp</span></code></pre>
+          </div>
+          <ul>
+            <li>A <code class="inline">404</code> or <code class="inline">405</code> — the server is up (many MCP endpoints answer only POST).</li>
+            <li>A <code class="inline">401</code> or <code class="inline">403</code> — the server is up and you need to authenticate.</li>
+            <li>No response — check the URL and your network.</li>
+          </ul>
+          <p>For stdio servers, run the configured command directly to see the underlying error, e.g. <code class="inline">npx -y @playwright/mcp@latest</code>.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span>Connection timed out at startup</span><span class="chev">&#9654;</span></summary>
+        <div class="acc-body">
+          <p>The server took longer than the default 30-second startup timeout. A stdio server's first run can be slow while <code class="inline">npx</code> downloads the package. Increase the limit with <code class="inline">MCP_TIMEOUT</code> (milliseconds):</p>
+          <div class="code" data-copy="MCP_TIMEOUT=60000 claude">
+            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <pre><code><span class="c-key">MCP_TIMEOUT</span>=60000 <span class="c-cmd">claude</span></code></pre>
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary><span>Server already exists</span><span class="chev">&#9654;</span></summary>
+        <div class="acc-body">
+          <p>You've already added a server with that name at the same scope. Either remove the existing entry first or choose a different name:</p>
+          <div class="code" data-copy="claude mcp remove claude-code-docs">
+            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <pre><code><span class="c-cmd">claude mcp remove</span> claude-code-docs</code></pre>
+          </div>
+          <p>If the name exists at more than one scope, pass <code class="inline">--scope</code> to choose which copy to delete.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span>Server connects but no tools appear</span><span class="chev">&#9654;</span></summary>
+        <div class="acc-body">
+          <p>Run <code class="inline">/mcp</code> and select the server to see its tool list. If empty, the server usually is missing a required environment variable such as an API key. Pass it with <code class="inline">--env KEY=value</code> on <code class="inline">claude mcp add</code>, or in the <code class="inline">env</code> field of the server's <code class="inline">.mcp.json</code> entry.</p>
+        </div>
+      </details>
+      <details>
+        <summary><span>Changes to .mcp.json don't take effect</span><span class="chev">&#9654;</span></summary>
+        <div class="acc-body">
+          <p>Claude Code reads <code class="inline">.mcp.json</code> at session start. Exit and restart the session after editing. If you previously rejected the server, reset project approvals:</p>
+          <div class="code" data-copy="claude mcp reset-project-choices">
+            <div class="bar"><span class="lang">bash</span><button class="copy">Copy</button></div>
+            <pre><code><span class="c-cmd">claude mcp reset-project-choices</span></code></pre>
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary><span>OAuth sign-in fails or browser doesn't open</span><span class="chev">&#9654;</span></summary>
+        <div class="acc-body">
+          <p>Run <code class="inline">/mcp</code>, select the server, and choose <code class="inline">Authenticate</code> again. If the browser doesn't open automatically, copy the URL shown in the terminal and open it manually.</p>
+        </div>
+      </details>
+    </div>
+
+    <h2 id="next">Next steps</h2>
+    <p>With one server connected, explore the rest of what MCP enables:</p>
+    <ul>
+      <li>Find more MCP servers in the Anthropic Directory.</li>
+      <li>Share servers with your team using installation scopes.</li>
+      <li>Manage MCP access for an organization with managed settings and policy controls.</li>
+      <li>Reference MCP resources in prompts with @ mentions.</li>
+      <li>Run MCP prompts as commands from the <code class="inline">/</code> menu.</li>
+      <li><a href="https://modelcontextprotocol.io/quickstart/server" target="_blank" rel="noopener">Build your own server</a> with the MCP SDK.</li>
+    </ul>
+
+  </article>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span>Styled mirror of the <a href="https://code.claude.com/docs/en/mcp-quickstart" target="_blank" rel="noopener">Claude Code MCP quickstart</a>. Content &copy; Anthropic.</span>
+    <a class="back" href="../">&larr; davidlikescat</a>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.code .copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.closest('.code').getAttribute('data-copy') || '';
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
