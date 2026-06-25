@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>케이엠파크 3C 분석</title>
+  <style>
+    :root {
+      --apple-bg-white:       #fbfbfd;
+      --apple-bg-light:       #f5f5f7;
+      --apple-bg-dark:        #1d1d1f;
+      --apple-bg-black:       #000000;
+      --apple-text-primary:   #1d1d1f;
+      --apple-text-secondary: #6e6e73;
+      --apple-text-tertiary:  #86868b;
+      --apple-text-on-dark:   #f5f5f7;
+      --apple-link:           #0066cc;
+      --apple-blue:           #0071e3;
+      --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --apple-hero-size:      clamp(48px, 8vw, 96px);
+      --apple-headline-size:  clamp(32px, 5vw, 64px);
+      --apple-title-size:     clamp(22px, 3vw, 40px);
+      --apple-subtitle-size:  clamp(18px, 2vw, 28px);
+      --apple-body-size:      clamp(14px, 1.2vw, 19px);
+      --apple-caption-size:   clamp(12px, 1vw, 15px);
+      --apple-max-width:      980px;
+      --apple-gutter:         22px;
+      --apple-radius-card:    18px;
+      --apple-radius-btn:     980px;
+      --apple-ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--apple-font);
+      background: var(--apple-bg-white);
+      color: var(--apple-text-primary);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      height: 44px;
+      background: rgba(29, 29, 31, 0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    nav a {
+      color: rgba(245, 245, 247, 0.8);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: -0.01em;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #fff; }
+
+    /* HERO */
+    .hero {
+      background: var(--apple-bg-black);
+      color: var(--apple-text-on-dark);
+      text-align: center;
+      padding: clamp(80px, 12vw, 160px) var(--apple-gutter) clamp(60px, 8vw, 120px);
+    }
+    .hero__eyebrow {
+      font-size: var(--apple-caption-size);
+      color: var(--apple-text-tertiary);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hero__title {
+      font-size: var(--apple-hero-size);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      margin-bottom: 20px;
+    }
+    .hero__subtitle {
+      font-size: var(--apple-subtitle-size);
+      color: var(--apple-text-tertiary);
+      font-weight: 400;
+      max-width: 600px;
+      margin: 0 auto 36px;
+      line-height: 1.4;
+    }
+    .hero__meta {
+      font-size: 13px;
+      color: #555;
+      letter-spacing: 0.01em;
+    }
+
+    /* EXECUTIVE SUMMARY — Light */
+    .exec-summary {
+      background: var(--apple-bg-white);
+      padding: clamp(60px, 8vw, 120px) var(--apple-gutter);
+      max-width: var(--apple-max-width);
+      margin: 0 auto;
+    }
+    .section-eyebrow {
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--apple-text-tertiary);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: var(--apple-headline-size);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      margin-bottom: 48px;
+      color: var(--apple-text-primary);
+    }
+    .section-title span { color: var(--apple-blue); }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 640px) { .summary-grid { grid-template-columns: 1fr; } }
+
+    .summary-card {
+      background: var(--apple-bg-light);
+      border-radius: var(--apple-radius-card);
+      padding: 32px 28px;
+    }
+    .summary-card__num {
+      font-size: 13px;
+      color: var(--apple-text-tertiary);
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .summary-card__body {
+      font-size: clamp(14px, 1.1vw, 17px);
+      line-height: 1.55;
+      color: var(--apple-text-primary);
+    }
+    .summary-card__body strong { color: var(--apple-text-primary); }
+
+    .sweet-spot-box {
+      background: var(--apple-bg-dark);
+      color: var(--apple-text-on-dark);
+      border-radius: var(--apple-radius-card);
+      padding: 40px 44px;
+      grid-column: 1 / -1;
+    }
+    .sweet-spot-box__label {
+      font-size: 12px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #6e6e73;
+      margin-bottom: 14px;
+    }
+    .sweet-spot-box__text {
+      font-size: clamp(18px, 2.2vw, 26px);
+      font-weight: 600;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+    .sweet-spot-box__text em {
+      font-style: normal;
+      color: #64d2ff;
+    }
+
+    /* C SECTIONS — alternating */
+    .c-section {
+      padding: clamp(60px, 8vw, 120px) var(--apple-gutter);
+    }
+    .c-section--dark {
+      background: var(--apple-bg-dark);
+      color: var(--apple-text-on-dark);
+    }
+    .c-section--light { background: var(--apple-bg-light); }
+    .c-section--white { background: var(--apple-bg-white); }
+
+    .c-inner {
+      max-width: var(--apple-max-width);
+      margin: 0 auto;
+    }
+
+    .c-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .c-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--apple-blue);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .c-title {
+      font-size: var(--apple-headline-size);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+    }
+    .c-subtitle {
+      font-size: var(--apple-body-size);
+      color: var(--apple-text-secondary);
+      margin-bottom: 36px;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+    .c-section--dark .c-subtitle { color: #86868b; }
+
+    /* Market stats row */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 36px;
+    }
+    .c-section--dark .stat-row { background: rgba(255,255,255,0.08); }
+
+    .stat-cell {
+      background: var(--apple-bg-white);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .c-section--dark .stat-cell { background: #2c2c2e; }
+    .c-section--light .stat-cell { background: var(--apple-bg-light); }
+
+    .stat-cell__num {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--apple-blue);
+      margin-bottom: 6px;
+    }
+    .c-section--dark .stat-cell__num { color: #64d2ff; }
+
+    .stat-cell__label {
+      font-size: 13px;
+      color: var(--apple-text-secondary);
+      line-height: 1.4;
+    }
+    .c-section--dark .stat-cell__label { color: #86868b; }
+
+    @media (max-width: 560px) { .stat-row { grid-template-columns: 1fr; } }
+
+    /* Segment / KSF cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 600px) { .cards-grid { grid-template-columns: 1fr; } }
+
+    .info-card {
+      border-radius: var(--apple-radius-card);
+      padding: 28px;
+      background: var(--apple-bg-white);
+    }
+    .c-section--dark .info-card { background: #2c2c2e; }
+    .c-section--light .info-card { background: var(--apple-bg-white); }
+
+    .info-card__tag {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--apple-text-tertiary);
+      margin-bottom: 8px;
+    }
+    .info-card__title {
+      font-size: clamp(16px, 1.8vw, 22px);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+      line-height: 1.25;
+    }
+    .info-card__body {
+      font-size: clamp(13px, 1vw, 15px);
+      color: var(--apple-text-secondary);
+      line-height: 1.55;
+    }
+    .c-section--dark .info-card__body { color: #86868b; }
+
+    .info-card--wide { grid-column: 1 / -1; }
+
+    /* Competitor table */
+    .comp-table-wrap { overflow-x: auto; border-radius: 16px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(12px, 1vw, 14px);
+      min-width: 640px;
+    }
+    thead th {
+      background: #2c2c2e;
+      color: #f5f5f7;
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+    thead th:first-child { border-radius: 12px 0 0 0; }
+    thead th:last-child  { border-radius: 0 12px 0 0; }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    tbody td { padding: 13px 16px; line-height: 1.45; color: #86868b; vertical-align: top; }
+    tbody td:first-child { color: #f5f5f7; font-weight: 500; }
+    .highlight td { background: rgba(0, 113, 227, 0.12) !important; }
+    .highlight td:first-child { color: #64d2ff !important; }
+
+    /* Strategy section */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 36px;
+    }
+    @media (max-width: 600px) { .roadmap { grid-template-columns: 1fr; } }
+
+    .roadmap-item {
+      background: var(--apple-bg-light);
+      border-radius: var(--apple-radius-card);
+      padding: 28px 24px;
+    }
+    .roadmap-item__phase {
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--apple-blue);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .roadmap-item__title {
+      font-size: clamp(15px, 1.5vw, 18px);
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .roadmap-item__body {
+      font-size: clamp(12px, 0.9vw, 14px);
+      color: var(--apple-text-secondary);
+      line-height: 1.6;
+    }
+
+    /* KSF list */
+    .ksf-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 600px) { .ksf-list { grid-template-columns: 1fr; } }
+
+    .ksf-item {
+      background: #2c2c2e;
+      border-radius: var(--apple-radius-card);
+      padding: 28px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .ksf-item__num {
+      font-size: 28px;
+      font-weight: 700;
+      color: #3a3a3c;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .ksf-item__title {
+      font-size: clamp(14px, 1.3vw, 17px);
+      font-weight: 600;
+      color: #f5f5f7;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .ksf-item__body {
+      font-size: clamp(12px, 0.9vw, 14px);
+      color: #86868b;
+      line-height: 1.55;
+    }
+
+    /* Next actions */
+    .actions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 680px;
+    }
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--apple-bg-light);
+      border-radius: 14px;
+      padding: 20px 24px;
+    }
+    .action-item__n {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--apple-blue);
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .action-item__text {
+      font-size: clamp(14px, 1.1vw, 16px);
+      line-height: 1.55;
+      color: var(--apple-text-primary);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--apple-bg-dark);
+      padding: 48px var(--apple-gutter);
+      text-align: center;
+      color: var(--apple-text-tertiary);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    footer a {
+      color: var(--apple-link);
+      text-decoration: none;
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 1s var(--apple-ease-out), transform 1s var(--apple-ease-out);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal:nth-child(2) { transition-delay: 80ms; }
+    .reveal:nth-child(3) { transition-delay: 160ms; }
+    .reveal:nth-child(4) { transition-delay: 240ms; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#customer">Customer</a>
+  <a href="#competitor">Competitor</a>
+  <a href="#company">Company</a>
+  <a href="#integration">Integration</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero__eyebrow">3C 전략 분석 · 2026.06.25</p>
+  <h1 class="hero__title">케이엠파크</h1>
+  <p class="hero__subtitle">카카오모빌리티 자회사. 주차장 운영에서 모빌리티 플랫폼 연계 사업자로.</p>
+  <p class="hero__meta">국내 주차장 운영·플랫폼 시장 · Customer · Competitor · Company</p>
+</section>
+
+<!-- EXEC SUMMARY -->
+<section class="c-section c-section--white">
+  <div class="c-inner exec-summary" style="max-width:980px;margin:0 auto;">
+    <p class="section-eyebrow">Executive Summary</p>
+    <h2 class="section-title">핵심 발견 <span>&</span> Sweet Spot</h2>
+
+    <div class="summary-grid">
+      <div class="summary-card reveal">
+        <p class="summary-card__num">발견 01</p>
+        <p class="summary-card__body">연간 결제액 <strong>15조원</strong>(택시 2배), 상위 5개 점유율 <strong>20%</strong>. 파편화된 시장에서 통합 플레이어의 기회가 열려있다.</p>
+      </div>
+      <div class="summary-card reveal">
+        <p class="summary-card__num">발견 02</p>
+        <p class="summary-card__body">직접 운영 600개로 아이파킹(8,800개) 대비 열세이나, <strong>카카오T 4,500만 MAU</strong>라는 독보적 플랫폼 자산 보유.</p>
+      </div>
+      <div class="summary-card reveal">
+        <p class="summary-card__num">발견 03</p>
+        <p class="summary-card__body">S&I코퍼레이션 철수(2025)가 보여주듯, 오프라인 운영만으로는 수익화 한계. <strong>플랫폼+운영 수직통합</strong>이 생존 조건.</p>
+      </div>
+      <div class="sweet-spot-box reveal">
+        <p class="sweet-spot-box__label">Sweet Spot</p>
+        <p class="sweet-spot-box__text">카카오T 트래픽과 케이엠파킹앤스페이스 관제 기술을 결합해, 상업용 빌딩·리테일 주차장 사업자의 <em>운영 아웃소싱 + 수익 극대화</em> 니즈를 해결하되, 아이파킹·투루파킹이 카카오 생태계 없이는 복제 불가능한 방식으로.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOMER -->
+<section class="c-section c-section--dark" id="customer">
+  <div class="c-inner">
+    <div class="c-header">
+      <div class="c-badge">C</div>
+      <div>
+        <p class="section-eyebrow" style="color:#86868b;">1st</p>
+        <h2 class="c-title" style="color:#f5f5f7;">Customer</h2>
+      </div>
+    </div>
+    <p class="c-subtitle">주차장 사업자(B2B)와 주차 이용자(B2C)의 이중 구조. 진짜 돈은 B2B에서 나온다.</p>
+
+    <div class="stat-row reveal">
+      <div class="stat-cell">
+        <p class="stat-cell__num">15조</p>
+        <p class="stat-cell__label">연간 주차 결제액<br>(택시 시장의 2배)</p>
+      </div>
+      <div class="stat-cell">
+        <p class="stat-cell__num">20%</p>
+        <p class="stat-cell__label">상위 5개 사업자<br>시장 점유율</p>
+      </div>
+      <div class="stat-cell">
+        <p class="stat-cell__num">80%</p>
+        <p class="stat-cell__label">미조직 독립 사업자<br>(잠재 공략 대상)</p>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="info-card reveal">
+        <p class="info-card__tag">1순위 세그먼트</p>
+        <p class="info-card__title">상업용 빌딩 부설 주차장</p>
+        <p class="info-card__body">위탁 운영 계약, 운영 효율 KPI 중시. 자산운용사·PM사가 의사결정. 건당 계약 규모 크고 장기 갱신율 높음.</p>
+      </div>
+      <div class="info-card reveal">
+        <p class="info-card__tag">2순위 세그먼트</p>
+        <p class="info-card__title">쇼핑몰·리테일 복합 주차장</p>
+        <p class="info-card__body">방문객 체류시간 연동, CX 중시. 카카오T 예약 유입과 시너지가 가장 직접적으로 발생하는 영역.</p>
+      </div>
+      <div class="info-card reveal">
+        <p class="info-card__tag">JTBD — B2B</p>
+        <p class="info-card__title">"자산에서 최대 수익을, 관리는 맡기고 싶다"</p>
+        <p class="info-card__body">표면 니즈(인건비 절감, 관제 도입) 아래에 있는 근본 동기. 수익 예측 가능성과 정산 투명성이 계약 갱신의 핵심 변수.</p>
+      </div>
+      <div class="info-card reveal">
+        <p class="info-card__tag">JTBD — B2C</p>
+        <p class="info-card__title">"목적지 근처 주차 걱정 없이 이동하고 싶다"</p>
+        <p class="info-card__body">카카오T 주차 탭에서 검색→예약→정산 원스톱. B2C 편의성이 올라갈수록 B2B 위탁 영업 설득력도 같이 올라간다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETITOR -->
+<section class="c-section c-section--light" id="competitor">
+  <div class="c-inner">
+    <div class="c-header">
+      <div class="c-badge" style="background:#1d1d1f;">C</div>
+      <div>
+        <p class="section-eyebrow">2nd</p>
+        <h2 class="c-title">Competitor</h2>
+      </div>
+    </div>
+    <p class="c-subtitle" style="color:var(--apple-text-secondary);">직접 경쟁 3사 + 간접 경쟁. 각자 강한 한 축이 있지만, 3-Layer 통합은 케이엠파크뿐이다.</p>
+
+    <div class="comp-table-wrap reveal" style="background:#1d1d1f;border-radius:16px;overflow:hidden;margin-bottom:36px;">
+      <table>
+        <thead>
+          <tr>
+            <th>플레이어</th>
+            <th>운영 규모</th>
+            <th>플랫폼</th>
+            <th>핵심 강점</th>
+            <th>핵심 약점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>케이엠파크</td>
+            <td>1,700개(제휴)<br>600개(직영)</td>
+            <td>카카오T<br>4,500만+ MAU</td>
+            <td>플랫폼+운영+기술<br>3-Layer 유일</td>
+            <td>직영 규모 열세<br>관제 인지도 낮음</td>
+          </tr>
+          <tr>
+            <td>아이파킹<br>(파킹클라우드)</td>
+            <td>8,800개 사이트</td>
+            <td>아이파킹 앱<br>(자체)</td>
+            <td>관제 기술 1위<br>365클라우드</td>
+            <td>플랫폼 트래픽<br>한계</td>
+          </tr>
+          <tr>
+            <td>투루파킹<br>(휴맥스모빌리티)</td>
+            <td>29만 주차면<br>1,300개+</td>
+            <td>투루파킹 앱</td>
+            <td>오피스·빌딩<br>운영 레퍼런스</td>
+            <td>디지털 전환 느림<br>앱 인지도 낮음</td>
+          </tr>
+          <tr>
+            <td>티맵주차<br>(SKT)</td>
+            <td>1,300개 제휴</td>
+            <td>티맵<br>2,000만+ MAU</td>
+            <td>내비 연동<br>자연 유입</td>
+            <td>직접 운영 없음<br>수익모델 약함</td>
+          </tr>
+          <tr>
+            <td>모두의주차장<br>(쏘카)</td>
+            <td>5만개 정보<br>1.8만 공유</td>
+            <td>쏘카 앱</td>
+            <td>공유주차<br>정보 최다</td>
+            <td>수익화 모델<br>미성숙</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards-grid">
+      <div class="info-card reveal" style="background:var(--apple-bg-light);">
+        <p class="info-card__tag" style="color:var(--apple-blue);">White Space 1</p>
+        <p class="info-card__title">데이터 기반 수익 보장형 계약</p>
+        <p class="info-card__body">카카오T 유입 데이터로 점유율 예측 → 주차장 사업자에게 수익 보장 계약 제시. 경쟁사 중 가능한 곳 없음.</p>
+      </div>
+      <div class="info-card reveal" style="background:var(--apple-bg-light);">
+        <p class="info-card__tag" style="color:var(--apple-blue);">White Space 2</p>
+        <p class="info-card__title">EV 충전 복합 서비스</p>
+        <p class="info-card__body">주차 + EV 충전 원스톱 결합 패키지. 주요 경쟁사 모두 미완성. 선점 여지 충분.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPANY -->
+<section class="c-section c-section--dark" id="company">
+  <div class="c-inner">
+    <div class="c-header">
+      <div class="c-badge">C</div>
+      <div>
+        <p class="section-eyebrow" style="color:#86868b;">3rd</p>
+        <h2 class="c-title" style="color:#f5f5f7;">Company</h2>
+      </div>
+    </div>
+    <p class="c-subtitle">강점은 명확하다. 카카오T다. 약점도 명확하다. 직영 규모와 B2B 레퍼런스 인지도.</p>
+
+    <div class="stat-row reveal" style="margin-bottom:36px;">
+      <div class="stat-cell">
+        <p class="stat-cell__num">650억</p>
+        <p class="stat-cell__label">카카오모빌리티<br>인수 금액 (2021)</p>
+      </div>
+      <div class="stat-cell">
+        <p class="stat-cell__num">1,700+</p>
+        <p class="stat-cell__label">전국 제휴<br>주차장 수</p>
+      </div>
+      <div class="stat-cell">
+        <p class="stat-cell__num">분기 최고</p>
+        <p class="stat-cell__label">매출 기록 갱신 중<br>(카카오모빌리티 3대 사업)</p>
+      </div>
+    </div>
+
+    <div class="cards-grid" style="margin-bottom:24px;">
+      <div class="info-card reveal">
+        <p class="info-card__tag" style="color:#34c759;">강점 — 검증됨</p>
+        <p class="info-card__title">카카오T 플랫폼 연계</p>
+        <p class="info-card__body">4,500만+ MAU에 주차 검색·예약·정산 내재. 사용자 유입이 곧 위탁 주차장의 점유율 상승으로 직결. 경쟁사 복제 불가.</p>
+      </div>
+      <div class="info-card reveal">
+        <p class="info-card__tag" style="color:#34c759;">강점 — 검증됨</p>
+        <p class="info-card__title">관제 기술 내재화</p>
+        <p class="info-card__body">자회사 케이엠파킹앤스페이스 보유. 무인정산 시스템 자체 공급 가능. 운영-기술 분리 없는 일원화 가능.</p>
+      </div>
+      <div class="info-card reveal">
+        <p class="info-card__tag" style="color:#ff453a;">약점 — 솔직하게</p>
+        <p class="info-card__title">직영 규모 열세</p>
+        <p class="info-card__body">600개 직영 vs 아이파킹 8,800개. B2B 위탁 영업 시 "레퍼런스가 충분한가?"라는 질문에 취약. 수치 격차 14배.</p>
+      </div>
+      <div class="info-card reveal">
+        <p class="info-card__tag" style="color:#ff453a;">약점 — 솔직하게</p>
+        <p class="info-card__title">관제 브랜드 인지도 낮음</p>
+        <p class="info-card__body">아이파킹 '365클라우드' 대비 케이엠파킹앤스페이스 인지도 낮음. 기술 차별화 커뮤니케이션 부족.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATION -->
+<section class="c-section c-section--white" id="integration">
+  <div class="c-inner">
+    <div class="c-header">
+      <div class="c-badge" style="background:#1d1d1f;">4</div>
+      <div>
+        <p class="section-eyebrow">Integration</p>
+        <h2 class="c-title">3C 통합 전략</h2>
+      </div>
+    </div>
+    <p class="c-subtitle" style="color:var(--apple-text-secondary);">정보 수집이 아닌 의사결정. KSF, 전략 옵션, 12주 로드맵.</p>
+
+    <h3 style="font-size:clamp(18px,2vw,24px);font-weight:600;letter-spacing:-0.01em;margin-bottom:20px;">KSF — 이 시장에서 이기기 위한 조건</h3>
+    <div class="ksf-list">
+      <div class="ksf-item reveal">
+        <p class="ksf-item__num">01</p>
+        <div>
+          <p class="ksf-item__title">플랫폼-운영 전환율 입증</p>
+          <p class="ksf-item__body">카카오T 유입이 위탁 주차장 수익을 X% 향상시킨다는 수치 확보. B2B 영업의 가장 강력한 무기.</p>
+        </div>
+      </div>
+      <div class="ksf-item reveal">
+        <p class="ksf-item__num">02</p>
+        <div>
+          <p class="ksf-item__title">관제 설치 리드타임 30일 이내</p>
+          <p class="ksf-item__body">케이엠파킹앤스페이스 설치 속도 단축. 독립 사업자의 도입 결정 장벽을 낮추는 핵심 레버.</p>
+        </div>
+      </div>
+      <div class="ksf-item reveal">
+        <p class="ksf-item__num">03</p>
+        <div>
+          <p class="ksf-item__title">EV 충전 통합 패키지 선점</p>
+          <p class="ksf-item__body">주차+EV 충전 결합 서비스를 경쟁사보다 6개월 먼저 출시. 신규 계약 차별화 포인트 확보.</p>
+        </div>
+      </div>
+      <div class="ksf-item reveal">
+        <p class="ksf-item__num">04</p>
+        <div>
+          <p class="ksf-item__title">데이터 투명성 제공</p>
+          <p class="ksf-item__body">실시간 수익·점유율 대시보드를 사업자에게 공개. 위탁 계약 갱신율을 높이는 신뢰 기반.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:clamp(18px,2vw,24px);font-weight:600;letter-spacing:-0.01em;margin-bottom:20px;">12주 실행 로드맵</h3>
+    <div class="roadmap">
+      <div class="roadmap-item reveal">
+        <p class="roadmap-item__phase">Phase 1 · Week 1~4</p>
+        <p class="roadmap-item__title">카카오T 효과 수치화</p>
+        <p class="roadmap-item__body">기존 위탁 주차장 20개 샘플링 → 카카오T 유입 전후 수익 변화 분석 → "카카오T 효과 X%" 자료 완성</p>
+      </div>
+      <div class="roadmap-item reveal">
+        <p class="roadmap-item__phase">Phase 2 · Week 5~8</p>
+        <p class="roadmap-item__title">Top 50 B2B 영업 캠페인</p>
+        <p class="roadmap-item__body">상업용 빌딩 PM사 Top 50 대상 수익 보장형 PoC 계약 5건 목표. 자료 기반 영업 피치 실전 검증.</p>
+      </div>
+      <div class="roadmap-item reveal">
+        <p class="roadmap-item__phase">Phase 3 · Week 9~12</p>
+        <p class="roadmap-item__title">2.0 패키지 발표</p>
+        <p class="roadmap-item__body">PoC 결과 → 표준 계약서 완성 → EV 충전 결합 옵션 추가한 KM파크 2.0 패키지 공식 발표</p>
+      </div>
+    </div>
+
+    <div style="margin-top:48px;">
+      <h3 style="font-size:clamp(18px,2vw,24px);font-weight:600;letter-spacing:-0.01em;margin-bottom:20px;">30일 내 Next Action</h3>
+      <div class="actions-list">
+        <div class="action-item reveal">
+          <p class="action-item__n">1</p>
+          <p class="action-item__text">카카오T 주차 전환율 KPI 공개 내부 대시보드 구축 → 영업 자료 핵심 수치 확보</p>
+        </div>
+        <div class="action-item reveal">
+          <p class="action-item__n">2</p>
+          <p class="action-item__text">아이파킹·투루파킹 미가입 독립 사업자 Top 200 위탁 영업 타겟 리스트 작성</p>
+        </div>
+        <div class="action-item reveal">
+          <p class="action-item__n">3</p>
+          <p class="action-item__text">EV 충전 결합 패키지 프로토타입 기획 — 선점 타이밍 6개월 이내</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>케이엠파크 3C 분석 · 2026.06.25</p>
+  <p style="margin-top:8px;font-size:12px;">출처: <a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=517020" target="_blank">디지털투데이</a> · <a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=458125" target="_blank">GS파크24→케이엠파크</a></p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
