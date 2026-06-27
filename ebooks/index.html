@@ -3,395 +3,353 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Library</title>
+<title>서재</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0a0f1e;
-  --surface: #111827;
-  --surface2: #1a2235;
-  --border: #1f2d47;
-  --text: #e8edf5;
-  --text-sub: #7a8aab;
+  --navy: #1a2744;
+  --navy-light: #243460;
+  --navy-pale: #e8ecf5;
   --gold: #c9a84c;
-  --gold-pale: rgba(201,168,76,0.12);
-  --blue: #2563eb;
-  --green: #059669;
-  --radius: 14px;
+  --white: #ffffff;
+  --bg: #f7f7f5;
+  --gray-mid: #d0d5e8;
+  --text-body: #2c3350;
+  --text-sub: #7a8090;
 }
 
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+  color: var(--text-body);
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
 /* ── HEADER ── */
-.header {
-  padding: 28px 40px 22px;
+header {
+  background: var(--navy);
+  padding: 32px 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  background: rgba(10,15,30,0.92);
-  backdrop-filter: blur(12px);
-  z-index: 100;
+  gap: 24px;
 }
-.logo {
+
+.site-title {
   font-size: 18px;
   font-weight: 900;
-  letter-spacing: -0.02em;
-  color: var(--text);
+  color: var(--white);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
-.logo span { color: var(--gold); }
-.header-meta {
-  font-size: 12px;
-  color: var(--text-sub);
-  letter-spacing: 0.05em;
+.site-title span {
+  color: var(--gold);
+  margin-left: 2px;
 }
+
 .search-wrap {
   position: relative;
-  flex: 0 0 260px;
+  flex: 0 0 280px;
 }
-.search-wrap svg {
+.search-wrap input {
+  width: 100%;
+  padding: 9px 14px 9px 38px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.search-wrap input:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.12);
+}
+.search-wrap input::placeholder { color: rgba(255,255,255,0.35); }
+.search-icon {
   position: absolute;
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
   opacity: 0.4;
+  pointer-events: none;
 }
-#search {
-  width: 100%;
-  padding: 9px 14px 9px 36px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-#search:focus { border-color: var(--gold); }
-#search::placeholder { color: var(--text-sub); }
 
 /* ── MAIN ── */
-.main { padding: 48px 40px 80px; max-width: 1200px; margin: 0 auto; }
-
-/* ── HERO STAT ── */
-.hero-stats {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 56px;
-}
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px 28px;
-  flex: 1;
-  min-width: 0;
-}
-.stat-num {
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--gold);
-  line-height: 1;
-  display: block;
-}
-.stat-label {
-  font-size: 12px;
-  color: var(--text-sub);
-  margin-top: 6px;
-  display: block;
-  letter-spacing: 0.03em;
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 56px 40px 80px;
 }
 
 /* ── SECTION ── */
-.section { margin-bottom: 52px; }
+.section { margin-bottom: 56px; }
+
 .section-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--gray-mid);
 }
 .section-bar {
   width: 4px;
-  height: 20px;
+  height: 22px;
   border-radius: 2px;
   flex-shrink: 0;
+  background: var(--gold);
+}
+.section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 3px;
 }
 .section-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--text);
+  color: var(--navy);
+  letter-spacing: -0.01em;
 }
 .section-count {
-  font-size: 12px;
-  color: var(--text-sub);
   margin-left: auto;
-  background: var(--surface2);
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-sub);
 }
 
 /* ── GRID ── */
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
 }
 
 /* ── CARD ── */
 .book-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0;
+  background: var(--white);
+  border: 1px solid #dfe3ef;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
   color: inherit;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
-  cursor: pointer;
+  transition: box-shadow 0.18s, border-color 0.18s, transform 0.18s;
 }
 .book-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(201,168,76,0.4);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  transform: translateY(-2px);
+  border-color: #bcc5e0;
+  box-shadow: 0 6px 24px rgba(26,39,68,0.10);
 }
-.card-thumb {
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
+
+.card-accent {
+  height: 3px;
+  width: 100%;
+  flex-shrink: 0;
 }
-.card-thumb-text {
-  font-size: 32px;
-  font-weight: 900;
-  color: rgba(255,255,255,0.12);
-  letter-spacing: -0.04em;
-  user-select: none;
-  text-align: center;
-  padding: 0 16px;
-  line-height: 1.1;
-}
-.card-tag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 3px 9px;
-  border-radius: 20px;
-  background: rgba(0,0,0,0.45);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.15);
-}
+
 .card-body {
-  padding: 16px 18px 18px;
-  flex: 1;
+  padding: 20px 22px 18px;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
+
+.card-tag {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(201,168,76,0.10);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-bottom: 12px;
+  align-self: flex-start;
+}
+
 .card-title {
   font-size: 14px;
   font-weight: 700;
-  line-height: 1.4;
-  color: var(--text);
-  margin-bottom: 6px;
+  color: var(--navy);
+  line-height: 1.45;
+  margin-bottom: 8px;
   word-break: keep-all;
 }
+
 .card-sub {
   font-size: 12px;
   color: var(--text-sub);
-  line-height: 1.55;
+  line-height: 1.6;
   flex: 1;
   word-break: keep-all;
 }
+
 .card-footer {
+  margin-top: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 14px;
 }
 .card-date {
+  font-size: 10.5px;
+  color: #b0b8cc;
+  letter-spacing: 0.02em;
+}
+.card-cta {
   font-size: 11px;
-  color: var(--text-sub);
+  font-weight: 700;
+  color: var(--navy-light);
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.18s;
 }
-.card-arrow {
-  font-size: 13px;
-  color: var(--text-sub);
-  transition: color 0.18s, transform 0.18s;
-}
-.book-card:hover .card-arrow {
-  color: var(--gold);
-  transform: translateX(3px);
-}
+.book-card:hover .card-cta { opacity: 1; }
 
-/* ── NO RESULTS ── */
-.no-results {
-  text-align: center;
-  padding: 60px 0;
-  color: var(--text-sub);
-  font-size: 14px;
+/* ── EMPTY ── */
+.empty {
   display: none;
+  padding: 60px 0;
+  text-align: center;
+  color: var(--text-sub);
+  font-size: 13px;
 }
 
 /* ── FOOTER ── */
-.footer {
-  text-align: center;
-  padding: 28px;
-  border-top: 1px solid var(--border);
+footer {
+  border-top: 1px solid var(--gray-mid);
+  padding: 24px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-left {
   font-size: 11px;
   color: var(--text-sub);
   letter-spacing: 0.05em;
 }
-.footer a { color: var(--gold); text-decoration: none; }
+.footer-right {
+  font-size: 11px;
+  color: #b0b8cc;
+}
+.footer-right a {
+  color: var(--navy-light);
+  text-decoration: none;
+  font-weight: 500;
+}
 
 /* ── HIDDEN ── */
 .hidden { display: none !important; }
 
-@media (max-width: 640px) {
-  .header { padding: 18px 20px; flex-wrap: wrap; gap: 12px; }
-  .header-meta { display: none; }
-  .search-wrap { flex: 1 1 100%; order: 3; }
-  .main { padding: 28px 20px 60px; }
-  .hero-stats { flex-wrap: wrap; gap: 12px; }
+@media (max-width: 600px) {
+  header { padding: 22px 20px; flex-wrap: wrap; }
+  .search-wrap { flex: 1 1 100%; }
+  main { padding: 36px 20px 60px; }
+  footer { flex-direction: column; gap: 8px; padding: 20px; text-align: center; }
 }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="logo">My <span>Library</span></div>
+<header>
+  <div class="site-title">서재<span>.</span></div>
   <div class="search-wrap">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
       <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
-    <input id="search" type="text" placeholder="제목, 키워드로 검색..." autocomplete="off">
+    <input id="q" type="text" placeholder="검색" autocomplete="off" spellcheck="false">
   </div>
-  <div class="header-meta" id="last-updated"></div>
 </header>
 
-<main class="main">
-  <div class="hero-stats" id="hero-stats"></div>
+<main>
   <div id="sections"></div>
-  <div class="no-results" id="no-results">검색 결과가 없습니다.</div>
+  <div class="empty" id="empty">검색 결과가 없습니다.</div>
 </main>
 
-<footer class="footer">
-  My Library &mdash; Personal e-Book Portal &nbsp;|&nbsp;
-  <a href="https://github.com/davidlikescat" target="_blank">@davidlikescat</a>
+<footer>
+  <div class="footer-left" id="foot-meta"></div>
+  <div class="footer-right"><a href="https://github.com/davidlikescat" target="_blank">@davidlikescat</a></div>
 </footer>
 
 <script>
-const THUMB_GRADIENTS = [
-  ['#1a2744','#c9a84c'],
-  ['#0f2027','#2563eb'],
-  ['#1a3a1a','#059669'],
-  ['#2a1a0f','#e56b20'],
-  ['#1f0a2a','#9333ea'],
-  ['#0a1f2a','#0891b2'],
-];
+fetch('./books.json')
+  .then(r => r.json())
+  .then(init)
+  .catch(() => {
+    document.getElementById('sections').innerHTML =
+      '<p style="padding:60px 0;color:#b0b8cc;text-align:center;font-size:13px;">books.json을 불러올 수 없습니다.</p>';
+  });
 
-function gradient(i) {
-  const [a, b] = THUMB_GRADIENTS[i % THUMB_GRADIENTS.length];
-  return `linear-gradient(135deg, ${a} 0%, ${b} 100%)`;
-}
+function init(data) {
+  const total = data.categories.reduce((n, c) => n + c.books.length, 0);
+  document.getElementById('foot-meta').textContent =
+    `${total}권 · ${data.lastUpdated} 업데이트`;
 
-function renderStats(data) {
-  const total = data.categories.reduce((s,c) => s + c.books.length, 0);
-  const cats = data.categories.length;
-  document.getElementById('last-updated').textContent = `Updated ${data.lastUpdated}`;
-  document.getElementById('hero-stats').innerHTML = `
-    <div class="stat-card"><span class="stat-num">${total}</span><span class="stat-label">전체 e-Book</span></div>
-    <div class="stat-card"><span class="stat-num">${cats}</span><span class="stat-label">카테고리</span></div>
-    <div class="stat-card"><span class="stat-num">HTML</span><span class="stat-label">포맷</span></div>
-  `;
-}
-
-function renderSections(data) {
-  const container = document.getElementById('sections');
-  let gi = 0;
+  const wrap = document.getElementById('sections');
   data.categories.forEach(cat => {
     const sec = document.createElement('section');
     sec.className = 'section';
-    sec.dataset.category = cat.id;
+    sec.dataset.id = cat.id;
     sec.innerHTML = `
       <div class="section-header">
         <div class="section-bar" style="background:${cat.color}"></div>
-        <span class="section-title">${cat.name}</span>
+        <div>
+          <span class="section-label">${cat.id}</span>
+          <span class="section-title">${cat.name}</span>
+        </div>
         <span class="section-count">${cat.books.length}권</span>
       </div>
-      <div class="book-grid">${cat.books.map((b,i) => cardHtml(b, gi + i, cat.color)).join('')}</div>
+      <div class="book-grid">
+        ${cat.books.map(b => card(b, cat.color)).join('')}
+      </div>
     `;
-    container.appendChild(sec);
-    gi += cat.books.length;
+    wrap.appendChild(sec);
   });
-}
 
-function cardHtml(book, idx, color) {
-  const words = book.title.replace(/[·\-–—]/g,' ').split(/\s+/).slice(0,2).join(' ');
-  return `
-    <a class="book-card" href="${book.url}" target="_blank" data-title="${book.title}" data-sub="${book.subtitle}">
-      <div class="card-thumb" style="background:${gradient(idx)}">
-        <div class="card-thumb-text">${words}</div>
-        <span class="card-tag">${book.tag}</span>
-      </div>
-      <div class="card-body">
-        <div class="card-title">${book.title}</div>
-        <div class="card-sub">${book.subtitle}</div>
-        <div class="card-footer">
-          <span class="card-date">${book.date}</span>
-          <span class="card-arrow">→</span>
-        </div>
-      </div>
-    </a>
-  `;
-}
-
-function initSearch() {
-  document.getElementById('search').addEventListener('input', e => {
+  document.getElementById('q').addEventListener('input', e => {
     const q = e.target.value.toLowerCase().trim();
-    let anyVisible = false;
-    document.querySelectorAll('.book-card').forEach(card => {
-      const match = !q
-        || card.dataset.title.toLowerCase().includes(q)
-        || card.dataset.sub.toLowerCase().includes(q);
-      card.classList.toggle('hidden', !match);
-      if (match) anyVisible = true;
+    let any = false;
+    document.querySelectorAll('.book-card').forEach(el => {
+      const hit = !q || el.dataset.search.includes(q);
+      el.classList.toggle('hidden', !hit);
+      if (hit) any = true;
     });
     document.querySelectorAll('.section').forEach(sec => {
       const visible = [...sec.querySelectorAll('.book-card')].some(c => !c.classList.contains('hidden'));
       sec.classList.toggle('hidden', !visible);
     });
-    document.getElementById('no-results').style.display = anyVisible ? 'none' : 'block';
+    document.getElementById('empty').style.display = any ? 'none' : 'block';
   });
 }
 
-fetch('./books.json')
-  .then(r => r.json())
-  .then(data => {
-    renderStats(data);
-    renderSections(data);
-    initSearch();
-  })
-  .catch(() => {
-    document.getElementById('sections').innerHTML =
-      '<p style="color:#7a8aab;padding:40px 0;">books.json을 불러올 수 없습니다.</p>';
-  });
+function card(b, color) {
+  const search = (b.title + ' ' + b.subtitle + ' ' + b.tag).toLowerCase();
+  return `
+    <a class="book-card" href="${b.url}" target="_blank" data-search="${search}">
+      <div class="card-accent" style="background:${color}"></div>
+      <div class="card-body">
+        <span class="card-tag">${b.tag}</span>
+        <div class="card-title">${b.title}</div>
+        <div class="card-sub">${b.subtitle}</div>
+        <div class="card-footer">
+          <span class="card-date">${b.date}</span>
+          <span class="card-cta">열기 →</span>
+        </div>
+      </div>
+    </a>
+  `;
+}
 </script>
 </body>
 </html>
