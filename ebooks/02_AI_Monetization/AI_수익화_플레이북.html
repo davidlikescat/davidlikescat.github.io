@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 개발 역량 수익화 플레이북</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @page { size: A4; margin: 20mm 18mm; }
+
+  :root {
+    --navy: #0f1f3d;
+    --navy-light: #1a3260;
+    --navy-pale: #eaf0fb;
+    --gold: #c9a84c;
+    --gold-light: #e8d48a;
+    --white: #ffffff;
+    --gray-light: #f4f5f8;
+    --gray-mid: #d0d5e8;
+    --text-dark: #0f1f3d;
+    --text-body: #2c3350;
+    --accent: #2563eb;
+    --accent-pale: #eff6ff;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.85;
+    color: var(--text-body);
+    background: #fff;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 40px;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    border: 60px solid rgba(201,168,76,0.10);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    border: 40px solid rgba(201,168,76,0.07);
+  }
+  .cover-badge {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 8.5pt;
+    letter-spacing: 0.22em;
+    padding: 6px 22px;
+    margin-bottom: 44px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .cover-title {
+    font-size: 36pt;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 18px;
+    letter-spacing: -0.02em;
+    max-width: 580px;
+  }
+  .cover-title span { color: var(--gold); }
+  .cover-subtitle {
+    font-size: 12.5pt;
+    color: rgba(255,255,255,0.7);
+    font-weight: 300;
+    max-width: 520px;
+    line-height: 1.75;
+    margin-bottom: 60px;
+  }
+  .cover-divider {
+    width: 60px; height: 2px;
+    background: var(--gold);
+    margin: 0 auto 50px;
+  }
+  .cover-meta {
+    font-size: 9pt;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.15em;
+  }
+  .cover-stats {
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    margin: 40px 0 50px;
+  }
+  .cover-stat { text-align: center; }
+  .cover-stat-num {
+    font-size: 24pt;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+  }
+  .cover-stat-label {
+    font-size: 8.5pt;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ── TOC ── */
+  .toc-page {
+    page-break-before: always;
+    page-break-after: always;
+    padding: 60px 50px;
+  }
+  .toc-label {
+    font-size: 8.5pt;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .toc-title {
+    font-size: 24pt;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+  .toc-rule {
+    width: 50px; height: 3px;
+    background: var(--gold);
+    margin: 18px 0 40px;
+  }
+  .toc-list { list-style: none; }
+  .toc-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-mid);
+    gap: 20px;
+  }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-num {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 40px;
+    padding-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .toc-ch-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .toc-ch-sub {
+    font-size: 9pt;
+    font-weight: 400;
+    color: #6b7590;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* ── CHAPTER ── */
+  .chapter {
+    page-break-before: always;
+    padding: 60px 50px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; position: relative; }
+  .chapter-num-bg {
+    font-size: 110pt;
+    font-weight: 900;
+    color: rgba(15,31,61,0.05);
+    line-height: 1;
+    position: absolute;
+    top: -25px; right: -10px;
+    letter-spacing: -0.05em;
+    user-select: none;
+  }
+  .chapter-label {
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .chapter-title {
+    font-size: 22pt;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.25;
+    margin-bottom: 10px;
+    max-width: 500px;
+  }
+  .chapter-sub {
+    font-size: 10.5pt;
+    color: #5a6280;
+    font-weight: 400;
+    font-style: italic;
+  }
+  .chapter-rule {
+    width: 100%; height: 2px;
+    background: linear-gradient(to right, var(--gold), transparent);
+    margin: 28px 0 34px;
+  }
+
+  /* ── BODY ── */
+  .chapter-body p {
+    margin-bottom: 18px;
+    font-size: 10.5pt;
+    line-height: 1.85;
+    color: var(--text-body);
+    word-break: keep-all;
+  }
+  .chapter-body h2 {
+    font-size: 13.5pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 34px 0 14px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--gray-mid);
+  }
+  .chapter-body h3 {
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--navy-light);
+    margin: 24px 0 10px;
+  }
+  .chapter-body ul {
+    margin: 0 0 18px 20px;
+  }
+  .chapter-body ul li {
+    margin-bottom: 8px;
+    font-size: 10.5pt;
+    line-height: 1.8;
+  }
+  .chapter-body strong { font-weight: 700; color: var(--navy); }
+  .chapter-divider {
+    width: 100%; height: 1px;
+    background: var(--gray-mid);
+    margin: 34px 0;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--navy-pale);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 24px 28px;
+    margin: 30px 0;
+  }
+  .callout-label {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .callout p {
+    margin: 0 !important;
+    font-size: 10.5pt;
+    line-height: 1.8;
+    color: var(--navy);
+  }
+
+  /* ── FACT BOX ── */
+  .fact-box {
+    border: 1px solid var(--gray-mid);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    background: var(--gray-light);
+  }
+  .fact-box-title {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .fact-box p { margin: 0 0 8px !important; font-size: 10pt; color: #3a4060; }
+  .fact-box p:last-child { margin: 0 !important; }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 9.5pt;
+  }
+  th {
+    background: var(--navy);
+    color: var(--white);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 9pt;
+    letter-spacing: 0.03em;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-mid);
+    color: var(--text-body);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--gray-light); }
+
+  /* ── PLAYBOOK BOX ── */
+  .playbook {
+    background: var(--navy-pale);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 26px 30px;
+    margin-top: 36px;
+  }
+  .playbook-title {
+    font-size: 10.5pt;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .playbook-title::before {
+    content: '';
+    display: inline-block;
+    width: 16px; height: 16px;
+    background: var(--gold);
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .playbook ul { list-style: none; padding: 0; margin: 0; }
+  .playbook ul li {
+    padding: 9px 0 9px 22px;
+    border-bottom: 1px solid rgba(15,31,61,0.09);
+    position: relative;
+    font-size: 10pt;
+    line-height: 1.8;
+  }
+  .playbook ul li:last-child { border-bottom: none; }
+  .playbook ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  /* ── HIGHLIGHT ── */
+  .highlight-row {
+    display: flex;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .highlight-card {
+    flex: 1;
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .highlight-num {
+    font-size: 22pt;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+    line-height: 1.1;
+  }
+  .highlight-label {
+    font-size: 8.5pt;
+    color: rgba(255,255,255,0.65);
+    display: block;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ── VERDICT BOX ── */
+  .verdict {
+    background: #fff7e6;
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin: 26px 0;
+  }
+  .verdict-label {
+    font-size: 8pt;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .verdict p { margin: 0 !important; font-size: 10.5pt; color: #3a2800; font-weight: 500; line-height: 1.75; }
+
+  /* ── KILL BOX ── */
+  .kill-box {
+    background: #fff0f0;
+    border-left: 4px solid #c0392b;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .kill-box p { margin: 0 !important; font-size: 9.5pt; color: #7a2020; }
+
+  /* ── FINAL PAGE ── */
+  .final-page {
+    page-break-before: always;
+    background: var(--navy);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 50px;
+  }
+  .final-quote {
+    font-size: 19pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.55;
+    max-width: 500px;
+    margin-bottom: 28px;
+  }
+  .final-quote span { color: var(--gold); }
+  .final-divider { width: 50px; height: 2px; background: var(--gold); margin: 0 auto 28px; }
+  .final-sub {
+    font-size: 10pt;
+    color: rgba(255,255,255,0.55);
+    max-width: 420px;
+    line-height: 1.7;
+  }
+
+  @media print {
+    .chapter { page-break-before: always; }
+    .cover { page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     COVER
+══════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">Deep Research Edition · 2026</div>
+  <div class="cover-title">AI 개발 역량<br><span>수익화 플레이북</span></div>
+  <div class="cover-subtitle">
+    딥리서치 106개 에이전트가 검증한 진짜 수익화 전략.<br>
+    해외·국내 사례부터 개인화 로드맵까지.
+  </div>
+  <div class="cover-stats">
+    <div class="cover-stat">
+      <span class="cover-stat-num">106</span>
+      <span class="cover-stat-label">검증 에이전트</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">110</span>
+      <span class="cover-stat-label">추출 클레임</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">4</span>
+      <span class="cover-stat-label">생존한 사실</span>
+    </div>
+  </div>
+  <div class="cover-divider"></div>
+  <div class="cover-meta">AI MONETIZATION PLAYBOOK · VERIFIED RESEARCH · 2026-06-27</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TOC
+══════════════════════════════════════════════ -->
+<div class="toc-page">
+  <div class="toc-label">Contents</div>
+  <div class="toc-title">목차</div>
+  <div class="toc-rule"></div>
+  <ul class="toc-list">
+    <li class="toc-item">
+      <span class="toc-num">CH 01</span>
+      <div>
+        <span class="toc-ch-title">딥리서치가 검증한 4가지 구조적 진실</span>
+        <span class="toc-ch-sub">110개 클레임 중 살아남은 것만 — 인터넷의 과장된 수치는 여기 없다</span>
+      </div>
+    </li>
+    <li class="toc-item">
+      <span class="toc-num">CH 02</span>
+      <div>
+        <span class="toc-ch-title">수익화 모델 전체 지도</span>
+        <span class="toc-ch-sub">프리랜싱부터 버티컬 SaaS까지 9가지 모델 비교</span>
+      </div>
+    </li>
+    <li class="toc-item">
+      <span class="toc-num">CH 03</span>
+      <div>
+        <span class="toc-ch-title">크롬 익스텐션 — 개발자의 최단 수익화 경로</span>
+        <span class="toc-ch-sub">실제 수익 사례 7개 해부 · 카테고리별 수익성 분석</span>
+      </div>
+    </li>
+    <li class="toc-item">
+      <span class="toc-num">CH 04</span>
+      <div>
+        <span class="toc-ch-title">틈새 니치 전략 + 배포 플레이북</span>
+        <span class="toc-ch-sub">니치 선정 3가지 조건 · Distribution이 개발보다 어려운 이유</span>
+      </div>
+    </li>
+    <li class="toc-item">
+      <span class="toc-num">CH 05</span>
+      <div>
+        <span class="toc-ch-title">국내 시장의 현실</span>
+        <span class="toc-ch-sub">구축형 80% 시장 · B2B가 유리한 구체적 이유</span>
+      </div>
+    </li>
+    <li class="toc-item">
+      <span class="toc-num">CH 06</span>
+      <div>
+        <span class="toc-ch-title">내 컨텍스트 기반 맞춤 로드맵</span>
+        <span class="toc-ch-sub">AICC 팀장 × AI 개발 역량의 수익화 조합 · 12개월 실행 계획</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CH 01 — 딥리서치 검증
+══════════════════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num-bg">01</div>
+    <div class="chapter-label">Chapter 01 · Verified Facts</div>
+    <div class="chapter-title">딥리서치가 검증한<br>4가지 구조적 진실</div>
+    <div class="chapter-sub">인터넷에 넘치는 "성공 스토리"의 대부분은 검증 불가였다</div>
+  </div>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+
+    <div class="callout">
+      <div class="callout-label">Research Method</div>
+      <p>106개 에이전트, 24개 출처, 110개 클레임 추출 → 25개 adversarial 3-vote 검증 → <strong>4개 생존, 21개 kill.</strong> 각 클레임은 3명의 독립 에이전트가 동시에 반박 시도했고 2/3 이상 반박 시 제거했다.</p>
+    </div>
+
+    <h2>사실 1. AI 네이티브 제품의 마진 구조</h2>
+    <p>AI 네이티브 제품의 매출총이익률(Gross Margin)은 <strong>50~60%</strong>다. 전통 SaaS(80~90%)보다 구조적으로 낮다. 이 격차의 원인은 추론·컴퓨팅 비용이다.</p>
+
+    <div class="highlight-row">
+      <div class="highlight-card">
+        <span class="highlight-num">50~60%</span>
+        <span class="highlight-label">AI 네이티브<br>매출총이익률</span>
+      </div>
+      <div class="highlight-card">
+        <span class="highlight-num">80~90%</span>
+        <span class="highlight-label">전통 SaaS<br>매출총이익률</span>
+      </div>
+      <div class="highlight-card">
+        <span class="highlight-num">52%</span>
+        <span class="highlight-label">AI 평균 GM<br>(2026, ICONIQ)</span>
+      </div>
+    </div>
+
+    <p>단, 이 격차는 점진적으로 좁혀지고 있다. ICONIQ 데이터에 따르면 AI 제품 평균 GM은 2024년 41% → 2025년 45% → 2026년 52%로 상승 중이다. OpenAI는 2025년 10월 컴퓨팅 마진 ~70%에 도달했다.</p>
+
+    <div class="callout">
+      <div class="callout-label">실무 함의</div>
+      <p>무료 플랜 API 사용량 캡 설계가 필수다. API 비용이 매출의 40~50%를 잠식할 수 있다. "무제한 무료"는 사업 모델이 아니다.</p>
+    </div>
+
+    <h2>사실 2. 과금 지표 선택 = 전략적 포지셔닝</h2>
+    <p>과금 지표 선택은 청구 방식이 아니라 <strong>"우리 제품이 어떤 가치를 제공한다고 시장에 선언하는가"</strong>를 결정하는 전략적 결정이다. (BVP, 3-0 unanimous)</p>
+
+    <table>
+      <tr><th>과금 모델</th><th>시장에 보내는 메시지</th><th>장점</th><th>단점</th></tr>
+      <tr><td>시트 기반</td><td>"팀 협업 도구"</td><td>예측 가능한 MRR</td><td>사용 안 해도 과금 불만</td></tr>
+      <tr><td>워크플로우 기반</td><td>"자동화 엔진"</td><td>사용량 비례 성장</td><td>수익 예측 어려움</td></tr>
+      <tr><td>성과 기반</td><td>"결과 보장 파트너"</td><td>가치 정렬 극대화</td><td>컴퓨팅 비용 변동 리스크</td></tr>
+      <tr><td>사용량(토큰)</td><td>"AI 인프라"</td><td>투명함</td><td>고객 비용 예측 어려움</td></tr>
+    </table>
+
+    <h2>사실 3. 배포가 개발보다 어렵다</h2>
+    <p>AI가 개발 속도 병목을 해소한 이후에도 배포(distribution)는 솔로 SaaS 개발자의 <strong>#1 미해결 과제</strong>다.</p>
+
+    <div class="verdict">
+      <div class="verdict-label">Indie Hackers 직접 인용</div>
+      <p>"Posting on Reddit feels like gambling. Shipping code feels like progress."</p>
+    </div>
+
+    <p>Carta Solo Founders Report에 따르면 솔로 창업자의 72%가 배포 역량을 성장의 #1 동인으로 꼽는다. 첫 유료 고객 10명을 확보하는 것이 가장 어렵고 가장 중요한 관문이다.</p>
+
+    <h2>사실 4. 시장 성장 ≠ 제품 성공</h2>
+    <p>"AI 시장이 크다"는 진입 이유로 불충분하다. 성장하는 시장에 진입해도 <strong>차별화된 오퍼링과 서브-니치 타겟팅 없이는 수익화에 실패한다.</strong> (3-0 unanimous)</p>
+
+    <div class="chapter-divider"></div>
+
+    <h2>Kill된 주요 클레임 — 믿지 말 것</h2>
+    <p>아래는 0-3 또는 1-2 투표로 제거된 주장들이다. 온라인에 많이 떠돌지만 독립 검증이 불가능했다.</p>
+
+    <div class="kill-box">
+      <p><strong>제거된 클레임 (신뢰 불가):</strong> Bannerbear $991K ARR | Nomad List $5.3M ARR | BoredHumans $8.8M ARR | AI 추가로 40% 이탈 감소 | $2K에서 $50K MRR 8개월 달성 | AI 툴 2~4x 개발 속도 향상 | 중간값 $10K MRR 달성 12~18개월</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">결론</div>
+      <p>수익화 성공의 병목은 기술 구현이 아니라 <strong>"어떤 가치를 누구에게 어떤 구조로 파느냐"</strong>에 있다. 인터넷의 과장된 수치보다 이 4가지 검증된 사실이 더 중요하다.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CH 02 — 수익화 모델
+══════════════════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num-bg">02</div>
+    <div class="chapter-label">Chapter 02 · Business Models</div>
+    <div class="chapter-title">수익화 모델<br>전체 지도</div>
+    <div class="chapter-sub">프리랜싱부터 버티컬 SaaS까지 — 9가지 경로와 선택 기준</div>
+  </div>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+
+    <h2>모델 1. AI 에이전트 / 자동화 프리랜싱 [현금 확보 최단 경로]</h2>
+    <p>고객의 비즈니스 프로세스에 AI 자동화를 구축해주는 프로젝트 기반 수익 모델이다.</p>
+    <ul>
+      <li><strong>프로젝트당:</strong> $5,000~$15,000</li>
+      <li><strong>유지보수 계약:</strong> $500~$2,000/월</li>
+      <li><strong>마진:</strong> 70~80%</li>
+    </ul>
+    <div class="fact-box">
+      <div class="fact-box-title">실제 사례</div>
+      <p>AI 자동화 프리랜서 Chris Lee: 도구 비용 $20/월로 $6,000/월 수익</p>
+      <p>AI 에이전트 구축 프리랜서 수요 YoY 109% 성장 (2026년 2월)</p>
+      <p>프리랜서 agentic AI 시장: $7.29B (2025) → $9.14B (2026) 예상</p>
+    </div>
+
+    <h2>모델 2. 프로덕타이즈드 컨설팅 [도메인 전문가 최적]</h2>
+    <p>컨설팅을 표준 패키지로 만들어 반복 판매한다. "AI 도입 진단 패키지 300만원" 같은 형태.</p>
+    <ul>
+      <li>패키지당: $1,000~$5,000</li>
+      <li>월 리테이너: $2,000~$10,000/월</li>
+      <li>코드 없이도 시작 가능. B2B 고단가.</li>
+    </ul>
+
+    <h2>모델 3. 마이크로 SaaS [안정적 구독 수익]</h2>
+    <p>특정 니치 문제를 해결하는 소규모 소프트웨어 구독 서비스. 유저 수 × 전환율 × 단가 구조.</p>
+
+    <table>
+      <tr><th>활성 유저</th><th>전환율 2%</th><th>단가 $9/월</th><th>MRR</th></tr>
+      <tr><td>1,000명</td><td>20명</td><td>$9</td><td>$180</td></tr>
+      <tr><td>10,000명</td><td>200명</td><td>$9</td><td>$1,800</td></tr>
+      <tr><td>50,000명</td><td>1,000명</td><td>$9</td><td>$9,000</td></tr>
+      <tr><td>100,000명</td><td>2,000명</td><td>$9</td><td>$18,000</td></tr>
+    </table>
+
+    <h2>모델 4. 버티컬 SaaS [고단가 + 높은 리텐션]</h2>
+    <p>특정 산업/직군에 특화된 SaaS. 수평 SaaS보다 경쟁 적고 단가 높다.</p>
+    <ul>
+      <li>콜센터 · 의료 · 법률 · 부동산 분야</li>
+      <li>$20~$200/월 가능</li>
+      <li>도메인 전문가 = 개발자보다 강력한 차별점</li>
+    </ul>
+
+    <h2>모델 5. AI 에이전시 [스케일 가능한 서비스]</h2>
+    <p>여러 클라이언트에게 AI 시스템을 납품하는 B2B 에이전시.</p>
+    <ul>
+      <li>클라이언트당: $2,000~$10,000/월</li>
+      <li>5개 클라이언트 × $5,000 = $25,000/월</li>
+    </ul>
+
+    <h2>모델 6~9. 기타</h2>
+    <table>
+      <tr><th>모델</th><th>월 수익 안정성</th><th>초기 난이도</th><th>특징</th></tr>
+      <tr><td>강의 / 코스</td><td>중간</td><td>낮음</td><td>인프런·패스트캠퍼스 활용 가능</td></tr>
+      <tr><td>크롬 익스텐션</td><td>높음</td><td>중간</td><td>다음 챕터에서 상세 설명</td></tr>
+      <tr><td>앱스토어 앱</td><td>낮음</td><td>중간</td><td>발견 가능성 낮음, Apple 30% 수수료</td></tr>
+      <tr><td>콘텐츠 / AdSense</td><td>낮음</td><td>낮음</td><td>장기 배포 자산으로 가치</td></tr>
+    </table>
+
+    <div class="playbook">
+      <div class="playbook-title">권장 경로 (단계별)</div>
+      <ul>
+        <li><strong>[0~3개월]</strong> 프리랜싱/컨설팅으로 빠른 현금 확보 + 시장 학습</li>
+        <li><strong>[3~12개월]</strong> 반복되는 클라이언트 니즈를 패턴으로 발견</li>
+        <li><strong>[6~18개월]</strong> 반복 패턴을 마이크로 SaaS / 버티컬 SaaS로 패키지화</li>
+        <li><strong>[12개월~]</strong> SaaS 구독 수익 안정화 → 콘텐츠로 배포 채널 확장</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CH 03 — 크롬 익스텐션
+══════════════════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num-bg">03</div>
+    <div class="chapter-label">Chapter 03 · Chrome Extension</div>
+    <div class="chapter-title">크롬 익스텐션<br>개발자의 최단 수익화 경로</div>
+    <div class="chapter-sub">$5 등록비로 36억 Chrome 사용자에게 도달하는 방법</div>
+  </div>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+
+    <div class="highlight-row">
+      <div class="highlight-card">
+        <span class="highlight-num">$5</span>
+        <span class="highlight-label">Web Store<br>등록비 (일회성)</span>
+      </div>
+      <div class="highlight-card">
+        <span class="highlight-num">36억</span>
+        <span class="highlight-label">Chrome<br>전 세계 유저</span>
+      </div>
+      <div class="highlight-card">
+        <span class="highlight-num">$2.3B</span>
+        <span class="highlight-label">AI 익스텐션<br>시장 규모 2025</span>
+      </div>
+    </div>
+
+    <h2>실제 수익 사례 7개</h2>
+    <table>
+      <tr><th>제품</th><th>카테고리</th><th>월 수익</th><th>핵심 요인</th></tr>
+      <tr><td>GMass</td><td>Gmail 대량 발송</td><td>$130,000+</td><td>B2B 타깃, SEO + 유튜브 마케팅</td></tr>
+      <tr><td>Go Full Page</td><td>전체 스크린샷</td><td>$10,000</td><td>기능 1개, 400만 유저 자연 성장</td></tr>
+      <tr><td>Closet Tools</td><td>Poshmark 자동화</td><td>$42,000</td><td>"내가 돈 버는" 도구 구조, $30/월</td></tr>
+      <tr><td>Mate Translate</td><td>번역</td><td>$18,000</td><td>마우스오버 UX 차별화, 80만 유저</td></tr>
+      <tr><td>Easy Folders</td><td>AI 채팅 정리</td><td>$3,700</td><td>ChatGPT 주변부 UX, 신흥 사례</td></tr>
+      <tr><td>BlackMagic.so</td><td>X 분석</td><td>$3,000</td><td>창업자 50K 팔로워, 빌드인퍼블릭</td></tr>
+      <tr><td>Tailscan</td><td>Tailwind 인스펙터</td><td>$2,000</td><td>개발자 타깃, 전환율 5~10%</td></tr>
+    </table>
+
+    <h2>카테고리별 수익성</h2>
+    <table>
+      <tr><th>카테고리</th><th>수익 잠재력</th><th>진입 난이도</th><th>추천</th></tr>
+      <tr><td>AI 생산성</td><td>높음</td><td>중간</td><td>강력 추천</td></tr>
+      <tr><td>이메일 자동화 B2B</td><td>매우 높음</td><td>중간</td><td>추천 (고단가)</td></tr>
+      <tr><td>이커머스 / SNS 자동화</td><td>중간</td><td>낮음</td><td>조건부 (플랫폼 의존)</td></tr>
+      <tr><td>개발자 도구</td><td>중간</td><td>낮음</td><td>추천 (전환율 높음)</td></tr>
+      <tr><td>번역 / 언어</td><td>낮음</td><td>높음</td><td>비추</td></tr>
+    </table>
+
+    <h2>결제 인프라 — 외부 결제 필수</h2>
+    <p>2021년 Google이 Web Store 내장 결제를 폐지했다. Chrome 보안 정책상 팝업 내 결제 폼 삽입 불가 → 외부 페이지 리다이렉트 필수.</p>
+
+    <table>
+      <tr><th>도구</th><th>수수료</th><th>특징</th></tr>
+      <tr><td>ExtensionPay</td><td>Stripe 수수료만 (2.9%+$0.30)</td><td>익스텐션 전용, 가장 쉬움</td></tr>
+      <tr><td>LemonSqueezy</td><td>5%+$0.50</td><td>세금 처리 자동화 장점</td></tr>
+      <tr><td>Stripe 직접</td><td>2.9%+$0.30</td><td>가장 저렴, 구현 복잡</td></tr>
+    </table>
+
+    <div class="playbook">
+      <div class="playbook-title">크롬 익스텐션 수익화 플레이북</div>
+      <ul>
+        <li>유저 1,000명 이상 확보 후 페이월 도입 (그 전에는 데이터 없음)</li>
+        <li>기존 플랫폼(Gmail / ChatGPT / Notion) 위에 레이어 도구로 시작</li>
+        <li>무료 플랜 월 N회 AI 요청 제한 → 유료 무제한 구조</li>
+        <li>Product Hunt + Reddit + X 빌드인퍼블릭 조합으로 초기 유저 확보</li>
+        <li>MV3 규격 준수 필수 (MV2는 순차 비활성화 중)</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CH 04 — 니치 + 배포
+══════════════════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num-bg">04</div>
+    <div class="chapter-label">Chapter 04 · Niche &amp; Distribution</div>
+    <div class="chapter-title">틈새 니치 전략<br>+ 배포 플레이북</div>
+    <div class="chapter-sub">좋은 니치를 고르는 3가지 조건 + 배포 채널 효율 비교</div>
+  </div>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+
+    <h2>좋은 니치의 3가지 조건</h2>
+
+    <div class="callout">
+      <div class="callout-label">조건 1</div>
+      <p><strong>사용자가 직접 돈을 버는 도구</strong><br>
+      Closet Tools: "이 도구 쓰면 내가 $200 더 번다" → $30/월 지불 의향 자연 발생.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">조건 2</div>
+      <p><strong>기존 대형 플랫폼의 주변부 UX</strong><br>
+      GMass on Gmail · Easy Folders on ChatGPT · Tailscan on Tailwind. 대형 플랫폼이 해결 안 해주는 "인접한 불편"을 공략한다.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">조건 3</div>
+      <p><strong>도메인 전문가만이 만들 수 있는 도구</strong><br>
+      코드는 쉽게 복사되지만 도메인 지식은 복사 불가. AICC 팀장이 만드는 AICC 도구가 대표적.</p>
+    </div>
+
+    <h2>유망 니치 카테고리 (2026)</h2>
+
+    <h3>1순위: B2B 워크플로우 자동화</h3>
+    <p>AI 에이전트 시장 $7.29B(2025), 관련 프리랜서 수요 YoY 109% 성장.</p>
+    <ul>
+      <li>콜센터 품질 관리 자동화 (QA 스코어링)</li>
+      <li>회의록 자동 정리 → CRM 입력</li>
+      <li>고객 CS 이메일 분류 + 초안 생성</li>
+      <li>영업 제안서 자동화</li>
+    </ul>
+
+    <h3>2순위: AI 생산성 레이어 도구</h3>
+    <ul>
+      <li>특정 직군 전용 단축키 AI (법무팀 · 마케팅팀 · CS팀)</li>
+      <li>Gmail AI 라벨러 + 우선순위 정렬</li>
+      <li>회의 후 Next Action 자동 추출 → Notion</li>
+    </ul>
+
+    <h3>3순위: 버티컬 AI 에이전트</h3>
+    <ul>
+      <li>병원 차트 요약 AI</li>
+      <li>소상공인 세금 계산 도우미</li>
+      <li>부동산 중개사 AI 어시스턴트</li>
+      <li>피부과/성형외과 상담 자동화</li>
+    </ul>
+
+    <div class="chapter-divider"></div>
+
+    <h2>배포 채널 효율 비교</h2>
+    <table>
+      <tr><th>채널</th><th>초기 속도</th><th>비용</th><th>지속성</th></tr>
+      <tr><td>Product Hunt 론칭</td><td>빠름 (D1 500~2,000)</td><td>무료</td><td>1회성</td></tr>
+      <tr><td>Hacker News Show HN</td><td>빠름 (개발자 집중)</td><td>무료</td><td>1회성</td></tr>
+      <tr><td>Reddit 해당 서브레딧</td><td>중간 (예측 불가)</td><td>무료</td><td>중간</td></tr>
+      <tr><td>X 빌드인퍼블릭</td><td>느림 (장기 복리)</td><td>무료</td><td>최고</td></tr>
+      <tr><td>B2B LinkedIn 콜드</td><td>중간</td><td>낮음</td><td>지속 가능</td></tr>
+      <tr><td>기존 팔로워 채널</td><td>즉각적</td><td>무료</td><td>최고</td></tr>
+      <tr><td>유료 광고</td><td>빠름</td><td>높음</td><td>CAC &gt; LTV 리스크</td></tr>
+    </table>
+
+    <div class="playbook">
+      <div class="playbook-title">배포 전략 핵심 원칙</div>
+      <ul>
+        <li>출시 전 배포 채널 먼저 확보 — 첫 유료 고객 10명은 기술이 아닌 관계에서 온다</li>
+        <li>B2B는 LinkedIn 콜드 메시지 + 무료 PoC 제안이 가장 빠른 트랙션</li>
+        <li>커뮤니티에 돈 받기 전 무료 도구 / 인사이트를 먼저 줘라</li>
+        <li>기존 팔로워가 있으면 론칭이 완전히 달라진다 (BlackMagic.so 사례)</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CH 05 — 국내 시장
+══════════════════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num-bg">05</div>
+    <div class="chapter-label">Chapter 05 · Korea Market</div>
+    <div class="chapter-title">국내 시장의 현실</div>
+    <div class="chapter-sub">구축형 80% 시장에서 수익화하는 법</div>
+  </div>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+
+    <div class="callout">
+      <div class="callout-label">핵심 사실</div>
+      <p>국내 기업 매출에서 구축형(On-premise) <strong>80%</strong> / SaaS형 <strong>20%</strong>. 국내 기업들은 자체 환경에 맞춘 커스터마이징을 강하게 선호한다.</p>
+    </div>
+
+    <h2>국내에서 유효한 수익화 모델</h2>
+    <table>
+      <tr><th>모델</th><th>국내 적합도</th><th>이유</th></tr>
+      <tr><td>기업 AI 자동화 구축 (프로젝트)</td><td>매우 높음</td><td>구축형 선호 + 커스터마이징 수요</td></tr>
+      <tr><td>기업 AI 내부 교육 / 강의</td><td>높음</td><td>AI 리터러시 교육 수요 폭발</td></tr>
+      <tr><td>AICC / 컨택센터 특화 SaaS</td><td>높음</td><td>블루오션, 도메인 장벽</td></tr>
+      <tr><td>일반 B2C SaaS</td><td>낮음</td><td>국내 유료 결제 전환율 해외 대비 낮음</td></tr>
+      <tr><td>앱스토어 앱 (B2C)</td><td>중간</td><td>국내 사용자 결제 의향 낮음</td></tr>
+    </table>
+
+    <h2>국내 B2B 배포 채널</h2>
+    <ul>
+      <li><strong>LinkedIn:</strong> 팀장급 의사결정자 밀집, 빠르게 활성화 중</li>
+      <li><strong>AICC/컨택센터 협회:</strong> CX Korea, 한국콜센터산업협회 등</li>
+      <li><strong>패스트캠퍼스 B2B:</strong> 기업 내부 교육 연계</li>
+      <li><strong>disquiet.io:</strong> 국내 1인 창업자/인디해커 커뮤니티</li>
+    </ul>
+
+    <h2>국내 결제 인프라</h2>
+    <table>
+      <tr><th>서비스</th><th>수수료</th><th>특징</th></tr>
+      <tr><td>토스페이먼츠</td><td>3.3% + VAT</td><td>국내 가장 쉬운 연동</td></tr>
+      <tr><td>포트원 (아임포트)</td><td>결제사별 상이</td><td>여러 PG 통합</td></tr>
+      <tr><td>Stripe</td><td>2.9% + $0.30</td><td>글로벌 가능, 원화 정산 복잡</td></tr>
+    </table>
+
+    <div class="callout">
+      <div class="callout-label">국내 B2B SaaS 필수 사항</div>
+      <p>세금계산서 발행 필수 → 사업자 등록 + 회계 처리 선행. 이게 없으면 기업 고객이 구매하지 않는다.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CH 06 — 내 로드맵
+══════════════════════════════════════════════ -->
+<div class="chapter">
+  <div class="chapter-header">
+    <div class="chapter-num-bg">06</div>
+    <div class="chapter-label">Chapter 06 · My Roadmap</div>
+    <div class="chapter-title">내 컨텍스트 기반<br>맞춤 로드맵</div>
+    <div class="chapter-sub">AICC 팀장 × AI 개발 역량 — 이 조합을 가진 사람이 거의 없다</div>
+  </div>
+  <div class="chapter-rule"></div>
+
+  <div class="chapter-body">
+
+    <h2>나의 핵심 자산 인벤토리</h2>
+    <table>
+      <tr><th>자산</th><th>희소성</th><th>수익화 가능성</th></tr>
+      <tr><td>AICC/IPCC 실무 도메인 (팀장급)</td><td>매우 높음</td><td>매우 높음</td></tr>
+      <tr><td>B2B 기업 의사결정 프로세스 이해</td><td>높음</td><td>높음</td></tr>
+      <tr><td>Claude CLI + AI 개발 역량 (봇 10개+ 운영)</td><td>높음</td><td>높음</td></tr>
+      <tr><td>082_Simulation_v3 (AICC 롤플레이 에이전트)</td><td>매우 높음</td><td>B2B SaaS 상업화</td></tr>
+      <tr><td>090_Voice_Agent_Callbot (음성봇 3종)</td><td>높음</td><td>AICC 도구 상업화</td></tr>
+      <tr><td>005 블로그 4개 + 006 인스타 채널</td><td>중간</td><td>배포 자산</td></tr>
+    </table>
+
+    <h2>추천 수익화 경로 (우선순위)</h2>
+
+    <h3>1순위 — AICC 컨설팅 패키지 [지금 당장 시작]</h3>
+    <p>개발 없이 본업 도메인만으로 시작 가능. 단가 최고. 경쟁 진입 장벽 가장 높음.</p>
+
+    <div class="fact-box">
+      <div class="fact-box-title">서비스 패키지 설계 (안)</div>
+      <p><strong>진단 패키지 (30~50만원):</strong> 컨택센터 현황 분석 + AI 전환 적합도 + Action Plan 3가지</p>
+      <p><strong>PoC 설계 패키지 (150~300만원):</strong> 아키텍처 설계 + 벤더 선정 기준 + 3개월 로드맵</p>
+      <p><strong>월 리테이너 (100~300만원/월):</strong> AI 도입 전략 조언 + Simulation 데모 제공</p>
+    </div>
+
+    <h3>2순위 — 082_Simulation_v3 → B2B SaaS 상업화</h3>
+    <p>이미 만들어진 제품이 있다. AICC 상담사 트레이닝 시뮬레이션으로 포지셔닝.</p>
+    <ul>
+      <li>타깃: AICC 도입 기업의 상담사 교육팀</li>
+      <li>수익: 월 50~200만원 / 기업</li>
+      <li>단기 액션: 데모 영상 제작 → 파일럿 2~3곳 무료 제안 → 레퍼런스 확보</li>
+    </ul>
+
+    <h3>3순위 — 005-3 AI Tech 블로그 + 기업 강의</h3>
+    <p>이미 운영 중인 채널이다. 장기 브랜드 자산 + 다른 수익화의 마케팅 채널 역할.</p>
+    <ul>
+      <li>Layer 1 (3~6개월): AI 툴 제휴 추천 → $100~$500/월</li>
+      <li>Layer 2 (6~12개월): 기업 출강 → 회당 50~100만원</li>
+      <li>Layer 3 (12개월~): 유료 코스 $99~$299 / 뉴스레터 구독</li>
+    </ul>
+
+    <div class="chapter-divider"></div>
+
+    <h2>12개월 실행 계획</h2>
+    <table>
+      <tr><th>기간</th><th>목표</th><th>구체적 액션</th></tr>
+      <tr><td>M1~M2</td><td>컨설팅 준비</td><td>LinkedIn 프로필 최적화 · 진단 패키지 1페이지 PDF · 지인 기업 1곳 무료 진단</td></tr>
+      <tr><td>M2~M4</td><td>첫 유료 클라이언트</td><td>진단 패키지 유료 전환 · 005-3 AICC 인사이트 5~10편 · LinkedIn 주 2회 콘텐츠</td></tr>
+      <tr><td>M4~M8</td><td>Simulation 파일럿</td><td>082_Simulation_v3 데모 패키지화 · 파일럿 고객 3곳 무료/할인 · 피드백 반영</td></tr>
+      <tr><td>M8~M12</td><td>수익 안정화</td><td>컨설팅 2~3개 리테이너 · Simulation 3~5개 유료 전환 · 기업 출강 시작</td></tr>
+    </table>
+
+    <div class="highlight-row">
+      <div class="highlight-card">
+        <span class="highlight-num">400만~</span>
+        <span class="highlight-label">M12 목표<br>월 수익 (부업)</span>
+      </div>
+      <div class="highlight-card">
+        <span class="highlight-num">3개</span>
+        <span class="highlight-label">동시 수익<br>스트림</span>
+      </div>
+      <div class="highlight-card">
+        <span class="highlight-num">0원</span>
+        <span class="highlight-label">초기 투자 필요<br>(기술만으로 시작)</span>
+      </div>
+    </div>
+
+    <div class="playbook">
+      <div class="playbook-title">반드시 확인할 사항</div>
+      <ul>
+        <li>본업(LGU+) 겸업 규정 사전 확인 필수</li>
+        <li>LGU+ 영업 중인 고객사는 절대 타깃하지 않는다</li>
+        <li>본업 내부 정보 · 고객사 정보는 외부 절대 유출 금지</li>
+        <li>초기 1~3개 고객은 케이스 스터디 동의 조건으로 대폭 할인 (레퍼런스 우선)</li>
+        <li>동시 진행 금지 — 1개 경로에 집중해서 PMF 검증 후 다음 단계</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     FINAL PAGE
+══════════════════════════════════════════════ -->
+<div class="final-page">
+  <div class="final-quote">
+    수익화 성공의 병목은<br>
+    기술 구현이 아니라<br>
+    <span>"어떤 가치를 누구에게<br>어떤 구조로 파느냐"</span>에 있다.
+  </div>
+  <div class="final-divider"></div>
+  <div class="final-sub">
+    딥리서치 검증 결과 (2026-06-27)<br>
+    106 Agents · 24 Sources · 110 Claims · 4 Survived<br><br>
+    AI 개발 역량 수익화 플레이북 · Deep Research Edition
+  </div>
+</div>
+
+</body>
+</html>
