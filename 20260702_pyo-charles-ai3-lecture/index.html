@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>표철민 · AI3(웍스AI) 강연 — 20년, 실패를 자산으로</title>
+<meta name="description" content="AI3(웍스AI) 창업자 표철민 대표의 66분 강연 정리 — 20년 창업 여정, 웍스AI 제품 라인업, 빠른 실행의 철학." />
+<style>
+  :root {
+    --bg-white:#fbfbfd; --bg-light:#f5f5f7; --bg-dark:#1d1d1f; --bg-black:#000;
+    --tx-primary:#1d1d1f; --tx-secondary:#6e6e73; --tx-tertiary:#86868b; --tx-on-dark:#f5f5f7;
+    --link:#2997ff; --blue:#0071e3;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    --hero:clamp(44px,8vw,88px); --headline:clamp(30px,5vw,56px); --title:clamp(22px,3.2vw,40px);
+    --subtitle:clamp(18px,2vw,26px); --body:clamp(15px,1.15vw,19px); --caption:clamp(12px,1vw,15px);
+    --lh-tight:1.06; --lh-snug:1.16; --lh-body:1.6;
+    --ls-tight:-0.015em;
+    --max:980px; --wide:1200px;
+    --pad-xl:clamp(90px,13vw,180px); --pad-lg:clamp(64px,9vw,120px); --pad-md:clamp(44px,6vw,84px);
+    --radius:18px;
+    --ease-out:cubic-bezier(0.16,1,0.3,1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+  body { font-family:var(--font); background:var(--bg-white); color:var(--tx-primary); line-height:var(--lh-body); }
+
+  .nav { position:sticky; top:0; z-index:999; height:48px; display:flex; align-items:center; justify-content:center; gap:28px;
+    background:rgba(29,29,31,0.72); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px);
+    color:var(--tx-on-dark); font-size:13px; letter-spacing:-0.01em; }
+  .nav a { color:#d2d2d7; text-decoration:none; transition:color .2s; }
+  .nav a:hover { color:#fff; }
+  .nav .brand { font-weight:600; color:#fff; }
+  @media(max-width:600px){ .nav a:not(.brand){ display:none; } }
+
+  section { padding:var(--pad-lg) 22px; }
+  .inner { max-width:var(--max); margin:0 auto; }
+  .wide { max-width:var(--wide); margin:0 auto; }
+  .dark { background:var(--bg-dark); color:var(--tx-on-dark); }
+  .black { background:var(--bg-black); color:var(--tx-on-dark); }
+  .light { background:var(--bg-light); }
+  .white { background:var(--bg-white); }
+  .dark .sub,.black .sub { color:#a1a1a6; }
+  .sub { color:var(--tx-secondary); }
+
+  .hero { padding:var(--pad-xl) 22px calc(var(--pad-xl) * .7); text-align:center; }
+  .eyebrow { font-size:var(--caption); font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--link); margin-bottom:18px; }
+  .hero h1 { font-size:var(--hero); font-weight:700; line-height:var(--lh-tight); letter-spacing:var(--ls-tight); }
+  .hero .tagline { font-size:var(--subtitle); font-weight:500; margin-top:16px; color:#f5f5f7; }
+  .hero .lead { font-size:var(--body); color:#a1a1a6; margin-top:22px; max-width:640px; margin-left:auto; margin-right:auto; }
+  .hero-meta { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:36px; }
+  .chip { font-size:var(--caption); color:#d2d2d7; border:1px solid rgba(255,255,255,0.18); border-radius:980px; padding:7px 16px; }
+
+  h2.headline { font-size:var(--headline); font-weight:700; line-height:var(--lh-snug); letter-spacing:var(--ls-tight); text-align:center; }
+  .section-lead { font-size:var(--subtitle); font-weight:400; text-align:center; margin-top:14px; }
+  .kicker { text-align:center; font-size:var(--caption); font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--link); margin-bottom:14px; }
+
+  /* profile */
+  .profile { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:52px; }
+  .pcard { background:#fff; border-radius:var(--radius); padding:26px; box-shadow:0 4px 20px rgba(0,0,0,0.05); }
+  .pcard .lab { font-size:var(--caption); color:var(--tx-tertiary); font-weight:600; }
+  .pcard .val { font-size:clamp(17px,1.5vw,21px); font-weight:600; margin-top:8px; letter-spacing:-0.01em; }
+  .pcard .val small { display:block; font-size:var(--caption); font-weight:400; color:var(--tx-secondary); margin-top:6px; line-height:1.45; }
+
+  /* timeline */
+  .timeline { max-width:760px; margin:56px auto 0; position:relative; }
+  .timeline::before { content:""; position:absolute; left:13px; top:6px; bottom:6px; width:2px; background:rgba(255,255,255,0.14); }
+  .tl { position:relative; padding:0 0 40px 52px; }
+  .tl:last-child { padding-bottom:0; }
+  .tl .dot { position:absolute; left:5px; top:4px; width:18px; height:18px; border-radius:50%; background:var(--bg-dark); border:3px solid var(--link); }
+  .tl .yr { font-size:var(--caption); font-weight:700; color:var(--link); letter-spacing:0.03em; }
+  .tl h3 { font-size:clamp(19px,2vw,26px); font-weight:600; margin-top:6px; letter-spacing:-0.01em; }
+  .tl p { font-size:var(--body); color:#a1a1a6; margin-top:8px; }
+
+  /* product grid */
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin-top:52px; }
+  .card { background:#fff; border-radius:var(--radius); padding:34px 30px; box-shadow:0 4px 24px rgba(0,0,0,0.05); }
+  .card .tag { font-size:var(--caption); font-weight:700; color:var(--link); letter-spacing:0.02em; }
+  .card h3 { font-size:clamp(20px,2vw,27px); font-weight:600; margin:10px 0 12px; letter-spacing:-0.01em; }
+  .card p { font-size:var(--body); color:var(--tx-secondary); }
+
+  /* metrics */
+  .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:22px; margin-top:56px; text-align:center; }
+  .metric .num { font-size:clamp(38px,5.5vw,66px); font-weight:700; letter-spacing:var(--ls-tight); line-height:1; background:linear-gradient(90deg,#2997ff,#a389ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .metric .desc { font-size:var(--body); color:#a1a1a6; margin-top:14px; }
+
+  /* quotes / philosophy */
+  .quotes { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; margin-top:52px; }
+  .quote { background:#fff; border-radius:var(--radius); padding:32px; box-shadow:0 4px 24px rgba(0,0,0,0.05); }
+  .quote .q { font-size:clamp(19px,1.9vw,25px); font-weight:600; letter-spacing:-0.01em; line-height:1.35; }
+  .quote .c { font-size:var(--body); color:var(--tx-secondary); margin-top:14px; }
+
+  /* takeaways */
+  .takeaways { max-width:760px; margin:48px auto 0; display:flex; flex-direction:column; gap:14px; }
+  .take { display:flex; gap:18px; align-items:flex-start; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:22px 24px; }
+  .take .n { font-size:clamp(20px,2vw,26px); font-weight:700; color:var(--link); flex:0 0 auto; min-width:34px; }
+  .take .t { font-size:var(--body); color:#f5f5f7; }
+  .take .t b { color:#fff; }
+
+  footer { padding:60px 22px; text-align:center; background:var(--bg-black); color:var(--tx-tertiary); font-size:var(--caption); }
+  footer a { color:var(--link); text-decoration:none; }
+  footer .src { margin-top:14px; line-height:1.9; }
+
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity 1s var(--ease-out), transform 1s var(--ease-out); }
+  .reveal.vis { opacity:1; transform:none; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">AI3 · 웍스AI</span>
+  <a href="#profile">프로파일</a>
+  <a href="#journey">창업 여정</a>
+  <a href="#products">제품</a>
+  <a href="#lessons">인사이트</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero black">
+  <div class="inner reveal">
+    <p class="eyebrow">Speaker Profiling · 강연 정리</p>
+    <h1>표철민</h1>
+    <p class="tagline">AI3(웍스AI) 창업자 &amp; CEO</p>
+    <p class="lead">중학교 2학년의 첫 창업부터 26년. 위젯, 노트앱, 블록체인, 그리고 기업용 AI까지 — 숱한 실패를 딛고 &ldquo;망하기 전까지는 망한 게 아니다&rdquo;로 버텨온 다작(多作)의 기록.</p>
+    <div class="hero-meta">
+      <span class="chip">사내 리더 대상 강연</span>
+      <span class="chip">2026.07.02</span>
+      <span class="chip">66분 44초</span>
+    </div>
+  </div>
+</header>
+
+<!-- PROFILE -->
+<section id="profile" class="white">
+  <div class="inner">
+    <p class="kicker">Profile</p>
+    <h2 class="headline">인물 기본 정보</h2>
+    <div class="profile">
+      <div class="pcard reveal"><div class="lab">이름</div><div class="val">표철민 <small>Charles Pyo</small></div></div>
+      <div class="pcard reveal"><div class="lab">현재</div><div class="val">AI3 창업자 &amp; CEO <small>(구 체인파트너스 → 2024.3 사명 변경)</small></div></div>
+      <div class="pcard reveal"><div class="lab">학력</div><div class="val">연세대학교 <small>신문방송학과 · 경영학과 복수전공 (여의도고)</small></div></div>
+      <div class="pcard reveal"><div class="lab">첫 창업</div><div class="val">1999년, 중2 <small>국내 최연소 창업자로 알려짐</small></div></div>
+      <div class="pcard reveal"><div class="lab">대표 이력</div><div class="val">위자드웍스 <small>2006 창업 · 한국 최초 위젯 서비스, 월 1,742만 사용자 업계 1위</small></div></div>
+      <div class="pcard reveal"><div class="lab">키워드</div><div class="val">문과 출신 · 다작 <small>&ldquo;개발 1도 모른다&rdquo;는 신방과 출신, 바이브 코딩으로 직접 제품 제작</small></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section id="journey" class="dark">
+  <div class="inner">
+    <p class="kicker">The Journey</p>
+    <h2 class="headline">20년 창업 연대기</h2>
+    <div class="timeline">
+      <div class="tl reveal"><span class="dot"></span><div class="yr">1999</div><h3>첫 창업 (중2)</h3><p>국내 최연소 창업. 이후 &ldquo;내가 할 줄 아는 건 창업뿐&rdquo;이라는 정체성의 출발점.</p></div>
+      <div class="tl reveal"><span class="dot"></span><div class="yr">2006–2012</div><h3>위자드웍스 · 위젯 제국</h3><p>웹 2.0 개인화 시작페이지 → 위젯 수백 개 제작 → 네이버·다음 블로그 사이드바 유통. 광고성 위젯으로 위젯 최초 수익화. 이후 손노트(클라우드 노트앱, 수천만 다운로드)로 확장했으나 수익화엔 실패. 월급을 3개월씩 밀리던 시기.</p></div>
+      <div class="tl reveal"><span class="dot"></span><div class="yr">~2016</div><h3>키보드 앱 · 데이터 사업</h3><p>키보드 앱으로 사용자 입력 관심사 데이터를 수집(동의 기반), 광고 최적화 사업으로 연결. 회사를 매각하고 군 입대.</p></div>
+      <div class="tl reveal"><span class="dot"></span><div class="yr">2017</div><h3>체인파트너스 · 블록체인</h3><p>제대 후 이더리움 붐 속 국내 최초 블록체인 컴퍼니빌더 설립. 크립토 환전 최적경로 플랫폼 등 &ldquo;이상적인&rdquo; 제품에 몰두. 150명까지 성장했으나 시장 침체로 2명까지 축소.</p></div>
+      <div class="tl reveal"><span class="dot"></span><div class="yr">2022–2023</div><h3>2명에서 다시 시작 · AI 전환</h3><p>ChatGPT 등장. GPT의 약한 한국어를 DeepL로 감싼 &lsquo;네이티브&rsquo; → GPT-4가 한국어를 잘하자 다시 피벗. 월드코인(홍채인증) 한국 첫 오퍼레이터로 화제, 현금계수기 회사와 컨소시엄으로 2세대 기기 개발 선정.</p></div>
+      <div class="tl reveal"><span class="dot"></span><div class="yr">2023–2024</div><h3>웍스AI · 직장인 타겟</h3><p>직장인용 업무 AI로 재정의, 사명을 AI3로 변경. 국내 최초 종량제(토큰 사용량 과금) AI 출시 → 서울시교육청·LS그룹 등 대형 레퍼런스 확보로 전환점.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" class="light">
+  <div class="wide">
+    <p class="kicker">Product Lineup</p>
+    <h2 class="headline">웍스AI 제품 라인업</h2>
+    <p class="section-lead sub">&ldquo;기업·공공이 AI가 필요할 때 풀 스펙으로 제공한다&rdquo;</p>
+    <div class="grid">
+      <div class="card reveal"><div class="tag">AI 포탈</div><h3>웍스AI</h3><p>전사 도입형 통합 생성형 AI. GPT·Claude·DeepL 등 최고 모델을 하나로. 회의록·계약검토·문서요약·번역·PPT·제안서 등 40여 기능. 종량제 과금이 핵심 경쟁력.</p></div>
+      <div class="card reveal"><div class="tag">LLM 게이트웨이</div><h3>비즈라우터</h3><p>OpenAI 호환 엔드포인트 하나로 모든 모델 호출. 원화 통합결제·세금계산서·전사 비용통제·감사로그. 스마트 라우팅(현재 정규식 기반)으로 발화에 따라 모델 자동 선택.</p></div>
+      <div class="card reveal"><div class="tag">기업용 MCP</div><h3>에이전트 스토어</h3><p>다트·한국은행·금감원 등 공공데이터 기반 MCP 서버 + KTX·고속버스 등 500종 스킬. 커넥터 한 번으로 Claude Code·ChatGPT 등 어디서나 호출, 중앙 통제.</p></div>
+      <div class="card reveal"><div class="tag">보안 SLM</div><h3>개인정보 · 문서보안 필터</h3><p>맥락 기반 개인정보 마스킹, 사이버 필터, 문서 등급 자동 태깅(내부자료·영업비밀). 해외 LLM 전송 전 국내에서 DLP 차단. 공공 소버린 AI 요구 대응.</p></div>
+      <div class="card reveal"><div class="tag">배포 플랫폼</div><h3>온팟 (Onpot)</h3><p>바이브 코딩의 마지막 관문인 &lsquo;배포&rsquo;를 해결. Claude Code에 &ldquo;배포해줘&rdquo; 한마디로 국내 규제 준수 서버에 CPU/GPU/DB/스토리지까지 자동 배포.</p></div>
+      <div class="card reveal"><div class="tag">에이전트 메모리</div><h3>메모리 스텝</h3><p>대화 중 API 비동기 호출로 핵심 맥락을 JSON 구조화·저장. 컨텍스트 윈도우 한계를 넘어 장기기억 제공, LLM 비용을 최대 80~90% 절감.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="dark">
+  <div class="inner">
+    <p class="kicker">Traction</p>
+    <h2 class="headline">숫자로 보는 웍스AI</h2>
+    <div class="metrics">
+      <div class="metric reveal"><div class="num">30만+</div><div class="desc">개인 사용자<br>(입소문만으로 확보)</div></div>
+      <div class="metric reveal"><div class="num">1,000+</div><div class="desc">유입 기업<br>(영업 인력 0명, PLG)</div></div>
+      <div class="metric reveal"><div class="num">7만</div><div class="desc">서울시교육청 교사<br>&lsquo;senGPT&rsquo; 구축</div></div>
+      <div class="metric reveal"><div class="num">국내 최초</div><div class="desc">종량제 업무 AI<br>&ldquo;ChatGPT 직접 구독보다 저렴&rdquo;</div></div>
+    </div>
+    <p class="section-lead sub" style="margin-top:44px;font-size:var(--body)">주요 레퍼런스 — LS그룹(LS GPT) · 한국콜마(콜마 GPT) · 현대건설 · 현대자동차(4천명 사용) · 산업은행 · 다수 중앙부처·지자체</p>
+  </div>
+</section>
+
+<!-- LESSONS / PHILOSOPHY -->
+<section id="lessons" class="white">
+  <div class="wide">
+    <p class="kicker">Insights</p>
+    <h2 class="headline">강연 속 핵심 인사이트</h2>
+    <p class="section-lead sub">리더가 가장 크게 반응한 &lsquo;빠른 실행&rsquo;의 실체</p>
+    <div class="quotes">
+      <div class="quote reveal"><div class="q">&ldquo;노하우는 몰래 하는 겁니다.&rdquo;</div><div class="c">고객을 만나고 온 그날 밤 바이브 코딩으로 만들어 이틀 뒤 출시. 대표가 직접 만드니 누구에게도 물어볼 필요가 없다. 주주에게도 잘 되면 그때 말한다.</div></div>
+      <div class="quote reveal"><div class="q">&ldquo;우리는 시키는 걸 정말 잘하잖아요.&rdquo;</div><div class="c">AI를 잘 다루는 것보다 &lsquo;일을 시켜본 경험&rsquo;이 강점. 그래서 오히려 임원·리더가 AI를 더 잘 쓴다. AI에게 밤새 시키는 것을 즐긴다.</div></div>
+      <div class="quote reveal"><div class="q">&ldquo;저는 다작하는 편이에요.&rdquo;</div><div class="c">많이 만들면 실패가 많고, 그 속에서 배운다. 과거엔 &lsquo;하고 싶은 것&rsquo;에서 출발했지만, 요즘은 고객 니즈에서 출발한 것이 수익률이 더 높더라.</div></div>
+      <div class="quote reveal"><div class="q">&ldquo;맥락이 반복된다.&rdquo;</div><div class="c">MCP 스토어는 옛 스마트폰 앱스토어를, 기업들의 중복 개발은 통신사 시절을 닮았다. IT 업계에 오래 있던 사람은 과거에서 해답을 유추할 수 있어 유리하다.</div></div>
+      <div class="quote reveal"><div class="q">&ldquo;망하기 전까지는 망한 게 아니다.&rdquo;</div><div class="c">주방 찬장에 붙여둔 문구. 세무조사로 8억을 추징당하며 지금도 갚는 중 — 그 고난이 밤새 제품을 짜는 원동력이라고 담담히 말한다.</div></div>
+      <div class="quote reveal"><div class="q">&ldquo;한국에 되게 기회가 있어요.&rdquo;</div><div class="c">고객은 전화하고 싶어 하고, 킬 스위치 같은 현지 요구가 많다. 미국 본사는 이런 요구의 우선순위가 200번째 — 그 간극이 국내 기업의 기회다.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TAKEAWAYS -->
+<section class="dark">
+  <div class="inner">
+    <p class="kicker">For B2B Leaders</p>
+    <h2 class="headline">우리 관점의 시사점</h2>
+    <div class="takeaways">
+      <div class="take reveal"><span class="n">01</span><span class="t"><b>비용 절감 · 현장 맞춤화가 구매 트리거다.</b> 기술 스펙보다 종량제·관리자 통제·DLP 같은 &lsquo;안심&rsquo; 기능이 도입을 만든다. 기업의 기상천외한 보안 요구를 옵션화한 것이 차별점.</span></div>
+      <div class="take reveal"><span class="n">02</span><span class="t"><b>PLG — 영업 없이 고객이 찾아오는 구조.</b> 개인 30만·기업 1,000+를 입소문으로 확보. 개인 무료/저가로 저변을 넓히고 엔터프라이즈에서 수익화.</span></div>
+      <div class="take reveal"><span class="n">03</span><span class="t"><b>공공·대기업 레퍼런스가 초격차를 만든다.</b> 첫 고객이 서울시교육청·LS그룹이었기에 임팩트가 컸다. 소버린 AI·M2SF 등 규제 대응이 공공 진입의 열쇠.</span></div>
+      <div class="take reveal"><span class="n">04</span><span class="t"><b>리더의 강점은 &lsquo;AI에게 잘 시키는 것&rsquo;.</b> 대기업 리더의 지시·기획 역량이 곧 AI 활용 역량. 빠른 프로토타이핑을 조직 문화로 만들 수 있느냐가 관건.</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>표철민(AI3 · 웍스AI) 강연 정리 · 2026.07.02</div>
+  <div class="src">
+    출처: 헬로티 · 전자신문 · 디지털투데이 · THE VC &nbsp;|&nbsp; 강연 녹취 기반 재구성<br>
+    Speaker Profiling &amp; Lecture Summary
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); } });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
